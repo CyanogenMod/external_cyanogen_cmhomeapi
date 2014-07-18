@@ -1,3 +1,5 @@
+package org.cyanogenmod.launcher.home.api.db;
+
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -23,12 +25,21 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
                                   "content_source_image_uri TEXT DEFAULT NULL," +
                                   "avatar_image_uri TEXT DEFAULT NULL," +
                                   "title_text TEXT DEFAULT NULL," +
-                                  "caption_text TEXT DEFAULT NULL" +
+                                  "small_text TEXT DEFAULT NULL" +
                                   "body_text TEXT DEFAULT NULL" +
                                   "action_1_text TEXT DEFAULT NULL" +
                                   "action_1_uri TEXT DEFAULT NULL," +
                                   "action_2_text TEXT DEFAULT NULL" +
                                   "action_2_uri TEXT DEFAULT NULL);";
+
+    private static final String DATA_CARD_UPDATE_TIME_TRIGGER =
+            "CREATE TRIGGER data_card_update_time_trigger " +
+            "AFTER UPDATE ON " + DATA_CARD_TABLE_NAME + " FOR EACH ROW" +
+            " BEGIN " +
+                "UPDATE " + DATA_CARD_TABLE_NAME +
+                " SET " + "last_modified" + " = CURRENT_TIMESTAMP" +
+                " WHERE " + "_id" + " = old._id;" +
+            " END";
 
     private static final String DATA_CARD_IMAGE_TABLE_NAME = DataCard;
     private static final String DATA_CARD_IMAGE_TABLE_CREATE =
