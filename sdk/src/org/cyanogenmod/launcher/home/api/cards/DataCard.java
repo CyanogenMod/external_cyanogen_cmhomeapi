@@ -1,6 +1,11 @@
 package org.cyanogenmod.launcher.home.api.cards;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
+import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -160,5 +165,38 @@ public class DataCard {
 
     public void setPriority(int priority) {
         this.mPriority = priority;
+    }
+
+    public void publish(Context context) {
+        ContentResolver contentResolver  = context.getContentResolver();
+        ContentValues values = new ContentValues();
+
+        values.put(CmHomeContract.DataCard.SUBJECT_COL, getSubject());
+        values.put(CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL,
+                   getContentCreatedDate().getTime());
+        values.put(CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL,
+                   getContentSourceImageUri().toString());
+        values.put(CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL,
+                   getAvatarImageUri().toString());
+        values.put(CmHomeContract.DataCard.TITLE_TEXT_COL,
+                   getTitle());
+        values.put(CmHomeContract.DataCard.SMALL_TEXT_COL,
+                   getSmallText());
+        values.put(CmHomeContract.DataCard.BODY_TEXT_COL,
+                   getBodyText());
+        values.put(CmHomeContract.DataCard.ACTION_1_TEXT_COL,
+                   getAction1Text());
+        values.put(CmHomeContract.DataCard.ACTION_1_URI_COL,
+                   getAction1Uri().toString());
+        values.put(CmHomeContract.DataCard.ACTION_2_TEXT_COL,
+                   getAction2Text());
+        values.put(CmHomeContract.DataCard.ACTION_2_URI_COL,
+                   getAction2Uri().toString());
+        values.put(CmHomeContract.DataCard.PRIORITY_COL,
+                   getAction2Uri().toString());
+
+        Uri result = contentResolver.insert(CmHomeContract.DataCard.CONTENT_URI, values);
+        // Store the resulting ID
+        setId(Integer.parseInt(result.getLastPathSegment()));
     }
 }
