@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -14,21 +14,21 @@ import java.util.List;
 public class DataCardImage extends PublishableCard {
     private final static CmHomeContract.ICmHomeContract sContract
             = new CmHomeContract.DataCardImage();
-    private int mDataCardId;
+    private long mDataCardId;
     private Uri mImageUri;
 
-    public DataCardImage(int dataCardId, Uri imageUri) {
+    public DataCardImage(long dataCardId, Uri imageUri) {
         super(sContract);
 
         mDataCardId = dataCardId;
         mImageUri = imageUri;
     }
 
-    public int getDataCardId() {
+    public long getDataCardId() {
         return mDataCardId;
     }
 
-    public void setDataCardId(int dataCardId) {
+    public void setDataCardId(long dataCardId) {
         mDataCardId = dataCardId;
     }
 
@@ -80,12 +80,12 @@ public class DataCardImage extends PublishableCard {
     }
 
     public static List<DataCardImage> getPublishedDataCardImagesForDataCardId(Context context,
-                                                                              int dataCardId) {
+                                                                              long dataCardId) {
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(CmHomeContract.DataCardImage.CONTENT_URI,
                                           CmHomeContract.DataCardImage.PROJECTION_ALL,
                                           CmHomeContract.DataCardImage.DATA_CARD_ID_COL + " = ?",
-                                          new String[]{Integer.toString(dataCardId)},
+                                          new String[]{Long.toString(dataCardId)},
                                           null);
 
         List<DataCardImage> allImages = new ArrayList<DataCardImage>();

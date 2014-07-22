@@ -1,6 +1,7 @@
 package org.cyanogenmod.launcher.home.api.cards;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,18 +13,18 @@ import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
  * to be displayed to the user.
  */
 public abstract class PublishableCard {
-    private int mId = -1;
+    private long mId = -1;
     protected CmHomeContract.ICmHomeContract mICmHomeContract;
 
     public PublishableCard(CmHomeContract.ICmHomeContract contract) {
         mICmHomeContract = contract;
     }
 
-    public int getId() {
+    public long getId() {
         return mId;
     }
 
-    protected void setId(int id) {
+    protected void setId(long id) {
         mId = id;
     }
 
@@ -57,10 +58,12 @@ public abstract class PublishableCard {
         }
 
         ContentResolver contentResolver = context.getContentResolver();
-        int rows = contentResolver.update(mICmHomeContract.getContentUri(),
+        int rows = contentResolver.update(ContentUris.withAppendedId(
+                                                      mICmHomeContract.getContentUri(),
+                                                      getId()),
                                           getContentValues(),
-                                          mICmHomeContract.getIdColumnName() + " = ?",
-                                          new String[]{Integer.toString(getId())});
+                                          null,
+                                          null);
 
         // We must have updated at least one row
         return rows > 0;
@@ -72,9 +75,11 @@ public abstract class PublishableCard {
         }
 
         ContentResolver contentResolver = context.getContentResolver();
-        int rows = contentResolver.delete(mICmHomeContract.getContentUri(),
-                                          mICmHomeContract.getIdColumnName() + " = ?",
-                                          new String[]{Integer.toString(getId())});
+        int rows = contentResolver.delete(ContentUris.withAppendedId(
+                                                    mICmHomeContract.getContentUri(),
+                                                    getId()),
+                                          null,
+                                          null);
         return rows > 0;
     }
 
@@ -89,10 +94,12 @@ public abstract class PublishableCard {
         }
 
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor cursor = contentResolver.query(mICmHomeContract.getContentUri(),
+        Cursor cursor = contentResolver.query(ContentUris.withAppendedId(
+                                                  mICmHomeContract.getContentUri(),
+                                                  getId()),
                                               new String[]{mICmHomeContract.getIdColumnName()},
-                                              mICmHomeContract.getIdColumnName() + " = ?",
-                                              new String[]{Integer.toString(getId())},
+                                              null,
+                                              null,
                                               null);
         int cursorCount = cursor.getCount();
         cursor.close();

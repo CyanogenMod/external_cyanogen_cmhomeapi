@@ -4,15 +4,11 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper;
 
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.DATA_CARD_IMAGE_TABLE_NAME;
@@ -22,9 +18,6 @@ public class CmHomeContentProvider extends ContentProvider {
     CmHomeDatabaseHelper mCmHomeDatabaseHelper;
 
     private static final String TAG                   = "CmHomeContentProvider";
-    private static final String CM_HOME_PROVIDER_NAME =
-            "org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider";
-    private static final String API_EXAMPLE_AUTHORITY = "org.cyanogenmod.launcher.home.api";
     private static final int    DATA_CARD_LIST        = 1;
     private static final int    DATA_CARD_ITEM        = 2;
     private static final int    DATA_CARD_IMAGE_LIST  = 3;
