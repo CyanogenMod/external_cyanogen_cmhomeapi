@@ -235,12 +235,22 @@ public class DataCard extends PublishableCard {
         ContentValues values = new ContentValues();
 
         values.put(CmHomeContract.DataCard.SUBJECT_COL, getSubject());
-        values.put(CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL,
-                   getContentCreatedDate().getTime());
-        values.put(CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL,
-                   getContentSourceImageUri().toString());
-        values.put(CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL,
-                   getAvatarImageUri().toString());
+
+        if (getContentCreatedDate() != null) {
+            values.put(CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL,
+                       getContentCreatedDate().getTime());
+        }
+
+        if (getContentSourceImageUri() != null) {
+            values.put(CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL,
+                       getContentSourceImageUri().toString());
+        }
+
+        if (getAvatarImageUri() != null) {
+            values.put(CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL,
+                       getAvatarImageUri().toString());
+        }
+
         values.put(CmHomeContract.DataCard.TITLE_TEXT_COL,
                    getTitle());
         values.put(CmHomeContract.DataCard.SMALL_TEXT_COL,
@@ -249,14 +259,22 @@ public class DataCard extends PublishableCard {
                    getBodyText());
         values.put(CmHomeContract.DataCard.ACTION_1_TEXT_COL,
                    getAction1Text());
-        values.put(CmHomeContract.DataCard.ACTION_1_URI_COL,
-                   getAction1Uri().toString());
+
+        if (getAction1Uri() != null) {
+            values.put(CmHomeContract.DataCard.ACTION_1_URI_COL,
+                       getAction1Uri().toString());
+        }
+
         values.put(CmHomeContract.DataCard.ACTION_2_TEXT_COL,
                    getAction2Text());
-        values.put(CmHomeContract.DataCard.ACTION_2_URI_COL,
-                   getAction2Uri().toString());
+
+        if (getAction2Uri() != null) {
+            values.put(CmHomeContract.DataCard.ACTION_2_URI_COL,
+                       getAction2Uri().toString());
+        }
+
         values.put(CmHomeContract.DataCard.PRIORITY_COL,
-                   getAction2Uri().toString());
+                   getPriority());
 
         return values;
     }

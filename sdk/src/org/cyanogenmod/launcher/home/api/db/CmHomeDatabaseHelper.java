@@ -16,7 +16,7 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
     public static final String DATA_CARD_TABLE_NAME    = "DataCard";
     private static final String DATA_CARD_TABLE_CREATE =
             "CREATE TABLE " + DATA_CARD_TABLE_NAME +
-            "(" + CmHomeContract.DataCard._ID + " INTEGER PRIMARY KEY," +
+            "(" + CmHomeContract.DataCard._ID + " INTEGER PRIMARY KEY NOT NULL," +
             CmHomeContract.DataCard.SUBJECT_COL + " TEXT NOT NULL," +
             CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL + " TEXT NOT NULL," +
             CmHomeContract.DataCard.DATE_CREATED_COL + " TEXT DEFAULT CURRENT_TIMESTAMP " +
@@ -26,13 +26,13 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
             CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.TITLE_TEXT_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.SMALL_TEXT_COL + " TEXT DEFAULT NULL" +
-            CmHomeContract.DataCard.BODY_TEXT_COL + " TEXT DEFAULT NULL" +
-            CmHomeContract.DataCard.ACTION_1_TEXT_COL + " TEXT DEFAULT NULL" +
+            CmHomeContract.DataCard.SMALL_TEXT_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.DataCard.BODY_TEXT_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.DataCard.ACTION_1_TEXT_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.ACTION_1_URI_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.ACTION_2_TEXT_COL + " TEXT DEFAULT NULL" +
+            CmHomeContract.DataCard.ACTION_2_TEXT_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.ACTION_2_URI_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.PRIORITY_COL + " INTEGER DEFAULT NULL;";
+            CmHomeContract.DataCard.PRIORITY_COL + " INTEGER DEFAULT NULL);";
 
     private static final String DATA_CARD_UPDATE_TIME_TRIGGER =
             "CREATE TRIGGER data_card_update_time_trigger " +
@@ -45,7 +45,7 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATA_CARD_IMAGE_TABLE_NAME   = "DataCardImage";
     private static final String DATA_CARD_IMAGE_TABLE_CREATE =
-            "CREATE TABLE " + DATA_CARD_TABLE_NAME +
+            "CREATE TABLE " + DATA_CARD_IMAGE_TABLE_NAME +
             "(_id INTEGER PRIMARY KEY," +
             "data_card_id INTEGER NOT NULL," +
             "image_uri TEXT NOT NULL," +

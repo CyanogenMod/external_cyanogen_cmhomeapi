@@ -45,7 +45,10 @@ public class DataCardImage extends PublishableCard {
         ContentValues values = new ContentValues();
 
         values.put(CmHomeContract.DataCardImage.DATA_CARD_ID_COL, getDataCardId());
-        values.put(CmHomeContract.DataCardImage.IMAGE_URI_COL, getImageUri().toString());
+
+        if (getImageUri() != null) {
+            values.put(CmHomeContract.DataCardImage.IMAGE_URI_COL, getImageUri().toString());
+        }
 
         return values;
     }
