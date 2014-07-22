@@ -3,25 +3,25 @@ package org.cyanogenmod.launcher.home.api.cards;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
-public class DataCardImage {
-    private int mId;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DataCardImage extends PublishableCard {
+    private final static CmHomeContract.ICmHomeContract sContract
+            = new CmHomeContract.DataCardImage();
     private int mDataCardId;
     private Uri mImageUri;
 
     public DataCardImage(int dataCardId, Uri imageUri) {
+        super(sContract);
+
         mDataCardId = dataCardId;
         mImageUri = imageUri;
-    }
-
-    private void setId(int id) {
-        mId = id;
-    }
-
-    public int getId() {
-        return mId;
     }
 
     public int getDataCardId() {
@@ -40,14 +40,64 @@ public class DataCardImage {
         mImageUri = imageUri;
     }
 
-    public void publish(Context context) {
-        ContentResolver contentResolver  = context.getContentResolver();
+    @Override
+    protected ContentValues getContentValues() {
         ContentValues values = new ContentValues();
+
         values.put(CmHomeContract.DataCardImage.DATA_CARD_ID_COL, getDataCardId());
-        values.put(CmHomeContract.DataCardImage.IMAGE_URI_COL,
-                   getImageUri().toString());
-        Uri result = contentResolver.insert(CmHomeContract.DataCardImage.CONTENT_URI, values);
-        // Store the resulting ID
-        setId(Integer.parseInt(result.getLastPathSegment()));
+        values.put(CmHomeContract.DataCardImage.IMAGE_URI_COL, getImageUri().toString());
+
+        return values;
+    }
+
+    public static List<DataCardImage> getAllPublishedDataCardImages(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor cursor = contentResolver.query(CmHomeContract.DataCardImage.CONTENT_URI,
+                                              CmHomeContract.DataCardImage.PROJECTION_ALL,
+                                              null,
+                                              null,
+                                              null);
+
+        List<DataCardImage> allImages = new ArrayList<DataCardImage>();
+        while (cursor.moveToNext()) {
+            int dataCardId = cursor.getInt(
+                    cursor.getColumnIndex(CmHomeContract.DataCardImage.DATA_CARD_ID_COL));
+            String imageUriString = cursor.getString(
+                    cursor.getColumnIndex(CmHomeContract.DataCardImage.IMAGE_URI_COL));
+            int imageId = cursor.getInt(cursor.getColumnIndex(CmHomeContract.DataCardImage._ID));
+
+            if (!TextUtils.isEmpty(imageUriString)) {
+                DataCardImage image = new DataCardImage(dataCardId, Uri.parse(imageUriString));
+                image.setId(imageId);
+                allImages.add(image);
+            }
+        }
+        cursor.close();
+        return allImages;
+    }
+
+    public static List<DataCardImage> getPublishedDataCardImagesForDataCardId(Context context,
+                                                                              int dataCardId) {
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor cursor = contentResolver.query(CmHomeContract.DataCardImage.CONTENT_URI,
+                                          CmHomeContract.DataCardImage.PROJECTION_ALL,
+                                          CmHomeContract.DataCardImage.DATA_CARD_ID_COL + " = ?",
+                                          new String[]{Integer.toString(dataCardId)},
+                                          null);
+
+        List<DataCardImage> allImages = new ArrayList<DataCardImage>();
+        while (cursor.moveToNext()) {
+            String imageUriString = cursor.getString(
+                    cursor.getColumnIndex(CmHomeContract.DataCardImage.IMAGE_URI_COL));
+            int imageId = cursor.getInt(cursor.getColumnIndex(CmHomeContract.DataCardImage._ID));
+
+            if (!TextUtils.isEmpty(imageUriString)) {
+                DataCardImage image = new DataCardImage(dataCardId, Uri.parse(imageUriString));
+                image.setId(imageId);
+                allImages.add(image);
+            }
+        }
+        cursor.close();
+        return allImages;
     }
 }
