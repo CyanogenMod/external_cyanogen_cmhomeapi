@@ -4,11 +4,15 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper;
 
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.DATA_CARD_IMAGE_TABLE_NAME;
@@ -17,11 +21,15 @@ import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.DATA_CAR
 public class CmHomeContentProvider extends ContentProvider {
     CmHomeDatabaseHelper mCmHomeDatabaseHelper;
 
-    private static final int DATA_CARD_LIST = 1;
-    private static final int DATA_CARD_ITEM = 2;
-    private static final int DATA_CARD_IMAGE_LIST = 3;
-    private static final int DATA_CARD_IMAGE_ITEM = 4;
-    private static final UriMatcher URI_MATCHER;
+    private static final String TAG                   = "CmHomeContentProvider";
+    private static final String CM_HOME_PROVIDER_NAME =
+            "org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider";
+    private static final String API_EXAMPLE_AUTHORITY = "org.cyanogenmod.launcher.home.api";
+    private static final int    DATA_CARD_LIST        = 1;
+    private static final int    DATA_CARD_ITEM        = 2;
+    private static final int    DATA_CARD_IMAGE_LIST  = 3;
+    private static final int    DATA_CARD_IMAGE_ITEM  = 4;
+    private static UriMatcher URI_MATCHER;
 
     static {
         URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
@@ -41,8 +49,35 @@ public class CmHomeContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        setAuthority();
         mCmHomeDatabaseHelper = new CmHomeDatabaseHelper(getContext());
         return true;
+    }
+
+    /**
+     * The authority of the ContentProvider must be unique across all apps that implement this
+     * API protocol. To resolve this, dynamically set the authority to be unique for this package
+     * name.
+     */
+    private void setAuthority() {
+        String providerAuthority = getContext().getPackageName() + ".cmhomeapi";
+
+        CmHomeContract.setAuthority(providerAuthority);
+
+        // Reset the UriMatcher for the new Authority
+        URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+        URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
+                           "datacard",
+                           DATA_CARD_LIST);
+        URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
+                           "datacard/#",
+                           DATA_CARD_ITEM);
+        URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
+                           "datacardimage",
+                           DATA_CARD_IMAGE_LIST);
+        URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
+                           "datacardimage/#",
+                           DATA_CARD_IMAGE_ITEM);
     }
 
     @Override

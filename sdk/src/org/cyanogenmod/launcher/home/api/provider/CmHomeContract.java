@@ -5,10 +5,10 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class CmHomeContract {
-    public static final String AUTHORITY =
+    public static String AUTHORITY =
             "org.cyanogenmod.launcher.home.api";
 
-    public static final Uri CONTENT_URI =
+    public static Uri CONTENT_URI =
             Uri.parse("content://" + AUTHORITY);
 
     public static final class DataCard implements BaseColumns, ICmHomeContract {
@@ -27,7 +27,7 @@ public class CmHomeContract {
         public static final String ACTION_2_URI_COL = "action_2_uri";
         public static final String PRIORITY_COL = "priority";
 
-        public static final Uri CONTENT_URI =
+        public static Uri CONTENT_URI =
                 Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacard");
 
         public static final String CONTENT_TYPE =
@@ -62,7 +62,7 @@ public class CmHomeContract {
         public static final String DATA_CARD_ID_COL = "data_card_id";
         public static final String IMAGE_URI_COL = "image_uri";
 
-        public static final Uri CONTENT_URI =
+        public static Uri CONTENT_URI =
                 Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacardimage");
 
         public static final String CONTENT_TYPE =
@@ -88,6 +88,14 @@ public class CmHomeContract {
         public String getIdColumnName() {
             return _ID;
         }
+    }
+
+    public static void setAuthority(String authority) {
+        AUTHORITY = authority;
+        CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+        DataCard.CONTENT_URI = Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacard");
+        DataCardImage.CONTENT_URI =
+                Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacardimage");
     }
 
     public interface ICmHomeContract {
