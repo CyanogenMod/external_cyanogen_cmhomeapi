@@ -3,12 +3,14 @@ package org.cyanogenmod.launcher.home.api.cards;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +30,7 @@ public class DataCard extends PublishableCard {
     private String mTitle;
     private String mSmallText;
     private String mBodyText;
+    private Intent mCardClickIntent;
     private String mAction1Text;
     private Uri    mAction1Uri;
     private String mAction2Text;
@@ -40,6 +43,7 @@ public class DataCard extends PublishableCard {
         LOW(2);
 
         private final int mValue;
+
         private Priority(int value) {
             mValue = value;
         }
@@ -49,7 +53,7 @@ public class DataCard extends PublishableCard {
         }
 
         public static Priority getModeForValue(int value) {
-            switch(value) {
+            switch (value) {
                 case 0:
                     return HIGH;
                 case 1:
@@ -170,6 +174,14 @@ public class DataCard extends PublishableCard {
 
     public void setBodyText(String bodyText) {
         this.mBodyText = bodyText;
+    }
+
+    public Intent getCardClickIntent() {
+        return mCardClickIntent;
+    }
+
+    public void setCardClickIntent(Intent cardClickIntent) {
+        mCardClickIntent = cardClickIntent;
     }
 
     public String getAction1Text() {
@@ -320,6 +332,11 @@ public class DataCard extends PublishableCard {
         values.put(CmHomeContract.DataCard.PRIORITY_COL,
                    getPriorityAsInt());
 
+        if (getCardClickIntent() != null) {
+            values.put(CmHomeContract.DataCard.CARD_CLICK_URI_COL,
+                       getCardClickIntent().toUri(Intent.URI_INTENT_SCHEME).toString());
+        }
+
         return values;
     }
 
@@ -377,6 +394,18 @@ public class DataCard extends PublishableCard {
         dataCard.setAction1Text(
                 cursor.getString(cursor.getColumnIndex(
                         CmHomeContract.DataCard.ACTION_1_TEXT_COL)));
+
+        String clickActionUriString = cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.DataCard.CARD_CLICK_URI_COL));
+        if (!TextUtils.isEmpty(clickActionUriString)) {
+            try {
+                Intent cardClickIntent = Intent.parseUri(clickActionUriString,
+                                                         Intent.URI_INTENT_SCHEME);
+                dataCard.setCardClickIntent(cardClickIntent);
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Unable to parse uri to Intent: " + clickActionUriString);
+            }
+        }
 
         String action1UriString = cursor.getString(
                 cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_1_TEXT_COL));

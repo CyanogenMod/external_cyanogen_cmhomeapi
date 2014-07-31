@@ -22,6 +22,7 @@ public class CmHomeContract {
         public static final String TITLE_TEXT_COL = "title_text";
         public static final String SMALL_TEXT_COL = "small_text";
         public static final String BODY_TEXT_COL = "body_text";
+        public static final String CARD_CLICK_URI_COL = "card_click_uri";
         public static final String ACTION_1_TEXT_COL = "action_1_text";
         public static final String ACTION_1_URI_COL = "action_1_uri";
         public static final String ACTION_2_TEXT_COL = "action_2_text";
@@ -47,8 +48,9 @@ public class CmHomeContract {
         public static final String[] PROJECTION_ALL =
                 {_ID, INTERNAL_ID_COL, REASON_COL, DATE_CONTENT_CREATED_COL, DATE_CREATED_COL,
                  LAST_MODIFIED_COL, CONTENT_SOURCE_IMAGE_URI_COL, AVATAR_IMAGE_URI_COL,
-                 TITLE_TEXT_COL, SMALL_TEXT_COL, BODY_TEXT_COL, ACTION_1_TEXT_COL,
-                 ACTION_1_URI_COL, ACTION_2_TEXT_COL, ACTION_2_URI_COL, PRIORITY_COL};
+                 TITLE_TEXT_COL, SMALL_TEXT_COL, BODY_TEXT_COL, CARD_CLICK_URI_COL,
+                 ACTION_1_TEXT_COL, ACTION_1_URI_COL, ACTION_2_TEXT_COL, ACTION_2_URI_COL,
+                 PRIORITY_COL};
 
         public static final String SORT_ORDER_DEFAULT =
                 PRIORITY_COL + " ASC";
