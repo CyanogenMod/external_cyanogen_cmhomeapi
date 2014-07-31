@@ -19,7 +19,7 @@ public class DataCard extends PublishableCard {
             new CmHomeContract.DataCard();
 
     private String mInternalId;
-    private String mSubject;
+    private String mReasonText;
     private Date   mContentCreatedDate;
     private Date   mCreatedDate;
     private Date   mLastModifiedDate;
@@ -68,11 +68,11 @@ public class DataCard extends PublishableCard {
         super(sContract);
     }
 
-    public DataCard(String subject, Date contentCreatedDate) {
+    public DataCard(String title, Date contentCreatedDate) {
         super(sContract);
 
-        mSubject = subject;
-        mContentCreatedDate = contentCreatedDate;
+        setTitle(title);
+        setContentCreatedDate(contentCreatedDate);
     }
 
     public void addDataCardImage(Uri uri) {
@@ -112,12 +112,12 @@ public class DataCard extends PublishableCard {
         return mCreatedDate;
     }
 
-    public String getSubject() {
-        return mSubject;
+    public String getReasonText() {
+        return mReasonText;
     }
 
-    public void setSubject(String subject) {
-        this.mSubject = subject;
+    public void setReasonText(String reason) {
+        this.mReasonText = reason;
     }
 
     public Date getContentCreatedDate() {
@@ -278,7 +278,7 @@ public class DataCard extends PublishableCard {
         ContentValues values = new ContentValues();
 
         values.put(CmHomeContract.DataCard.INTERNAL_ID_COL, getInternalId());
-        values.put(CmHomeContract.DataCard.SUBJECT_COL, getSubject());
+        values.put(CmHomeContract.DataCard.REASON_COL, getReasonText());
 
         if (getContentCreatedDate() != null) {
             values.put(CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL,
@@ -350,8 +350,8 @@ public class DataCard extends PublishableCard {
         long contentCreatedTime = cursor.getLong(
                 cursor.getColumnIndex(CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL));
         dataCard.setContentCreatedDate(new Date(contentCreatedTime));
-        dataCard.setSubject(cursor.getString(cursor.getColumnIndex(CmHomeContract.DataCard
-                                                                           .SUBJECT_COL)));
+        dataCard.setReasonText(cursor.getString(cursor.getColumnIndex(CmHomeContract.DataCard
+                                                                           .REASON_COL)));
         String contentSourceUriString =
                 cursor.getString(cursor.getColumnIndex(
                         CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL));

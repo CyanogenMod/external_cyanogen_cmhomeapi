@@ -13,7 +13,7 @@ public class CmHomeContract {
 
     public static final class DataCard implements BaseColumns, ICmHomeContract {
         public static final String INTERNAL_ID_COL = "internal_id";
-        public static final String SUBJECT_COL = "subject";
+        public static final String REASON_COL = "reason_text";
         public static final String DATE_CONTENT_CREATED_COL = "date_content_created";
         public static final String DATE_CREATED_COL = "date_created";
         public static final String LAST_MODIFIED_COL = "last_modified";
@@ -45,7 +45,7 @@ public class CmHomeContract {
                 "/org.cyanogenmod.home.api.datacard";
 
         public static final String[] PROJECTION_ALL =
-                {_ID, INTERNAL_ID_COL, SUBJECT_COL, DATE_CONTENT_CREATED_COL, DATE_CREATED_COL,
+                {_ID, INTERNAL_ID_COL, REASON_COL, DATE_CONTENT_CREATED_COL, DATE_CREATED_COL,
                  LAST_MODIFIED_COL, CONTENT_SOURCE_IMAGE_URI_COL, AVATAR_IMAGE_URI_COL,
                  TITLE_TEXT_COL, SMALL_TEXT_COL, BODY_TEXT_COL, ACTION_1_TEXT_COL,
                  ACTION_1_URI_COL, ACTION_2_TEXT_COL, ACTION_2_URI_COL, PRIORITY_COL};

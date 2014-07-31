@@ -18,7 +18,7 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + DATA_CARD_TABLE_NAME +
             "(" + CmHomeContract.DataCard._ID + " INTEGER PRIMARY KEY NOT NULL," +
             CmHomeContract.DataCard.INTERNAL_ID_COL + " TEXT NOT NULL," +
-            CmHomeContract.DataCard.SUBJECT_COL + " TEXT NOT NULL," +
+            CmHomeContract.DataCard.REASON_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL + " TEXT NOT NULL," +
             CmHomeContract.DataCard.DATE_CREATED_COL + " TEXT DEFAULT CURRENT_TIMESTAMP " +
             "NOT NULL," +
@@ -26,7 +26,7 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
             "NOT NULL," +
             CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.TITLE_TEXT_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.DataCard.TITLE_TEXT_COL + " TEXT NOT NULL," +
             CmHomeContract.DataCard.SMALL_TEXT_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.BODY_TEXT_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.ACTION_1_TEXT_COL + " TEXT DEFAULT NULL," +
