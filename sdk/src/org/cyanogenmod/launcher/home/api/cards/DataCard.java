@@ -14,9 +14,6 @@ import java.util.Date;
 import java.util.List;
 
 public class DataCard extends PublishableCard {
-    private static final int PRIORITY_HIGH = 1;
-    private static final int PRIORITY_MID  = 2;
-    private static final int PRIORITY_LOW  = 3;
     private static final String TAG = "DataCard";
     private static final CmHomeContract.ICmHomeContract sContract =
             new CmHomeContract.DataCard();
@@ -35,7 +32,35 @@ public class DataCard extends PublishableCard {
     private Uri    mAction1Uri;
     private String mAction2Text;
     private Uri    mAction2Uri;
-    private int mPriority = 3;
+    private Priority mPriority = Priority.MID;
+
+    public enum Priority {
+        HIGH(0),
+        MID(1),
+        LOW(2);
+
+        private final int mValue;
+        private Priority(int value) {
+            mValue = value;
+        }
+
+        public int getValue() {
+            return mValue;
+        }
+
+        public static Priority getModeForValue(int value) {
+            switch(value) {
+                case 0:
+                    return HIGH;
+                case 1:
+                    return MID;
+                case 2:
+                    return LOW;
+                default:
+                    return MID;
+            }
+        }
+    }
 
     private List<DataCardImage> mImages = new ArrayList<DataCardImage>();
 
@@ -179,11 +204,19 @@ public class DataCard extends PublishableCard {
         this.mAction2Uri = action2Uri;
     }
 
-    public int getPriority() {
+    public Priority getPriority() {
         return mPriority;
     }
 
-    public void setPriority(int priority) {
+    private int getPriorityAsInt() {
+        return mPriority.getValue();
+    }
+
+    private void setPriority(int value) {
+        mPriority = Priority.getModeForValue(value);
+    }
+
+    public void setPriority(Priority priority) {
         this.mPriority = priority;
     }
 
@@ -285,7 +318,7 @@ public class DataCard extends PublishableCard {
         }
 
         values.put(CmHomeContract.DataCard.PRIORITY_COL,
-                   getPriority());
+                   getPriorityAsInt());
 
         return values;
     }
