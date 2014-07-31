@@ -32,9 +32,9 @@ public class DataCard extends PublishableCard {
     private String mBodyText;
     private Intent mCardClickIntent;
     private String mAction1Text;
-    private Uri    mAction1Uri;
+    private Intent mAction1Intent;
     private String mAction2Text;
-    private Uri    mAction2Uri;
+    private Intent mAction2Intent;
     private Priority mPriority = Priority.MID;
 
     public enum Priority {
@@ -192,12 +192,12 @@ public class DataCard extends PublishableCard {
         this.mAction1Text = action1Text;
     }
 
-    public Uri getAction1Uri() {
-        return mAction1Uri;
+    public Intent getAction1Intent() {
+        return mAction1Intent;
     }
 
-    public void setAction1Uri(Uri action1Uri) {
-        this.mAction1Uri = action1Uri;
+    public void setAction1Intent(Intent action1Intent) {
+        this.mAction1Intent = action1Intent;
     }
 
     public String getAction2Text() {
@@ -208,12 +208,12 @@ public class DataCard extends PublishableCard {
         this.mAction2Text = action2Text;
     }
 
-    public Uri getAction2Uri() {
-        return mAction2Uri;
+    public Intent getAction2Intent() {
+        return mAction2Intent;
     }
 
-    public void setAction2Uri(Uri action2Uri) {
-        this.mAction2Uri = action2Uri;
+    public void setAction2Intent(Intent action2Intent) {
+        this.mAction2Intent = action2Intent;
     }
 
     public Priority getPriority() {
@@ -316,17 +316,17 @@ public class DataCard extends PublishableCard {
         values.put(CmHomeContract.DataCard.ACTION_1_TEXT_COL,
                    getAction1Text());
 
-        if (getAction1Uri() != null) {
+        if (getAction1Intent() != null) {
             values.put(CmHomeContract.DataCard.ACTION_1_URI_COL,
-                       getAction1Uri().toString());
+                       getAction1Intent().toUri(Intent.URI_INTENT_SCHEME).toString());
         }
 
         values.put(CmHomeContract.DataCard.ACTION_2_TEXT_COL,
                    getAction2Text());
 
-        if (getAction2Uri() != null) {
+        if (getAction2Intent() != null) {
             values.put(CmHomeContract.DataCard.ACTION_2_URI_COL,
-                       getAction2Uri().toString());
+                       getAction2Intent().toUri(Intent.URI_INTENT_SCHEME).toString());
         }
 
         values.put(CmHomeContract.DataCard.PRIORITY_COL,
@@ -408,9 +408,14 @@ public class DataCard extends PublishableCard {
         }
 
         String action1UriString = cursor.getString(
-                cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_1_TEXT_COL));
+                cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_1_URI_COL));
         if (!TextUtils.isEmpty(action1UriString)) {
-            dataCard.setAction1Uri(Uri.parse(action1UriString));
+            try {
+                dataCard.setAction1Intent(Intent.parseUri(action1UriString,
+                                                          Intent.URI_INTENT_SCHEME));
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Unable to parse uri to Intent: " + action1UriString);
+            }
         }
 
         dataCard.setAction2Text(cursor.getString(
@@ -419,7 +424,12 @@ public class DataCard extends PublishableCard {
         String action2UriString = cursor.getString(
                 cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_2_URI_COL));
         if (!TextUtils.isEmpty(action2UriString)) {
-            dataCard.setAction2Uri(Uri.parse(action2UriString));
+            try {
+                dataCard.setAction2Intent(Intent.parseUri(action2UriString,
+                                                          Intent.URI_INTENT_SCHEME));
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Unable to parse uri to Intent: " + action2UriString);
+            }
         }
 
         int priority = cursor.getInt(cursor.getColumnIndex(CmHomeContract.DataCard
