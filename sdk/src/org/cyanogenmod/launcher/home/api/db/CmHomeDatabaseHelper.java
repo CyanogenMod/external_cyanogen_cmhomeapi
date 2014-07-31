@@ -49,8 +49,9 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + DATA_CARD_IMAGE_TABLE_NAME +
             "(" + CmHomeContract.DataCardImage._ID + " INTEGER PRIMARY KEY," +
             CmHomeContract.DataCardImage.DATA_CARD_ID_COL + " INTEGER NOT NULL," +
-            CmHomeContract.DataCardImage.INTERNAL_ID_COL + " TEXT NOT NULL," +
+            CmHomeContract.DataCardImage.INTERNAL_ID_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCardImage.IMAGE_URI_COL + " TEXT NOT NULL," +
+            CmHomeContract.DataCardImage.IMAGE_LABEL_COL + " TEXT DEFAULT NULL," +
             "FOREIGN KEY(" + CmHomeContract.DataCardImage.DATA_CARD_ID_COL  + ") REFERENCES " +
             DATA_CARD_TABLE_NAME + "(" + CmHomeContract.DataCard._ID  + "));";
 

@@ -68,6 +68,7 @@ public class CmHomeContract {
         public static final String INTERNAL_ID_COL = "internal_id";
         public static final String DATA_CARD_ID_COL = "data_card_id";
         public static final String IMAGE_URI_COL = "image_uri";
+        public static final String IMAGE_LABEL_COL = "image_label";
 
         public static Uri CONTENT_URI =
                 Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacardimage");
@@ -86,7 +87,7 @@ public class CmHomeContract {
                 "/org.cyanogenmod.home.api.datacardimage";
 
         public static final String[] PROJECTION_ALL =
-                {_ID, INTERNAL_ID_COL, DATA_CARD_ID_COL, IMAGE_URI_COL};
+                {_ID, INTERNAL_ID_COL, DATA_CARD_ID_COL, IMAGE_URI_COL, IMAGE_LABEL_COL};
 
         public static final String SORT_ORDER_DEFAULT =
                 DATA_CARD_ID_COL + " ASC";

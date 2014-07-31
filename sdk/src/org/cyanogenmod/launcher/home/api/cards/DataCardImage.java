@@ -19,6 +19,7 @@ public class DataCardImage extends PublishableCard {
     private long mDataCardId;
     private Uri mImageUri;
     private String mInternalId;
+    private String mImageLabel;
 
     public DataCardImage(long dataCardId, Uri imageUri) {
         super(sContract);
@@ -51,12 +52,21 @@ public class DataCardImage extends PublishableCard {
         mImageUri = imageUri;
     }
 
+    public void setImageLabel(String imageLabel) {
+        mImageLabel = imageLabel;
+    }
+
+    public String getImageLabel() {
+        return mImageLabel;
+    }
+
     @Override
     protected ContentValues getContentValues() {
         ContentValues values = new ContentValues();
 
         values.put(CmHomeContract.DataCardImage.INTERNAL_ID_COL, getInternalId());
         values.put(CmHomeContract.DataCardImage.DATA_CARD_ID_COL, getDataCardId());
+        values.put(CmHomeContract.DataCardImage.IMAGE_LABEL_COL, getImageLabel());
 
         if (getImageUri() != null) {
             values.put(CmHomeContract.DataCardImage.IMAGE_URI_COL, getImageUri().toString());
@@ -80,7 +90,12 @@ public class DataCardImage extends PublishableCard {
                        " " + CmHomeContract.DataCardImage.CONTENT_URI, e);
         }
 
+        List<DataCardImage> allImages = getAllDataCardImagesFromCursor(cursor);
+        cursor.close();
+        return allImages;
+    }
 
+    private static List<DataCardImage> getAllDataCardImagesFromCursor(Cursor cursor) {
         List<DataCardImage> allImages = new ArrayList<DataCardImage>();
 
         if (cursor != null) {
@@ -93,15 +108,17 @@ public class DataCardImage extends PublishableCard {
                         .getInt(cursor.getColumnIndex(CmHomeContract.DataCardImage._ID));
                 String internalId = cursor.getString(
                         cursor.getColumnIndex(CmHomeContract.DataCardImage.INTERNAL_ID_COL));
+                String imageLabel = cursor.getString(
+                        cursor.getColumnIndex(CmHomeContract.DataCardImage.IMAGE_LABEL_COL));
 
                 if (!TextUtils.isEmpty(imageUriString)) {
                     DataCardImage image = new DataCardImage(dataCardId, Uri.parse(imageUriString));
                     image.setId(imageId);
                     image.setInternalId(internalId);
+                    image.setImageLabel(imageLabel);
                     allImages.add(image);
                 }
             }
-            cursor.close();
         }
         return allImages;
     }
@@ -130,26 +147,8 @@ public class DataCardImage extends PublishableCard {
                        " " + contentUri, e);
         }
 
-        List<DataCardImage> allImages = new ArrayList<DataCardImage>();
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String imageUriString = cursor.getString(
-                        cursor.getColumnIndex(CmHomeContract.DataCardImage.IMAGE_URI_COL));
-                int imageId = cursor
-                        .getInt(cursor.getColumnIndex(CmHomeContract.DataCardImage._ID));
-                String internalId = cursor.getString(
-                        cursor.getColumnIndex(CmHomeContract.DataCardImage.INTERNAL_ID_COL));
-
-                if (!TextUtils.isEmpty(imageUriString)) {
-                    DataCardImage image = new DataCardImage(dataCardId, Uri.parse(imageUriString));
-                    image.setId(imageId);
-                    image.setInternalId(internalId);
-                    allImages.add(image);
-                }
-            }
-            cursor.close();
-        }
+        List<DataCardImage> allImages = getAllDataCardImagesFromCursor(cursor);
+        cursor.close();
         return allImages;
     }
 }
