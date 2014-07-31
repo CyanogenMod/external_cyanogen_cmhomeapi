@@ -11,10 +11,10 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
-        applicationId "org.cyanogenmod.launcher.home"
+        applicationId "org.cyanogenmod.launcher.home.api"
         minSdkVersion 19
         targetSdkVersion 19
         versionCode 1
@@ -29,5 +29,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('src/main/libs/cmhome-sdk.jar')
 }

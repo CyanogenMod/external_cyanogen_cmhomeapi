@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper;
 
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.DATA_CARD_IMAGE_TABLE_NAME;
@@ -27,16 +28,16 @@ public class CmHomeContentProvider extends ContentProvider {
     static {
         URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
-                           "datacard",
+                           CmHomeContract.DataCard.LIST_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_LIST);
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
-                           "datacard/#",
+                           CmHomeContract.DataCard.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_ITEM);
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
-                           "datacardimage",
+                           CmHomeContract.DataCardImage.LIST_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_IMAGE_LIST);
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
-                           "datacardimage/#",
+                           CmHomeContract.DataCardImage.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_IMAGE_ITEM);
     }
 
@@ -60,16 +61,16 @@ public class CmHomeContentProvider extends ContentProvider {
         // Reset the UriMatcher for the new Authority
         URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
-                           "datacard",
+                           CmHomeContract.DataCard.LIST_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_LIST);
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
-                           "datacard/#",
+                           CmHomeContract.DataCard.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_ITEM);
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
-                           "datacardimage",
+                           CmHomeContract.DataCardImage.LIST_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_IMAGE_LIST);
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
-                           "datacardimage/#",
+                           CmHomeContract.DataCardImage.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_IMAGE_ITEM);
     }
 
@@ -95,7 +96,7 @@ public class CmHomeContentProvider extends ContentProvider {
             case DATA_CARD_IMAGE_LIST:
                 queryBuilder.setTables(DATA_CARD_IMAGE_TABLE_NAME);
                 if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = CmHomeContract.DataCard.SORT_ORDER_DEFAULT;
+                    sortOrder = CmHomeContract.DataCardImage.SORT_ORDER_DEFAULT;
                 }
                 break;
             case DATA_CARD_IMAGE_ITEM:
@@ -203,6 +204,7 @@ public class CmHomeContentProvider extends ContentProvider {
         SQLiteDatabase db = mCmHomeDatabaseHelper.getWritableDatabase();
         int deleteCount = 0;
         int uriMatch = URI_MATCHER.match(uri);
+        String idStr = uri.getLastPathSegment();
 
         switch (uriMatch) {
             case DATA_CARD_LIST:
@@ -211,7 +213,6 @@ public class CmHomeContentProvider extends ContentProvider {
                                             selectionArgs);
                 break;
             case DATA_CARD_ITEM:
-                String idStr = uri.getLastPathSegment();
                 String where = CmHomeContract.DataCard._ID + " = " + idStr;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
@@ -226,7 +227,6 @@ public class CmHomeContentProvider extends ContentProvider {
                                         selectionArgs);
                 break;
             case DATA_CARD_IMAGE_ITEM:
-                idStr = uri.getLastPathSegment();
                 where = CmHomeContract.DataCardImage._ID + " = " + idStr;
                 if (!TextUtils.isEmpty(selection)) {
                     where += " AND " + selection;
@@ -239,7 +239,20 @@ public class CmHomeContentProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unsupported URI for update: " + uri);
         }
 
-        if (deleteCount > 0) {
+        if (deleteCount == 1) {
+            if(uriMatch == DATA_CARD_ITEM) {
+                // Notifies for a delete
+                getUriForId(Long.parseLong(idStr),
+                            Uri.withAppendedPath(CmHomeContract.CONTENT_URI,
+                                    CmHomeContract.DataCard.SINGLE_ROW_DELETE_URI_PATH));
+            }
+            if(uriMatch == DATA_CARD_IMAGE_ITEM) {
+                // Notifies for a delete
+                getUriForId(Long.getLong(idStr),
+                            Uri.withAppendedPath(CmHomeContract.CONTENT_URI,
+                                    CmHomeContract.DataCardImage.SINGLE_ROW_DELETE_URI_PATH));
+            }
+        } else if (deleteCount > 1) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return deleteCount;

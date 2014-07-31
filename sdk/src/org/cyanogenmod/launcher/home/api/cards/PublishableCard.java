@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
 /**
@@ -13,8 +14,10 @@ import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
  * to be displayed to the user.
  */
 public abstract class PublishableCard {
+    private String TAG = "PublishableCard";
     private long mId = -1;
     protected CmHomeContract.ICmHomeContract mICmHomeContract;
+    private String mAuthority;
 
     public PublishableCard(CmHomeContract.ICmHomeContract contract) {
         mICmHomeContract = contract;
@@ -26,6 +29,18 @@ public abstract class PublishableCard {
 
     protected void setId(long id) {
         mId = id;
+    }
+
+    public void setAuthority(String authority) {
+        mAuthority = authority;
+    }
+
+    public String getAuthority() {
+        return mAuthority;
+    }
+
+    public String getGlobalId() {
+        return mAuthority + "/" + mId;
     }
 
     public boolean publish(Context context) {
@@ -42,9 +57,21 @@ public abstract class PublishableCard {
 
             ContentValues values = getContentValues();
 
-            Uri result = contentResolver.insert(mICmHomeContract.getContentUri(), values);
-            // Store the resulting ID
-            setId(Integer.parseInt(result.getLastPathSegment()));
+            Uri result = null;
+            try {
+                result = contentResolver.insert(mICmHomeContract.getContentUri(), values);
+            // Catching all Exceptions, since we can't be sure what the extension will do.
+            } catch (Exception e) {
+                Log.e(TAG,
+                      "Error publishing PublishableCard, ContentProvider threw an exception for " +
+                      "uri:" +
+                      " " + mICmHomeContract.getContentUri(), e);
+            }
+
+            if (result != null) {
+                // Store the resulting ID
+                setId(Integer.parseInt(result.getLastPathSegment()));
+            }
         }
 
         return updated;
@@ -58,12 +85,20 @@ public abstract class PublishableCard {
         }
 
         ContentResolver contentResolver = context.getContentResolver();
-        int rows = contentResolver.update(ContentUris.withAppendedId(
+        int rows = 0;
+        try {
+            rows = contentResolver.update(ContentUris.withAppendedId(
                                                       mICmHomeContract.getContentUri(),
                                                       getId()),
-                                          getContentValues(),
-                                          null,
-                                          null);
+                                              getContentValues(),
+                                              null,
+                                              null);
+        // Catching all Exceptions, since we can't be sure what the extension will do.
+        } catch (Exception e) {
+            Log.e(TAG,
+                  "Error updating PublishableCard, ContentProvider threw an exception for uri:" +
+                  " " + mICmHomeContract.getContentUri(), e);
+        }
 
         // We must have updated at least one row
         return rows > 0;
@@ -75,11 +110,20 @@ public abstract class PublishableCard {
         }
 
         ContentResolver contentResolver = context.getContentResolver();
-        int rows = contentResolver.delete(ContentUris.withAppendedId(
-                                                    mICmHomeContract.getContentUri(),
-                                                    getId()),
-                                          null,
-                                          null);
+        int rows = 0;
+        try {
+            rows = contentResolver.delete(ContentUris.withAppendedId(
+                                                      mICmHomeContract.getContentUri(),
+                                                      getId()),
+                                              null,
+                                              null);
+        // Catching all Exceptions, since we can't be sure what the extension will do.
+        } catch (Exception e) {
+            Log.e(TAG,
+                  "Error unpublishing PublishableCard, ContentProvider threw an exception for " +
+                  "uri:" + mICmHomeContract.getContentUri(), e);
+        }
+
         return rows > 0;
     }
 
@@ -94,15 +138,27 @@ public abstract class PublishableCard {
         }
 
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor cursor = contentResolver.query(ContentUris.withAppendedId(
-                                                  mICmHomeContract.getContentUri(),
-                                                  getId()),
-                                              new String[]{mICmHomeContract.getIdColumnName()},
-                                              null,
-                                              null,
-                                              null);
-        int cursorCount = cursor.getCount();
-        cursor.close();
+        Cursor cursor = null;
+        try {
+            cursor = contentResolver.query(ContentUris.withAppendedId(
+                                                   mICmHomeContract.getContentUri(),
+                                                   getId()),
+                                           new String[]{mICmHomeContract.getIdColumnName()},
+                                           null,
+                                           null,
+                                           null);
+        // Catching all Exceptions, since we can't be sure what the extension will do.
+        } catch (Exception e) {
+            Log.e(TAG,
+                  "Error querying PublishableCard, ContentProvider threw an exception for uri:" +
+                  " " + mICmHomeContract.getContentUri(), e);
+        }
+
+        int cursorCount = 0;
+        if (cursor != null) {
+            cursorCount = cursor.getCount();
+            cursor.close();
+        }
         return cursorCount > 0;
     }
 }

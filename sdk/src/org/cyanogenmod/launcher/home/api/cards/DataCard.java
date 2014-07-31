@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
 import java.util.ArrayList;
@@ -16,9 +17,11 @@ public class DataCard extends PublishableCard {
     private static final int PRIORITY_HIGH = 1;
     private static final int PRIORITY_MID  = 2;
     private static final int PRIORITY_LOW  = 3;
+    private static final String TAG = "DataCard";
     private static final CmHomeContract.ICmHomeContract sContract =
             new CmHomeContract.DataCard();
 
+    private String mInternalId;
     private String mSubject;
     private Date   mContentCreatedDate;
     private Date   mCreatedDate;
@@ -50,6 +53,14 @@ public class DataCard extends PublishableCard {
     public void addDataCardImage(Uri uri) {
         DataCardImage image = new DataCardImage(getId(), uri);
         mImages.add(image);
+    }
+
+    public void setInternalId(String internalId) {
+        mInternalId = internalId;
+    }
+
+    public String getInternalId() {
+        return mInternalId;
     }
 
     private void setCreatedDate(Date date) {
@@ -233,6 +244,7 @@ public class DataCard extends PublishableCard {
     protected ContentValues getContentValues() {
         ContentValues values = new ContentValues();
 
+        values.put(CmHomeContract.DataCard.INTERNAL_ID_COL, getInternalId());
         values.put(CmHomeContract.DataCard.SUBJECT_COL, getSubject());
 
         if (getContentCreatedDate() != null) {
@@ -279,81 +291,119 @@ public class DataCard extends PublishableCard {
     }
 
     public static List<DataCard> getAllPublishedDataCards(Context context) {
-        ContentResolver contentResolver = context.getContentResolver();
-        Cursor cursor = contentResolver.query(CmHomeContract.DataCard.CONTENT_URI,
-                                              CmHomeContract.DataCard.PROJECTION_ALL,
-                                              null,
-                                              null,
-                                              CmHomeContract.DataCard.DATE_CREATED_COL);
+        return getAllPublishedDataCards(context,
+                                        CmHomeContract.DataCard.CONTENT_URI,
+                                        CmHomeContract.DataCardImage.CONTENT_URI);
+    }
 
-        List<DataCard> allCards = new ArrayList<DataCard>();
-        while (cursor.moveToNext()) {
-            DataCard dataCard = new DataCard();
+    public static DataCard createFromCurrentCursorRow(Cursor cursor, String authority) {
+        DataCard card = createFromCurrentCursorRow(cursor);
+        card.setAuthority(authority);
+        return card;
+    }
 
-            dataCard.setId(cursor.getInt(cursor.getColumnIndex(CmHomeContract.DataCard._ID)));
-            long createdTime = cursor.getLong(cursor.getColumnIndex(CmHomeContract.DataCard
-                                                                    .DATE_CREATED_COL));
-            dataCard.setCreatedDate(new Date(createdTime));
-            long modifiedTime = cursor.getLong(cursor.getColumnIndex(CmHomeContract.DataCard
-                                                                     .LAST_MODIFIED_COL));
-            dataCard.setLastModifiedDate(new Date(modifiedTime));
-            long contentCreatedTime = cursor.getLong(
-                    cursor.getColumnIndex(CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL));
-            dataCard.setContentCreatedDate(new Date(contentCreatedTime));
-            dataCard.setSubject(cursor.getString(cursor.getColumnIndex(CmHomeContract.DataCard
-                                                                               .SUBJECT_COL)));
-            String contentSourceUriString =
-                    cursor.getString(cursor.getColumnIndex(
-                            CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL));
+    public static DataCard createFromCurrentCursorRow(Cursor cursor) {
+        DataCard dataCard = new DataCard();
 
-            if (!TextUtils.isEmpty(contentSourceUriString)) {
-                dataCard.setContentSourceImageUri(Uri.parse(contentSourceUriString));
-            }
+        dataCard.setId(cursor.getInt(cursor.getColumnIndex(CmHomeContract.DataCard._ID)));
+        dataCard.setInternalId(cursor.getString(cursor.getColumnIndex(CmHomeContract.DataCard
+                                                                      .INTERNAL_ID_COL)));
+        long createdTime = cursor.getLong(cursor.getColumnIndex(CmHomeContract.DataCard
+                                                                .DATE_CREATED_COL));
+        dataCard.setCreatedDate(new Date(createdTime));
+        long modifiedTime = cursor.getLong(cursor.getColumnIndex(CmHomeContract.DataCard
+                                                                 .LAST_MODIFIED_COL));
+        dataCard.setLastModifiedDate(new Date(modifiedTime));
+        long contentCreatedTime = cursor.getLong(
+                cursor.getColumnIndex(CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL));
+        dataCard.setContentCreatedDate(new Date(contentCreatedTime));
+        dataCard.setSubject(cursor.getString(cursor.getColumnIndex(CmHomeContract.DataCard
+                                                                           .SUBJECT_COL)));
+        String contentSourceUriString =
+                cursor.getString(cursor.getColumnIndex(
+                        CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL));
 
-            String avatarImageUriString =
-                    cursor.getString(cursor.getColumnIndex(
-                            CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL));
-            if (!TextUtils.isEmpty(avatarImageUriString)) {
-                dataCard.setAvatarImageUri(Uri.parse(avatarImageUriString));
-            }
-
-            dataCard.setTitle(cursor.getString(
-                    cursor.getColumnIndex(CmHomeContract.DataCard.TITLE_TEXT_COL)));
-            dataCard.setSmallText(
-                    cursor.getString(cursor.getColumnIndex(
-                            CmHomeContract.DataCard.SMALL_TEXT_COL)));
-            dataCard.setBodyText(cursor.getString(
-                    cursor.getColumnIndex(CmHomeContract.DataCard.BODY_TEXT_COL)));
-            dataCard.setAction1Text(
-                    cursor.getString(cursor.getColumnIndex(
-                            CmHomeContract.DataCard.ACTION_1_TEXT_COL)));
-
-            String action1UriString = cursor.getString(
-                    cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_1_TEXT_COL));
-            if (!TextUtils.isEmpty(action1UriString)) {
-                dataCard.setAction1Uri(Uri.parse(action1UriString));
-            }
-
-            dataCard.setAction2Text(cursor.getString(
-                    cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_2_TEXT_COL)));
-
-            String action2UriString = cursor.getString(
-                    cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_2_URI_COL));
-            if (!TextUtils.isEmpty(action2UriString)) {
-                dataCard.setAction2Uri(Uri.parse(action2UriString));
-            }
-
-            allCards.add(dataCard);
+        if (!TextUtils.isEmpty(contentSourceUriString)) {
+            dataCard.setContentSourceImageUri(Uri.parse(contentSourceUriString));
         }
 
-        cursor.close();
+        String avatarImageUriString =
+                cursor.getString(cursor.getColumnIndex(
+                        CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL));
+        if (!TextUtils.isEmpty(avatarImageUriString)) {
+            dataCard.setAvatarImageUri(Uri.parse(avatarImageUriString));
+        }
+
+        dataCard.setTitle(cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.DataCard.TITLE_TEXT_COL)));
+        dataCard.setSmallText(
+                cursor.getString(cursor.getColumnIndex(
+                        CmHomeContract.DataCard.SMALL_TEXT_COL)));
+        dataCard.setBodyText(cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.DataCard.BODY_TEXT_COL)));
+        dataCard.setAction1Text(
+                cursor.getString(cursor.getColumnIndex(
+                        CmHomeContract.DataCard.ACTION_1_TEXT_COL)));
+
+        String action1UriString = cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_1_TEXT_COL));
+        if (!TextUtils.isEmpty(action1UriString)) {
+            dataCard.setAction1Uri(Uri.parse(action1UriString));
+        }
+
+        dataCard.setAction2Text(cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_2_TEXT_COL)));
+
+        String action2UriString = cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_2_URI_COL));
+        if (!TextUtils.isEmpty(action2UriString)) {
+            dataCard.setAction2Uri(Uri.parse(action2UriString));
+        }
+
+        int priority = cursor.getInt(cursor.getColumnIndex(CmHomeContract.DataCard
+                                                                        .PRIORITY_COL));
+        dataCard.setPriority(priority);
+
+        return dataCard;
+    }
+
+    public static List<DataCard> getAllPublishedDataCards(Context context,
+                                                          Uri dataCardContentUri,
+                                                          Uri dataCardImageContentUri) {
+        ContentResolver contentResolver = context.getContentResolver();
+        List<DataCard> allCards = new ArrayList<DataCard>();
+        Cursor cursor = null;
+        try {
+            cursor = contentResolver.query(dataCardContentUri,
+                                           CmHomeContract.DataCard.PROJECTION_ALL,
+                                           null,
+                                           null,
+                                           CmHomeContract.DataCard.DATE_CREATED_COL);
+        // Catching all Exceptions, since we can't be sure what the extension will do.
+        } catch (Exception e) {
+            Log.e(TAG, "Error querying for DataCards, ContentProvider threw an exception for uri:" +
+                       " " + dataCardContentUri, e);
+        }
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                DataCard dataCard = createFromCurrentCursorRow(cursor,
+                                                               dataCardContentUri.getAuthority());
+                allCards.add(dataCard);
+            }
+
+            cursor.close();
+        }
+
 
         // Retrieve all DataCardImages for each DataCard.
         // Doing this in a separate loop since each iteration
         // will also be querying the ContentProvider.
         for (DataCard card : allCards) {
             List<DataCardImage> images = DataCardImage
-                    .getPublishedDataCardImagesForDataCardId(context, card.getId());
+                    .getPublishedDataCardImagesForDataCardId(context,
+                                                             dataCardImageContentUri,
+                                                             card.getId());
             for (DataCardImage image : images) {
                 card.addDataCardImage(image);
             }

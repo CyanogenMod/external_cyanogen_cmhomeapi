@@ -12,6 +12,7 @@ public class CmHomeContract {
             Uri.parse("content://" + AUTHORITY);
 
     public static final class DataCard implements BaseColumns, ICmHomeContract {
+        public static final String INTERNAL_ID_COL = "internal_id";
         public static final String SUBJECT_COL = "subject";
         public static final String DATE_CONTENT_CREATED_COL = "date_content_created";
         public static final String DATE_CREATED_COL = "date_created";
@@ -30,6 +31,11 @@ public class CmHomeContract {
         public static Uri CONTENT_URI =
                 Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacard");
 
+        public static String LIST_INSERT_UPDATE_URI_PATH = "datacard";
+        public static String SINGLE_ROW_INSERT_UPDATE_URI_PATH = "datacard/#";
+        public static String SINGLE_ROW_DELETE_URI_PATH = "/datacard/delete";
+        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH = "/datacard/delete/#";
+
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE +
                 "/org.cyanogenmod.home.api.datacard";
@@ -39,10 +45,10 @@ public class CmHomeContract {
                 "/org.cyanogenmod.home.api.datacard";
 
         public static final String[] PROJECTION_ALL =
-                {_ID, SUBJECT_COL, DATE_CONTENT_CREATED_COL, DATE_CREATED_COL, LAST_MODIFIED_COL,
-                 CONTENT_SOURCE_IMAGE_URI_COL, AVATAR_IMAGE_URI_COL, TITLE_TEXT_COL,
-                 SMALL_TEXT_COL, BODY_TEXT_COL, ACTION_1_TEXT_COL, ACTION_1_URI_COL,
-                 ACTION_2_TEXT_COL, ACTION_2_URI_COL};
+                {_ID, INTERNAL_ID_COL, SUBJECT_COL, DATE_CONTENT_CREATED_COL, DATE_CREATED_COL,
+                 LAST_MODIFIED_COL, CONTENT_SOURCE_IMAGE_URI_COL, AVATAR_IMAGE_URI_COL,
+                 TITLE_TEXT_COL, SMALL_TEXT_COL, BODY_TEXT_COL, ACTION_1_TEXT_COL,
+                 ACTION_1_URI_COL, ACTION_2_TEXT_COL, ACTION_2_URI_COL, PRIORITY_COL};
 
         public static final String SORT_ORDER_DEFAULT =
                 PRIORITY_COL + " ASC";
@@ -59,11 +65,17 @@ public class CmHomeContract {
     }
 
     public static final class DataCardImage implements BaseColumns, ICmHomeContract {
+        public static final String INTERNAL_ID_COL = "internal_id";
         public static final String DATA_CARD_ID_COL = "data_card_id";
         public static final String IMAGE_URI_COL = "image_uri";
 
         public static Uri CONTENT_URI =
                 Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacardimage");
+
+        public static String LIST_INSERT_UPDATE_URI_PATH = "datacardimage";
+        public static String SINGLE_ROW_INSERT_UPDATE_URI_PATH = "datacardimage/#";
+        public static String SINGLE_ROW_DELETE_URI_PATH = "/datacardimage/delete";
+        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH = "/datacardimage/delete/#";
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE +
@@ -74,7 +86,7 @@ public class CmHomeContract {
                 "/org.cyanogenmod.home.api.datacardimage";
 
         public static final String[] PROJECTION_ALL =
-                {_ID, DATA_CARD_ID_COL, IMAGE_URI_COL};
+                {_ID, INTERNAL_ID_COL, DATA_CARD_ID_COL, IMAGE_URI_COL};
 
         public static final String SORT_ORDER_DEFAULT =
                 DATA_CARD_ID_COL + " ASC";
