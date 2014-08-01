@@ -180,12 +180,13 @@ public class DataCard extends PublishableCard {
         this.mBodyText = bodyText;
     }
 
-    public Intent getCardClickIntent() {
-        return mCardClickIntent;
+    public DataCardIntentInfo getCardClickIntentInfo() {
+        return getDataCardIntentInfoForIntent(mCardClickIntent);
     }
 
-    public void setCardClickIntent(Intent cardClickIntent) {
+    public void setCardClickIntent(Intent cardClickIntent, boolean isBroadcast) {
         mCardClickIntent = cardClickIntent;
+        mCardClickIntent.putExtra(CmHomeContract.DataCard.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
     }
 
     public String getAction1Text() {
@@ -196,12 +197,13 @@ public class DataCard extends PublishableCard {
         this.mAction1Text = action1Text;
     }
 
-    public Intent getAction1Intent() {
-        return mAction1Intent;
+    public DataCardIntentInfo getAction1IntentInfo() {
+        return getDataCardIntentInfoForIntent(mAction1Intent);
     }
 
-    public void setAction1Intent(Intent action1Intent) {
+    public void setAction1Intent(Intent action1Intent, boolean isBroadcast) {
         this.mAction1Intent = action1Intent;
+        mAction1Intent.putExtra(CmHomeContract.DataCard.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
     }
 
     public String getAction2Text() {
@@ -212,12 +214,13 @@ public class DataCard extends PublishableCard {
         this.mAction2Text = action2Text;
     }
 
-    public Intent getAction2Intent() {
-        return mAction2Intent;
+    public DataCardIntentInfo getAction2IntentInfo() {
+        return getDataCardIntentInfoForIntent(mAction2Intent);
     }
 
-    public void setAction2Intent(Intent action2Intent) {
+    public void setAction2Intent(Intent action2Intent, boolean isBroadcast) {
         this.mAction2Intent = action2Intent;
+        mAction1Intent.putExtra(CmHomeContract.DataCard.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
     }
 
     public Priority getPriority() {
@@ -234,6 +237,16 @@ public class DataCard extends PublishableCard {
 
     public void setPriority(Priority priority) {
         this.mPriority = priority;
+    }
+
+    private DataCardIntentInfo getDataCardIntentInfoForIntent(Intent intent) {
+        DataCardIntentInfo dataCardIntentInfo = null;
+        if (intent != null) {
+            boolean isBroadcast = isIntentBroadcast(intent);
+            dataCardIntentInfo = new DataCardIntentInfo(isBroadcast, intent);
+        }
+
+        return dataCardIntentInfo;
     }
 
     @Override
@@ -320,25 +333,28 @@ public class DataCard extends PublishableCard {
         values.put(CmHomeContract.DataCard.ACTION_1_TEXT_COL,
                    getAction1Text());
 
-        if (getAction1Intent() != null) {
+        if (getAction1IntentInfo() != null) {
             values.put(CmHomeContract.DataCard.ACTION_1_URI_COL,
-                       getAction1Intent().toUri(Intent.URI_INTENT_SCHEME).toString());
+                       getAction1IntentInfo().getIntent().toUri(Intent.URI_INTENT_SCHEME)
+                                             .toString());
         }
 
         values.put(CmHomeContract.DataCard.ACTION_2_TEXT_COL,
                    getAction2Text());
 
-        if (getAction2Intent() != null) {
+        if (getAction2IntentInfo() != null) {
             values.put(CmHomeContract.DataCard.ACTION_2_URI_COL,
-                       getAction2Intent().toUri(Intent.URI_INTENT_SCHEME).toString());
+                       getAction2IntentInfo().getIntent().
+                               toUri(Intent.URI_INTENT_SCHEME).toString());
         }
 
         values.put(CmHomeContract.DataCard.PRIORITY_COL,
                    getPriorityAsInt());
 
-        if (getCardClickIntent() != null) {
+        if (getCardClickIntentInfo() != null) {
             values.put(CmHomeContract.DataCard.CARD_CLICK_URI_COL,
-                       getCardClickIntent().toUri(Intent.URI_INTENT_SCHEME).toString());
+                       getCardClickIntentInfo().getIntent().
+                               toUri(Intent.URI_INTENT_SCHEME).toString());
         }
 
         return values;
@@ -405,7 +421,7 @@ public class DataCard extends PublishableCard {
             try {
                 Intent cardClickIntent = Intent.parseUri(clickActionUriString,
                                                          Intent.URI_INTENT_SCHEME);
-                dataCard.setCardClickIntent(cardClickIntent);
+                dataCard.setCardClickIntent(cardClickIntent, isIntentBroadcast(cardClickIntent));
             } catch (URISyntaxException e) {
                 Log.e(TAG, "Unable to parse uri to Intent: " + clickActionUriString);
             }
@@ -415,8 +431,10 @@ public class DataCard extends PublishableCard {
                 cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_1_URI_COL));
         if (!TextUtils.isEmpty(action1UriString)) {
             try {
-                dataCard.setAction1Intent(Intent.parseUri(action1UriString,
-                                                          Intent.URI_INTENT_SCHEME));
+                Intent action1Intent = Intent.parseUri(action1UriString,
+                                                          Intent.URI_INTENT_SCHEME);
+                dataCard.setAction1Intent(action1Intent,
+                                          isIntentBroadcast(action1Intent));
             } catch (URISyntaxException e) {
                 Log.e(TAG, "Unable to parse uri to Intent: " + action1UriString);
             }
@@ -429,8 +447,10 @@ public class DataCard extends PublishableCard {
                 cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_2_URI_COL));
         if (!TextUtils.isEmpty(action2UriString)) {
             try {
-                dataCard.setAction2Intent(Intent.parseUri(action2UriString,
-                                                          Intent.URI_INTENT_SCHEME));
+                Intent action2Intent = Intent.parseUri(action2UriString,
+                                                          Intent.URI_INTENT_SCHEME);
+                dataCard.setAction2Intent(action2Intent,
+                                          isIntentBroadcast(action2Intent));
             } catch (URISyntaxException e) {
                 Log.e(TAG, "Unable to parse uri to Intent: " + action2UriString);
             }
@@ -441,6 +461,15 @@ public class DataCard extends PublishableCard {
         dataCard.setPriority(priority);
 
         return dataCard;
+    }
+
+    private static boolean isIntentBroadcast(Intent intent) {
+        boolean isBroadcast = false;
+        if (intent != null) {
+            isBroadcast = intent.getBooleanExtra(CmHomeContract.DataCard.IS_BROADCAST_INTENT_EXTRA,
+                                                 false);
+        }
+        return isBroadcast;
     }
 
     public static List<DataCard> getAllPublishedDataCards(Context context,
@@ -486,5 +515,27 @@ public class DataCard extends PublishableCard {
         }
 
         return allCards;
+    }
+
+    /**
+     * A wrapper class that contains information about a DataCard related intent,
+     * as well as the Intent itself.
+     */
+    public class DataCardIntentInfo {
+        private boolean mIsBroadcast;
+        private Intent mIntent;
+
+        public DataCardIntentInfo(boolean isBroadcast, Intent theIntent) {
+            mIsBroadcast = isBroadcast;
+            mIntent = theIntent;
+        }
+
+        public boolean getIsBroadcast() {
+            return mIsBroadcast;
+        }
+
+        public Intent getIntent() {
+            return mIntent;
+        }
     }
 }

@@ -29,6 +29,8 @@ public class CmHomeContract {
         public static final String ACTION_2_URI_COL = "action_2_uri";
         public static final String PRIORITY_COL = "priority";
 
+        public static final String IS_BROADCAST_INTENT_EXTRA = "cmHomeIntentIsBroadcast";
+
         public static Uri CONTENT_URI =
                 Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacard");
 
