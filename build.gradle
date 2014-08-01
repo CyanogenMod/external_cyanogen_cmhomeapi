@@ -30,5 +30,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':cardslib')
     compile files('src/main/libs/cmhome-sdk.jar')
 }
