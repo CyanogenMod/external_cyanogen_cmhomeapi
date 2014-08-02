@@ -112,6 +112,10 @@ public class DataCard extends PublishableCard {
         mImages.remove(image);
     }
 
+    public ArrayList<DataCardImage> getImages() {
+        return mImages;
+    }
+
     public Date getCreatedDate() {
         return mCreatedDate;
     }
