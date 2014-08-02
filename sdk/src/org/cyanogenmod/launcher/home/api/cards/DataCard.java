@@ -526,7 +526,7 @@ public class DataCard extends PublishableCard {
             mIntent = theIntent;
         }
 
-        public boolean getIsBroadcast() {
+        public boolean isBroadcast() {
             return mIsBroadcast;
         }
 
