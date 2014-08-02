@@ -112,7 +112,7 @@ public class DataCard extends PublishableCard {
         mImages.remove(image);
     }
 
-    public ArrayList<DataCardImage> getImages() {
+    public List<DataCardImage> getImages() {
         return mImages;
     }
 
