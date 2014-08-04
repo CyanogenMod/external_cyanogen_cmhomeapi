@@ -6,6 +6,8 @@ import org.cyanogenmod.launcher.cards.ApiCard;
 import org.cyanogenmod.launcher.home.api.CMHomeApiManager;
 import org.cyanogenmod.launcher.home.api.cards.DataCard;
 
+import com.cyanogen.cardbuilder.DataCardBuilderFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,8 +134,10 @@ public class CmHomeApiCardProvider implements ICardProvider,
     }
 
     private Card getCardFromDataCard(DataCard dataCard) {
-        ApiCard card = new ApiCard(mCmHomeContext);
-        card.updateFromDataCard(dataCard);
+        ApiCard card = (ApiCard) DataCardBuilderFactory.getCardForDataCard(mCmHomeContext, dataCard);
+        if (card != null) {
+            card.updateFromDataCard(dataCard);
+        }
         return card;
     }
 
