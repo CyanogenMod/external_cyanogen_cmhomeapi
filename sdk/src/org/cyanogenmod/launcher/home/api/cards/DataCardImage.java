@@ -9,22 +9,17 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class DataCardImage extends PublishableCard {
     private final static String   TAG = "DataCardImage";
     private final static CmHomeContract.ICmHomeContract sContract
                                        = new CmHomeContract.DataCardImage();
-    public final static  String   IMAGE_FILE_CACHE_DIR = "DataCardImage";
     private long                  mDataCardId;
     private DataCard              mLinkedDataCard;
     private Uri                   mImageUri;
@@ -197,34 +192,6 @@ public class DataCardImage extends PublishableCard {
         return allImages;
     }
 
-    private void storeBitmapInCache(Bitmap bitmap, Context context) {
-        String filename = UUID.randomUUID().toString() + ".png";
-        FileOutputStream outputStream = null;
-        try {
-            // Create a file in the cache subdirectory
-            File imageDir = new File(context.getFilesDir(), IMAGE_FILE_CACHE_DIR);
-            imageDir.mkdirs();
-            File imageFile = new File(imageDir, filename);
-            outputStream = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-
-            Uri imageUri = Uri.withAppendedPath(CmHomeContract.ImageFile.CONTENT_URI,
-                                                filename);
-
-            // Set the image URI, which will actually be stored in the database.
-            setImage(imageUri);
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Unable to save bitmap to temporary file.");
-        } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    Log.e(TAG, "Unable to save bitmap to temporary file.");
-                }
-            }
-        }
-    }
 
     @Override
     protected void publishSynchronous(Context context){
@@ -239,8 +206,11 @@ public class DataCardImage extends PublishableCard {
             setImage(bitmap);
         }
 
-        if (mImageBitmap.get() != null) {
-            storeBitmapInCache(mImageBitmap.get(), context);
+        if (mImageBitmap != null && mImageBitmap.get() != null) {
+            Uri uri = CmHomeContentProvider.storeBitmapInCache(mImageBitmap.get(), context);
+            if (uri != null) {
+                setImage(uri);
+            }
         }
 
         super.publish(context);
