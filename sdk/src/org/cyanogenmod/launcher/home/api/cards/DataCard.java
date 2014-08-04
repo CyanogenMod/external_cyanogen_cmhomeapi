@@ -5,11 +5,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
+import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,8 +29,15 @@ public class DataCard extends PublishableCard {
     private Date   mContentCreatedDate;
     private Date   mCreatedDate;
     private Date   mLastModifiedDate;
+
     private Uri    mContentSourceImageUri;
+    private WeakReference<Bitmap> mContentSourceImageBitmap;
+    private int    mContentSourceImageResourceId;
+
     private Uri    mAvatarImageUri;
+    private WeakReference<Bitmap> mAvatarImageBitmap;
+    private int    mAvatarImageResourceId;
+
     private String mTitle;
     private String mSmallText;
     private String mBodyText;
@@ -80,7 +91,8 @@ public class DataCard extends PublishableCard {
     }
 
     public void addDataCardImage(Uri uri) {
-        DataCardImage image = new DataCardImage(this, uri);
+        DataCardImage image = new DataCardImage(this);
+        image.setImage(uri);
         mImages.add(image);
     }
 
@@ -144,16 +156,50 @@ public class DataCard extends PublishableCard {
         return mContentSourceImageUri;
     }
 
-    public void setContentSourceImageUri(Uri contentSourceImageUri) {
+    public void setContentSourceImage(Uri contentSourceImageUri) {
         this.mContentSourceImageUri = contentSourceImageUri;
+
+        mContentSourceImageResourceId = 0;
+        mContentSourceImageBitmap = null;
+    }
+
+    public void setContentSourceImage(Bitmap bitmap) {
+        mContentSourceImageBitmap = new WeakReference<Bitmap>(bitmap);
+
+        mAvatarImageResourceId = 0;
+        mAvatarImageUri = null;
+    }
+
+    public void setContentSourceImage(int resourceId) {
+        mContentSourceImageResourceId = resourceId;
+
+        mContentSourceImageBitmap = null;
+        mContentSourceImageUri = null;
     }
 
     public Uri getAvatarImageUri() {
         return mAvatarImageUri;
     }
 
-    public void setAvatarImageUri(Uri avatarImageUri) {
+    public void setAvatarImage(Uri avatarImageUri) {
         this.mAvatarImageUri = avatarImageUri;
+
+        mAvatarImageResourceId = 0;
+        mAvatarImageBitmap = null;
+    }
+
+    public void setAvatarImage(Bitmap bitmap) {
+        mAvatarImageBitmap = new WeakReference<Bitmap>(bitmap);
+
+        mAvatarImageResourceId = 0;
+        mAvatarImageUri = null;
+    }
+
+    public void setAvatarImage(int resourceId) {
+        mAvatarImageResourceId = resourceId;
+
+        mAvatarImageBitmap = null;
+        mAvatarImageUri = null;
     }
 
     public String getTitle() {
@@ -255,6 +301,34 @@ public class DataCard extends PublishableCard {
             // Initialize the created date and modified date to now.
             mCreatedDate = new Date();
             mLastModifiedDate = new Date();
+        }
+
+        if (mContentSourceImageResourceId != 0) {
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+                                                         mContentSourceImageResourceId);
+            setContentSourceImage(bitmap);
+        }
+
+        if (mContentSourceImageBitmap != null && mContentSourceImageBitmap.get() != null) {
+            Uri uri = CmHomeContentProvider.storeBitmapInCache(mContentSourceImageBitmap.get(),
+                                                               context);
+            if (uri != null) {
+                setContentSourceImage(uri);
+            }
+        }
+
+        if (mAvatarImageResourceId != 0) {
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+                                                         mAvatarImageResourceId);
+            setAvatarImage(bitmap);
+        }
+
+        if (mAvatarImageBitmap != null && mAvatarImageBitmap.get() != null) {
+            Uri uri = CmHomeContentProvider.storeBitmapInCache(mAvatarImageBitmap.get(),
+                                                               context);
+            if (uri != null) {
+                setAvatarImage(uri);
+            }
         }
 
         super.publishSynchronous(context);
@@ -400,14 +474,14 @@ public class DataCard extends PublishableCard {
                         CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL));
 
         if (!TextUtils.isEmpty(contentSourceUriString)) {
-            dataCard.setContentSourceImageUri(Uri.parse(contentSourceUriString));
+            dataCard.setContentSourceImage(Uri.parse(contentSourceUriString));
         }
 
         String avatarImageUriString =
                 cursor.getString(cursor.getColumnIndex(
                         CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL));
         if (!TextUtils.isEmpty(avatarImageUriString)) {
-            dataCard.setAvatarImageUri(Uri.parse(avatarImageUriString));
+            dataCard.setAvatarImage(Uri.parse(avatarImageUriString));
         }
 
         dataCard.setTitle(cursor.getString(

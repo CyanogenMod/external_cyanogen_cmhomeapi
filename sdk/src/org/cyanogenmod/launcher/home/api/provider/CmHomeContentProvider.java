@@ -3,11 +3,13 @@ package org.cyanogenmod.launcher.home.api.provider;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -20,15 +22,19 @@ import org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.DATA_CARD_IMAGE_TABLE_NAME;
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.DATA_CARD_TABLE_NAME;
 
 public class CmHomeContentProvider extends ContentProvider {
     CmHomeDatabaseHelper mCmHomeDatabaseHelper;
+    public final static  String IMAGE_FILE_CACHE_DIR = "DataCardImageCache";
 
     private static final String TAG                   = "CmHomeContentProvider";
     private static final int    DATA_CARD_LIST        = 1;
@@ -121,12 +127,12 @@ public class CmHomeContentProvider extends ContentProvider {
     }
 
     @Override
-    public AssetFileDescriptor openAssetFile(Uri uri, String mode)
-            throws FileNotFoundException {
+    public AssetFileDescriptor openTypedAssetFile(Uri uri,
+            String mimeTypeFilter, Bundle opts) throws FileNotFoundException {
         int uriMatch = URI_MATCHER.match(uri);
         if (uriMatch == IMAGE_FILE) {
             String filename = uri.getLastPathSegment();
-            File dir = new File(getContext().getFilesDir(), "DataCardImage");
+            File dir = new File(getContext().getFilesDir(), IMAGE_FILE_CACHE_DIR);
             ParcelFileDescriptor pfd =
                     ParcelFileDescriptor.open(new File(dir, filename),
                                               ParcelFileDescriptor.MODE_READ_ONLY);
@@ -312,14 +318,15 @@ public class CmHomeContentProvider extends ContentProvider {
      * they are not represented in the database, delete them.
      */
     private void cleanupDataCardImageCache() {
-        SQLiteDatabase db = mCmHomeDatabaseHelper.getWritableDatabase();
+        Set<String> filenames = new HashSet<String>();
+
+        // Handle DataCardImage rows
         Cursor cursor = query(CmHomeContract.DataCardImage.CONTENT_URI,
                                               CmHomeContract.DataCardImage.PROJECTION_ALL,
                                               null,
                                               null,
                                               null);
-        Set<String> filenames = new HashSet<String>();
-        while(cursor.moveToFirst()) {
+        while(cursor.moveToNext()) {
             String uriString =
                     cursor.getString(cursor.getColumnIndex(CmHomeContract
                                                            .DataCardImage.IMAGE_URI_COL));
@@ -329,12 +336,73 @@ public class CmHomeContentProvider extends ContentProvider {
             }
         }
 
+        // Handle DataCard image fields
+        String[] dataCardProjection = {CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL,
+                                     CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL};
+
+        cursor = query(CmHomeContract.DataCard.CONTENT_URI,
+                                              dataCardProjection,
+                                              null,
+                                              null,
+                                              null);
+
+        while(cursor.moveToNext()) {
+            String contentSourceUri =
+                    cursor.getString(cursor.getColumnIndex(CmHomeContract
+                                                           .DataCard.CONTENT_SOURCE_IMAGE_URI_COL));
+            String avatarUri =
+                    cursor.getString(cursor.getColumnIndex(CmHomeContract
+                                                           .DataCard.AVATAR_IMAGE_URI_COL));
+            if (contentSourceUri != null) {
+                String filename = Uri.parse(contentSourceUri).getLastPathSegment();
+                filenames.add(filename);
+            }
+
+            if (avatarUri != null) {
+                String filename = Uri.parse(avatarUri).getLastPathSegment();
+                filenames.add(filename);
+            }
+        }
+
         // Delete all files that do not exist in the database
-        File imageCacheDir = new File(DataCardImage.IMAGE_FILE_CACHE_DIR);
+        File internalStorageDir = getContext().getFilesDir();
+        File imageCacheDir = new File(internalStorageDir, IMAGE_FILE_CACHE_DIR);
         for (File file : imageCacheDir.listFiles()) {
             if (!filenames.contains(file.getName())) {
                 file.delete();
             }
         }
     }
+
+    public static Uri storeBitmapInCache(Bitmap bitmap, Context context) {
+        String filename = UUID.randomUUID().toString() + ".png";
+        FileOutputStream outputStream = null;
+        try {
+            // Create a file in the cache subdirectory
+            File imageDir = new File(context.getFilesDir(), IMAGE_FILE_CACHE_DIR);
+            imageDir.mkdirs();
+            File imageFile = new File(imageDir, filename);
+            outputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+
+            Uri imageUri = Uri.withAppendedPath(CmHomeContract.ImageFile.CONTENT_URI,
+                                                filename);
+
+            // Set the image URI, which will actually be stored in the database.
+            return imageUri;
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Unable to save bitmap to temporary file.");
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable to save bitmap to temporary file.");
+                }
+            }
+        }
+        // Failure, no URI available
+        return null;
+    }
+
 }
