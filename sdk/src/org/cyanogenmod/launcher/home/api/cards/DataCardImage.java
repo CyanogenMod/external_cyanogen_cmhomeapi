@@ -4,24 +4,41 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class DataCardImage extends PublishableCard {
-    private final static String TAG = "DataCardImage";
+    private final static String   TAG = "DataCardImage";
     private final static CmHomeContract.ICmHomeContract sContract
-            = new CmHomeContract.DataCardImage();
-    private long mDataCardId;
-    private Uri mImageUri;
-    private String mInternalId;
-    private String mImageLabel;
+                                       = new CmHomeContract.DataCardImage();
+    public final static  String   IMAGE_FILE_CACHE_DIR = "DataCardImage";
+    private long                  mDataCardId;
+    private DataCard              mLinkedDataCard;
+    private Uri                   mImageUri;
+    private String                mInternalId;
+    private String                mImageLabel;
+    private WeakReference<Bitmap> mImageBitmap;
 
-    public DataCardImage(long dataCardId, Uri imageUri) {
+    public DataCardImage(DataCard linkedDataCard, Uri imageUri) {
+        super(sContract);
+
+        mLinkedDataCard = linkedDataCard;
+        mImageUri = imageUri;
+    }
+
+    private DataCardImage(long dataCardId, Uri imageUri) {
         super(sContract);
 
         mDataCardId = dataCardId;
@@ -48,8 +65,18 @@ public class DataCardImage extends PublishableCard {
         return mImageUri;
     }
 
-    public void setImageUri(Uri imageUri) {
+    public void setImage(Uri imageUri) {
         mImageUri = imageUri;
+    }
+
+    /**
+     * Sets the image bitmap to the given bitmap.
+     *
+     * @param bitmap The Bitmap to save for this DataCardImage
+     */
+    public void setImage(Bitmap bitmap) {
+        if (bitmap == null) return;
+        mImageBitmap = new WeakReference<Bitmap>(bitmap);
     }
 
     public void setImageLabel(String imageLabel) {
@@ -80,11 +107,11 @@ public class DataCardImage extends PublishableCard {
         Cursor cursor = null;
         try {
             cursor = contentResolver.query(CmHomeContract.DataCardImage.CONTENT_URI,
-                                                  CmHomeContract.DataCardImage.PROJECTION_ALL,
-                                                  null,
-                                                  null,
-                                                  null);
-        // Catching all Exceptions, since we can't be sure what the extension will do.
+                                           CmHomeContract.DataCardImage.PROJECTION_ALL,
+                                           null,
+                                           null,
+                                           null);
+            // Catching all Exceptions, since we can't be sure what the extension will do.
         } catch (Exception e) {
             Log.e(TAG, "Error querying for DataCards, ContentProvider threw an exception for uri:" +
                        " " + CmHomeContract.DataCardImage.CONTENT_URI, e);
@@ -141,7 +168,7 @@ public class DataCardImage extends PublishableCard {
                                            CmHomeContract.DataCardImage.DATA_CARD_ID_COL + " = ?",
                                            new String[]{Long.toString(dataCardId)},
                                            null);
-        // Catching all Exceptions, since we can't be sure what the extension will do.
+            // Catching all Exceptions, since we can't be sure what the extension will do.
         } catch (Exception e) {
             Log.e(TAG, "Error querying for DataCards, ContentProvider threw an exception for uri:" +
                        " " + contentUri, e);
@@ -151,4 +178,49 @@ public class DataCardImage extends PublishableCard {
         cursor.close();
         return allImages;
     }
+
+    private void storeBitmapInCache(Bitmap bitmap, Context context) {
+        String filename = UUID.randomUUID().toString() + ".png";
+        FileOutputStream outputStream = null;
+        try {
+            // Create a file in the cache subdirectory
+            File imageDir = new File(context.getFilesDir(), IMAGE_FILE_CACHE_DIR);
+            imageDir.mkdirs();
+            File imageFile = new File(imageDir, filename);
+            outputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+
+            Uri imageUri = Uri.withAppendedPath(CmHomeContract.ImageFile.CONTENT_URI,
+                                                filename);
+
+            // Set the image URI, which will actually be stored in the database.
+            setImage(imageUri);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Unable to save bitmap to temporary file.");
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable to save bitmap to temporary file.");
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void publishSynchronous(Context context){
+        // Store the current id of the linked DataCard, in case it has
+        // changed before publish.
+        if (mLinkedDataCard != null) {
+            mDataCardId = mLinkedDataCard.getId();
+        }
+
+        if (mImageBitmap.get() != null) {
+            storeBitmapInCache(mImageBitmap.get(), context);
+        }
+
+        super.publish(context);
+    }
 }
+

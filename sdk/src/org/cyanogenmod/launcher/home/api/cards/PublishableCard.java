@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
@@ -43,7 +44,11 @@ public abstract class PublishableCard {
         return mAuthority + "/" + mId;
     }
 
-    public boolean publish(Context context) {
+    public void publish(Context context) {
+        new PublishCardTask(this, context).execute();
+    }
+
+    protected void publishSynchronous(Context context) {
         boolean updated = false;
         // If we have an ID, try to update that row first.
         if (getId() != -1) {
@@ -73,8 +78,6 @@ public abstract class PublishableCard {
                 setId(Integer.parseInt(result.getLastPathSegment()));
             }
         }
-
-        return updated;
     }
 
     protected abstract ContentValues getContentValues();
@@ -160,5 +163,21 @@ public abstract class PublishableCard {
             cursor.close();
         }
         return cursorCount > 0;
+    }
+
+    public static class PublishCardTask extends AsyncTask<Void, Void, Void> {
+        PublishableCard mPublishableCard;
+        Context mContext;
+
+        public PublishCardTask(PublishableCard card, Context context) {
+            mPublishableCard = card;
+            mContext = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mPublishableCard.publishSynchronous(mContext);
+            return null;
+        }
     }
 }

@@ -80,7 +80,7 @@ public class DataCard extends PublishableCard {
     }
 
     public void addDataCardImage(Uri uri) {
-        DataCardImage image = new DataCardImage(getId(), uri);
+        DataCardImage image = new DataCardImage(this, uri);
         mImages.add(image);
     }
 
@@ -250,20 +250,18 @@ public class DataCard extends PublishableCard {
     }
 
     @Override
-    public boolean publish(Context context) {
-        boolean updated = super.publish(context);
-
-        if (!updated) {
+    protected void publishSynchronous(Context context) {
+        if (!isPublished(context)) {
             // Initialize the created date and modified date to now.
             mCreatedDate = new Date();
             mLastModifiedDate = new Date();
         }
 
+        super.publish(context);
+
         for (DataCardImage image : mImages) {
             image.publish(context);
         }
-
-        return updated;
     }
 
     /**
