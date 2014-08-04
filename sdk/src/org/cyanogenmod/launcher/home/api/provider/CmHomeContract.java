@@ -107,12 +107,22 @@ public class CmHomeContract {
         }
     }
 
+    public static final class ImageFile {
+        public static final String PATH = "imagefile";
+        public static Uri CONTENT_URI =
+                Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "imagefile");
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE +
+                "/org.cyanogenmod.home.api.imagefile";
+    }
+
     public static void setAuthority(String authority) {
         AUTHORITY = authority;
         CONTENT_URI = Uri.parse("content://" + AUTHORITY);
         DataCard.CONTENT_URI = Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacard");
         DataCardImage.CONTENT_URI =
                 Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacardimage");
+        ImageFile.CONTENT_URI = Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "imagefile");
     }
 
     public interface ICmHomeContract {
