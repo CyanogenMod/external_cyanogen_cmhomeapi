@@ -8,9 +8,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.CancellationSignal;
+import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
+import org.cyanogenmod.launcher.home.api.cards.DataCardImage;
 import org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.DATA_CARD_IMAGE_TABLE_NAME;
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.DATA_CARD_TABLE_NAME;
@@ -23,6 +32,7 @@ public class CmHomeContentProvider extends ContentProvider {
     private static final int    DATA_CARD_ITEM        = 2;
     private static final int    DATA_CARD_IMAGE_LIST  = 3;
     private static final int    DATA_CARD_IMAGE_ITEM  = 4;
+    private static final int    IMAGE_FILE            = 5;
     private static UriMatcher URI_MATCHER;
 
     static {
@@ -39,6 +49,9 @@ public class CmHomeContentProvider extends ContentProvider {
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
                            CmHomeContract.DataCardImage.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_IMAGE_ITEM);
+        URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
+                           CmHomeContract.ImageFile.PATH,
+                           IMAGE_FILE);
     }
 
     @Override
@@ -72,6 +85,9 @@ public class CmHomeContentProvider extends ContentProvider {
         URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
                            CmHomeContract.DataCardImage.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
                            DATA_CARD_IMAGE_ITEM);
+        URI_MATCHER.addURI(CmHomeContract.AUTHORITY,
+                           CmHomeContract.ImageFile.PATH,
+                           IMAGE_FILE);
     }
 
     @Override
@@ -113,6 +129,28 @@ public class CmHomeContentProvider extends ContentProvider {
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
+    }
+
+    @Override
+    public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
+        int uriMatch = URI_MATCHER.match(uri);
+        if (uriMatch == IMAGE_FILE) {
+            String filename = uri.getLastPathSegment();
+            File dir = getContext().getFilesDir();
+            File filenameFile = new File(filename);
+            ParcelFileDescriptor pfd =
+                    ParcelFileDescriptor.open(new File(dir, filename),
+                                              ParcelFileDescriptor.MODE_READ_ONLY);
+            return pfd;
+        }
+
+        throw new FileNotFoundException();
+    }
+
+    @Override
+    public ParcelFileDescriptor openFile(Uri uri, String mode, CancellationSignal signal)
+            throws FileNotFoundException {
+        return openFile(uri, mode);
     }
 
     @Override
@@ -163,6 +201,7 @@ public class CmHomeContentProvider extends ContentProvider {
         if (updateCount > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
+        cleanupDataCardImageCache();
         return updateCount;
     }
 
@@ -255,6 +294,7 @@ public class CmHomeContentProvider extends ContentProvider {
         } else if (deleteCount > 1) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
+        cleanupDataCardImageCache();
         return deleteCount;
     }
 
@@ -282,6 +322,37 @@ public class CmHomeContentProvider extends ContentProvider {
                 return CmHomeContract.DataCardImage.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
+        }
+    }
+
+    /**
+     * For all files in the DataCardImage cache directory, if
+     * they are not represented in the database, delete them.
+     */
+    private void cleanupDataCardImageCache() {
+        SQLiteDatabase db = mCmHomeDatabaseHelper.getWritableDatabase();
+        Cursor cursor = query(CmHomeContract.DataCardImage.CONTENT_URI,
+                                              CmHomeContract.DataCardImage.PROJECTION_ALL,
+                                              null,
+                                              null,
+                                              null);
+        Set<String> filenames = new HashSet<String>();
+        while(cursor.moveToFirst()) {
+            String uriString =
+                    cursor.getString(cursor.getColumnIndex(CmHomeContract
+                                                           .DataCardImage.IMAGE_URI_COL));
+            if (uriString != null) {
+                String filename = Uri.parse(uriString).getLastPathSegment();
+                filenames.add(filename);
+            }
+        }
+
+        // Delete all files that do not exist in the database
+        File imageCacheDir = new File(DataCardImage.IMAGE_FILE_CACHE_DIR);
+        for (File file : imageCacheDir.listFiles()) {
+            if (!filenames.contains(file.getName())) {
+                file.delete();
+            }
         }
     }
 }
