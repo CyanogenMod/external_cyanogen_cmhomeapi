@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,6 +31,7 @@ public class DataCardImage extends PublishableCard {
     private String                mInternalId;
     private String                mImageLabel;
     private WeakReference<Bitmap> mImageBitmap;
+    private int                   mImageResourceId = 0;
 
     public DataCardImage(DataCard linkedDataCard) {
         super(sContract);
@@ -66,6 +68,10 @@ public class DataCardImage extends PublishableCard {
 
     public void setImage(Uri imageUri) {
         mImageUri = imageUri;
+
+        // Drop all other image sources, only the last one assigned is preserved
+        mImageBitmap = null;
+        mImageResourceId = 0;
     }
 
     /**
@@ -76,6 +82,18 @@ public class DataCardImage extends PublishableCard {
     public void setImage(Bitmap bitmap) {
         if (bitmap == null) return;
         mImageBitmap = new WeakReference<Bitmap>(bitmap);
+
+        // Drop all other image sources, only the last one assigned is preserved
+        mImageResourceId = 0;
+        mImageUri = null;
+    }
+
+    public void setImage(int resource) {
+        mImageResourceId = resource;
+
+        // Drop all other image sources, only the last one assigned is preserved
+        mImageBitmap = null;
+        mImageUri = null;
     }
 
     public void setImageLabel(String imageLabel) {
@@ -218,6 +236,11 @@ public class DataCardImage extends PublishableCard {
         // changed before publish.
         if (mLinkedDataCard != null) {
             mDataCardId = mLinkedDataCard.getId();
+        }
+
+        if (mImageResourceId != -1) {
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), mImageResourceId);
+            setImage(bitmap);
         }
 
         if (mImageBitmap != null && mImageBitmap.get() != null) {
