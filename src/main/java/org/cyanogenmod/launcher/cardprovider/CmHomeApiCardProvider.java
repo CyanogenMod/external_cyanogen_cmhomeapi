@@ -74,7 +74,10 @@ public class CmHomeApiCardProvider implements ICardProvider,
         // Add
         for (DataCard dataCard : mApiManager.getAllDataCards()) {
             if (!cardExists(dataCard.getGlobalId(), cards)) {
-                cardsToAdd.add(getCardFromDataCard(dataCard));
+                Card card = getCardFromDataCard(dataCard);
+                if (card != null) {
+                    cardsToAdd.add(card);
+                }
             }
         }
 
