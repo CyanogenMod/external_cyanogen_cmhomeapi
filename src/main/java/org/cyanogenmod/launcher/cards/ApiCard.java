@@ -5,7 +5,6 @@ import android.content.Context;
 import org.cyanogenmod.launcher.home.api.cards.DataCard;
 
 import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardHeader;
 
 public class ApiCard extends Card {
     private String mApiAuthority;
@@ -13,6 +12,10 @@ public class ApiCard extends Card {
 
     public ApiCard(Context context) {
         super(context);
+    }
+
+    public ApiCard(Context context, int innerLayout) {
+        super(context, innerLayout);
     }
 
     public void setApiAuthority(String authority) {
@@ -35,10 +38,6 @@ public class ApiCard extends Card {
         setId(dataCard.getGlobalId());
         setDbId(dataCard.getId());
         setApiAuthority(dataCard.getAuthority());
-        CardHeader cardHeader = new CardHeader(getContext());
-        cardHeader.setTitle(dataCard.getTitle());
-        addCardHeader(cardHeader);
         setSwipeable(true);
-        setTitle(dataCard.getContentCreatedDate().toString());
     }
 }
