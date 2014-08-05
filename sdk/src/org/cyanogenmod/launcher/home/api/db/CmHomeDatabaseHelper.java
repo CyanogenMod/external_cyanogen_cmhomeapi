@@ -17,7 +17,7 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATA_CARD_TABLE_CREATE =
             "CREATE TABLE " + DATA_CARD_TABLE_NAME +
             "(" + CmHomeContract.DataCard._ID + " INTEGER PRIMARY KEY NOT NULL," +
-            CmHomeContract.DataCard.INTERNAL_ID_COL + " TEXT NOT NULL," +
+            CmHomeContract.DataCard.INTERNAL_ID_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.REASON_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL + " TEXT NOT NULL," +
             CmHomeContract.DataCard.DATE_CREATED_COL + " TEXT DEFAULT CURRENT_TIMESTAMP " +
