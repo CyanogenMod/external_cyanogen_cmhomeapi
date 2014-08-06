@@ -48,7 +48,7 @@ public interface ICardProvider {
         List<Card> mCardsToAdd;
         List<Card> mCardsToRemove;
 
-        CardProviderUpdateResult(List<Card> cardsToAdd, List<Card> cardsToRemove) {
+        public CardProviderUpdateResult(List<Card> cardsToAdd, List<Card> cardsToRemove) {
             mCardsToAdd = cardsToAdd;
             mCardsToRemove = cardsToRemove;
         }
