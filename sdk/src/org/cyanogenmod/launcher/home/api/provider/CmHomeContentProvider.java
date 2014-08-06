@@ -20,11 +20,16 @@ import android.util.Log;
 import org.cyanogenmod.launcher.home.api.cards.DataCardImage;
 import org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigInteger;
 import java.net.URI;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -377,9 +382,71 @@ public class CmHomeContentProvider extends ContentProvider {
         }
     }
 
+    /**
+     * Generates a String representing the MD5 hash of the image contents of this Bitmap,
+     * compressed using PNG at 100% quality.
+     * @param bitmap The Bitmap to hash
+     * @return A String representation of the MD5 hash of the Bitmap
+     */
+    private static String hashBitmapMD5(Bitmap bitmap) {
+        byte[] bitmapBytes = null;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bitmapBytes = stream.toByteArray();
+
+        // Compute the hash
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(bitmapBytes, 0, bitmapBytes.length);
+            String hash = new BigInteger(1, md.digest()).toString(16);
+            return hash;
+        } catch (NoSuchAlgorithmException e) {
+            Log.w(TAG, "Unable to compute MD5 hash of bitmap");
+        }
+
+        // No hash computed
+        return null;
+    }
+
+    /**
+     * Check if a cached Bitmap file exists in {@link org.cyanogenmod.launcher.home.api.provider
+     * .CmHomeContentProvider.IMAGE_FILE_CACHE_DIR} with the given filename.
+     * @param filename The filename to check for
+     * @param context The context with access to the directory that would contain this file.
+     * @return True if the file exists.
+     */
+    private static boolean bitmapCacheFileExists(String filename, Context context) {
+        // Create a file in the cache subdirectory
+        File imageDir = new File(context.getFilesDir(), IMAGE_FILE_CACHE_DIR);
+        File imageFile = new File(imageDir, filename);
+
+        return imageFile.exists();
+    }
+
+    /**
+     * Stores the given bitmap in internal storage in {@link org.cyanogenmod.launcher
+     * .home.api.provider.CmHomeContentProvider.IMAGE_FILE_CACHE_DIR} using an MD5 sum of the
+     * bitmap content as the filename, if the cache does not exist already.
+     * @param bitmap The Bitmap to store in the cache
+     * @param context A Context of the application that will share this image in this
+     *                ContentProvider.
+     * @return A Uri pointing to the newly stored image file in the cache, or the existing image,
+     * if one is found.
+     */
     public static Uri storeBitmapInCache(Bitmap bitmap, Context context) {
-        String filename = UUID.randomUUID().toString() + ".png";
-        FileOutputStream outputStream = null;
+        String hash = hashBitmapMD5(bitmap);
+        // Can't continue without a hash
+        if (hash == null) return null;
+
+        String filename = hash + ".png";
+
+        // If the cache already exists, just return the URI to the cache file
+        if (bitmapCacheFileExists(filename, context)) {
+            return Uri.withAppendedPath(CmHomeContract.ImageFile.CONTENT_URI,
+                                        filename);
+        }
+
+        OutputStream outputStream = null;
         try {
             // Create a file in the cache subdirectory
             File imageDir = new File(context.getFilesDir(), IMAGE_FILE_CACHE_DIR);
