@@ -268,9 +268,12 @@ public class CmHomeContentProvider extends ContentProvider {
 
         if (deleteCount == 1) {
             if(uriMatch == DATA_CARD_ITEM) {
+                // Copy the query params from the original URI into a new delete URI
+                Uri.Builder builder = CmHomeContract.CONTENT_URI.buildUpon();
+                builder.query(uri.getEncodedQuery());
                 // Notifies for a delete
                 getUriForId(Long.parseLong(idStr),
-                            Uri.withAppendedPath(CmHomeContract.CONTENT_URI,
+                            Uri.withAppendedPath(builder.build(),
                                     CmHomeContract.DataCard.SINGLE_ROW_DELETE_URI_PATH));
             }
             if(uriMatch == DATA_CARD_IMAGE_ITEM) {

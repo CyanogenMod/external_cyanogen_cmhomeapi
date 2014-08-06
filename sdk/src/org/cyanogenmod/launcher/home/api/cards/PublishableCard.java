@@ -108,6 +108,10 @@ public abstract class PublishableCard {
     }
 
     public boolean unpublish(Context context) {
+        return unpublish(context, mICmHomeContract.getContentUri());
+    }
+
+    protected boolean unpublish(Context context, Uri unpublishUri) {
         if (getId() == -1) {
             return false;
         }
@@ -116,7 +120,7 @@ public abstract class PublishableCard {
         int rows = 0;
         try {
             rows = contentResolver.delete(ContentUris.withAppendedId(
-                                                      mICmHomeContract.getContentUri(),
+                                                      unpublishUri,
                                                       getId()),
                                               null,
                                               null);

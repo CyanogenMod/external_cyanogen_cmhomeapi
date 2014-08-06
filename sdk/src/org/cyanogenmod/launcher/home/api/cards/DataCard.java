@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -371,15 +372,23 @@ public class DataCard extends PublishableCard {
      */
     @Override
     public boolean unpublish(Context context) {
-        boolean deleted = super.unpublish(context);
-        if (deleted) {
-            // Delete all associated images as well
-            for (DataCardImage image : mImages) {
-                image.unpublish(context);
-            }
+        // Delete all associated images as well
+        for (DataCardImage image : mImages) {
+            image.unpublish(context);
         }
 
-        return deleted;
+        Uri deleteUri = sContract.getContentUri();
+        Uri.Builder builder = deleteUri.buildUpon();
+        builder.appendQueryParameter(CardDeletedInfo.ID_QUERY_PARAM,
+                                     Long.toString(getId()));
+        builder.appendQueryParameter(CardDeletedInfo.INTERNAL_ID_QUERY_PARAM,
+                                     getInternalId());
+        builder.appendQueryParameter(CardDeletedInfo.GLOBAL_ID_QUERY_PARAM,
+                                     getGlobalId());
+        builder.appendQueryParameter(CardDeletedInfo.AUTHORITY_QUERY_PARAM,
+                                     getAuthority());
+
+        return super.unpublish(context, builder.build());
     }
 
     @Override
@@ -597,6 +606,47 @@ public class DataCard extends PublishableCard {
         return allCards;
     }
 
+    public void setOnDeleteListener(Context context,
+                                    final OnCardDeleteListener onCardDeleteListener) {
+        // Don't supply a handler to run the observer on, just pass null
+        ContentObserver observer = new ContentObserver(null) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                super.onChange(selfChange, uri);
+
+                CardDeletedInfo deleteInfo = new CardDeletedInfo();
+
+                String authority = uri.getQueryParameter(CardDeletedInfo.AUTHORITY_QUERY_PARAM);
+                if (authority != null) {
+                    deleteInfo.setAuthority(authority);
+                }
+
+                String id = uri.getQueryParameter(CardDeletedInfo.ID_QUERY_PARAM);
+                if (id != null) {
+                    deleteInfo.setId(Long.parseLong(id));
+                }
+
+                String internalId = uri.getQueryParameter(CardDeletedInfo.INTERNAL_ID_QUERY_PARAM);
+                if (internalId != null) {
+                    deleteInfo.setInternalId(internalId);
+                }
+
+                String globalId = uri.getQueryParameter(CardDeletedInfo.GLOBAL_ID_QUERY_PARAM);
+                if (globalId != null) {
+                    deleteInfo.setGlobalId(globalId);
+                }
+
+                // Notify the listener
+                onCardDeleteListener.onCardDelete(deleteInfo);
+            }
+
+        };
+
+        Uri deleteCardUri = Uri.withAppendedPath(CmHomeContract.CONTENT_URI,
+                                        CmHomeContract.DataCard.SINGLE_ROW_DELETE_URI_PATH);
+        context.getContentResolver().registerContentObserver(deleteCardUri, true, observer);
+    }
+
     /**
      * A wrapper class that contains information about a DataCard related intent,
      * as well as the Intent itself.
@@ -616,6 +666,50 @@ public class DataCard extends PublishableCard {
 
         public Intent getIntent() {
             return mIntent;
+        }
+    }
+
+    public interface OnCardDeleteListener {
+        public void onCardDelete(CardDeletedInfo cardDeletedInfo);
+    }
+
+    public static class CardDeletedInfo {
+        protected final static String ID_QUERY_PARAM = "id";
+        protected final static String INTERNAL_ID_QUERY_PARAM = "internalId";
+        protected final static String GLOBAL_ID_QUERY_PARAM = "globalId";
+        protected final static String AUTHORITY_QUERY_PARAM = "authority";
+
+        private long mId;
+        private String mInternalId;
+        private String mGlobalId;
+        private String mAuthority;
+
+        protected void setId(long id) {
+            mId = id;
+        }
+
+        public long getId() {
+            return mId;
+        }
+
+        protected void setInternalId(String internalId) {
+            mInternalId = internalId;
+        }
+
+        public String getInternalId() {
+            return mInternalId;
+        }
+
+        protected void setGlobalId(String globalId) {
+            mGlobalId = globalId;
+        }
+
+        protected void setAuthority(String authority) {
+            mAuthority = authority;
+        }
+
+        public String getAuthority() {
+            return mAuthority;
         }
     }
 }
