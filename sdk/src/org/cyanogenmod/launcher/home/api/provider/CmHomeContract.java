@@ -11,7 +11,7 @@ public class CmHomeContract {
     public static Uri CONTENT_URI =
             Uri.parse("content://" + AUTHORITY);
 
-    public static final class DataCard implements BaseColumns, ICmHomeContract {
+    public static final class CardDataContract implements BaseColumns, ICmHomeContract {
         public static final String INTERNAL_ID_COL = "internal_id";
         public static final String REASON_COL = "reason_text";
         public static final String DATE_CONTENT_CREATED_COL = "date_content_created";
@@ -32,20 +32,20 @@ public class CmHomeContract {
         public static final String IS_BROADCAST_INTENT_EXTRA = "cmHomeIntentIsBroadcast";
 
         public static Uri CONTENT_URI =
-                Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacard");
+                Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "carddata");
 
-        public static String LIST_INSERT_UPDATE_URI_PATH = "datacard";
-        public static String SINGLE_ROW_INSERT_UPDATE_URI_PATH = "datacard/#";
-        public static String SINGLE_ROW_DELETE_URI_PATH = "/datacard/delete";
-        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH = "/datacard/delete/#";
+        public static String LIST_INSERT_UPDATE_URI_PATH = "carddata";
+        public static String SINGLE_ROW_INSERT_UPDATE_URI_PATH = "carddata/#";
+        public static String SINGLE_ROW_DELETE_URI_PATH = "/carddata/delete";
+        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH = "/carddata/delete/#";
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE +
-                "/org.cyanogenmod.home.api.datacard";
+                "/org.cyanogenmod.home.api.carddata";
 
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE +
-                "/org.cyanogenmod.home.api.datacard";
+                "/org.cyanogenmod.home.api.carddata";
 
         public static final String[] PROJECTION_ALL =
                 {_ID, INTERNAL_ID_COL, REASON_COL, DATE_CONTENT_CREATED_COL, DATE_CREATED_COL,
@@ -68,33 +68,33 @@ public class CmHomeContract {
         }
     }
 
-    public static final class DataCardImage implements BaseColumns, ICmHomeContract {
-        public static final String INTERNAL_ID_COL = "internal_id";
-        public static final String DATA_CARD_ID_COL = "data_card_id";
-        public static final String IMAGE_URI_COL = "image_uri";
-        public static final String IMAGE_LABEL_COL = "image_label";
+    public static final class CardDataImageContract implements BaseColumns, ICmHomeContract {
+        public static final String INTERNAL_ID_COL  = "internal_id";
+        public static final String CARD_DATA_ID_COL = "card_data_id";
+        public static final String IMAGE_URI_COL    = "image_uri";
+        public static final String IMAGE_LABEL_COL  = "image_label";
 
         public static Uri CONTENT_URI =
-                Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacardimage");
+                Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "carddataimage");
 
-        public static String LIST_INSERT_UPDATE_URI_PATH = "datacardimage";
-        public static String SINGLE_ROW_INSERT_UPDATE_URI_PATH = "datacardimage/#";
-        public static String SINGLE_ROW_DELETE_URI_PATH = "/datacardimage/delete";
-        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH = "/datacardimage/delete/#";
+        public static String LIST_INSERT_UPDATE_URI_PATH       = "carddataimage";
+        public static String SINGLE_ROW_INSERT_UPDATE_URI_PATH = "carddataimage/#";
+        public static String SINGLE_ROW_DELETE_URI_PATH        = "/carddataimage/delete";
+        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH  = "/carddataimage/delete/#";
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE +
-                "/org.cyanogenmod.home.api.datacardimage";
+                "/org.cyanogenmod.home.api.carddataimage";
 
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE +
-                "/org.cyanogenmod.home.api.datacardimage";
+                "/org.cyanogenmod.home.api.carddataimage";
 
         public static final String[] PROJECTION_ALL =
-                {_ID, INTERNAL_ID_COL, DATA_CARD_ID_COL, IMAGE_URI_COL, IMAGE_LABEL_COL};
+                {_ID, INTERNAL_ID_COL, CARD_DATA_ID_COL, IMAGE_URI_COL, IMAGE_LABEL_COL};
 
         public static final String SORT_ORDER_DEFAULT =
-                DATA_CARD_ID_COL + " ASC";
+                CARD_DATA_ID_COL + " ASC";
 
         @Override
         public Uri getContentUri() {
@@ -109,7 +109,7 @@ public class CmHomeContract {
 
     public static final class ImageFile {
         public static final String PATH = "imagefile";
-        public static Uri CONTENT_URI =
+        public static Uri CONTENT_URI  =
                 Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "imagefile");
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE +
@@ -119,14 +119,15 @@ public class CmHomeContract {
     public static void setAuthority(String authority) {
         AUTHORITY = authority;
         CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-        DataCard.CONTENT_URI = Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacard");
-        DataCardImage.CONTENT_URI =
-                Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "datacardimage");
+        CardDataContract.CONTENT_URI = Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "carddata");
+        CardDataImageContract.CONTENT_URI =
+                Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "carddataimage");
         ImageFile.CONTENT_URI = Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "imagefile");
     }
 
     public interface ICmHomeContract {
         public Uri getContentUri();
+
         public String getIdColumnName();
     }
 }

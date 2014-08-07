@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DataCard extends PublishableCard {
-    private static final String TAG = "DataCard";
+public class CardData extends PublishableCard {
+    private static final String TAG = "CardData";
     private static final CmHomeContract.ICmHomeContract sContract =
-            new CmHomeContract.DataCard();
+            new CmHomeContract.CardDataContract();
 
     private String mInternalId;
     private String mReasonText;
@@ -78,21 +78,21 @@ public class DataCard extends PublishableCard {
         }
     }
 
-    private List<DataCardImage> mImages = new ArrayList<DataCardImage>();
+    private List<CardDataImage> mImages = new ArrayList<CardDataImage>();
 
-    private DataCard() {
+    private CardData() {
         super(sContract);
     }
 
-    public DataCard(String title, Date contentCreatedDate) {
+    public CardData(String title, Date contentCreatedDate) {
         super(sContract);
 
         setTitle(title);
         setContentCreatedDate(contentCreatedDate);
     }
 
-    public void addDataCardImage(Uri uri) {
-        DataCardImage image = new DataCardImage(this);
+    public void addCardDataImage(Uri uri) {
+        CardDataImage image = new CardDataImage(this);
         image.setImage(uri);
         mImages.add(image);
     }
@@ -113,7 +113,7 @@ public class DataCard extends PublishableCard {
         mLastModifiedDate = date;
     }
 
-    public void addDataCardImage(DataCardImage image) {
+    public void addCardDataImage(CardDataImage image) {
         mImages.add(image);
     }
 
@@ -121,11 +121,11 @@ public class DataCard extends PublishableCard {
         mImages.clear();
     }
 
-    public void removeDataCardImage(DataCardImage image) {
+    public void removeCardDataImage(CardDataImage image) {
         mImages.remove(image);
     }
 
-    public List<DataCardImage> getImages() {
+    public List<CardDataImage> getImages() {
         return mImages;
     }
 
@@ -227,13 +227,13 @@ public class DataCard extends PublishableCard {
         this.mBodyText = bodyText;
     }
 
-    public DataCardIntentInfo getCardClickIntentInfo() {
-        return getDataCardIntentInfoForIntent(mCardClickIntent);
+    public CardDataIntentInfo getCardClickIntentInfo() {
+        return getCardDataIntentInfoForIntent(mCardClickIntent);
     }
 
     public void setCardClickIntent(Intent cardClickIntent, boolean isBroadcast) {
         mCardClickIntent = cardClickIntent;
-        mCardClickIntent.putExtra(CmHomeContract.DataCard.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
+        mCardClickIntent.putExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
     }
 
     public String getAction1Text() {
@@ -244,13 +244,13 @@ public class DataCard extends PublishableCard {
         this.mAction1Text = action1Text;
     }
 
-    public DataCardIntentInfo getAction1IntentInfo() {
-        return getDataCardIntentInfoForIntent(mAction1Intent);
+    public CardDataIntentInfo getAction1IntentInfo() {
+        return getCardDataIntentInfoForIntent(mAction1Intent);
     }
 
     public void setAction1Intent(Intent action1Intent, boolean isBroadcast) {
         this.mAction1Intent = action1Intent;
-        mAction1Intent.putExtra(CmHomeContract.DataCard.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
+        mAction1Intent.putExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
     }
 
     public String getAction2Text() {
@@ -261,13 +261,13 @@ public class DataCard extends PublishableCard {
         this.mAction2Text = action2Text;
     }
 
-    public DataCardIntentInfo getAction2IntentInfo() {
-        return getDataCardIntentInfoForIntent(mAction2Intent);
+    public CardDataIntentInfo getAction2IntentInfo() {
+        return getCardDataIntentInfoForIntent(mAction2Intent);
     }
 
     public void setAction2Intent(Intent action2Intent, boolean isBroadcast) {
         this.mAction2Intent = action2Intent;
-        mAction1Intent.putExtra(CmHomeContract.DataCard.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
+        mAction1Intent.putExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
     }
 
     public Priority getPriority() {
@@ -286,14 +286,14 @@ public class DataCard extends PublishableCard {
         this.mPriority = priority;
     }
 
-    private DataCardIntentInfo getDataCardIntentInfoForIntent(Intent intent) {
-        DataCardIntentInfo dataCardIntentInfo = null;
+    private CardDataIntentInfo getCardDataIntentInfoForIntent(Intent intent) {
+        CardDataIntentInfo cardDataIntentInfo = null;
         if (intent != null) {
             boolean isBroadcast = isIntentBroadcast(intent);
-            dataCardIntentInfo = new DataCardIntentInfo(isBroadcast, intent);
+            cardDataIntentInfo = new CardDataIntentInfo(isBroadcast, intent);
         }
 
-        return dataCardIntentInfo;
+        return cardDataIntentInfo;
     }
 
     @Override
@@ -334,11 +334,11 @@ public class DataCard extends PublishableCard {
 
         super.publishSynchronous(context);
 
-        for (DataCardImage image : mImages) {
+        for (CardDataImage image : mImages) {
             if (image.hasValidContent()) {
                 image.publish(context);
             } else {
-                Log.e(TAG, "Invalid DataCardImage. At least uri or bitmap must be specified");
+                Log.e(TAG, "Invalid CardDataImage. At least uri or bitmap must be specified");
             }
         }
     }
@@ -353,11 +353,11 @@ public class DataCard extends PublishableCard {
         boolean updated = super.update(context);
         if (updated) {
             // Update all associated images as well
-            for (DataCardImage image : mImages) {
+            for (CardDataImage image : mImages) {
                 if (image.hasValidContent()) {
                     image.publish(context);
                 } else {
-                    Log.e(TAG, "Invalid DataCardImage. At least uri or bitmap must be specified");
+                    Log.e(TAG, "Invalid CardDataImage. At least uri or bitmap must be specified");
                 }
             }
         }
@@ -366,14 +366,14 @@ public class DataCard extends PublishableCard {
     }
 
     /**
-     * Removes this DataCard from the feed, so that it is no longer visible to the user.
+     * Removes this CardData from the feed, so that it is no longer visible to the user.
      * @param context The context of the publishing application.
      * @return True if the card was successfully unpublished, false otherwise.
      */
     @Override
     public boolean unpublish(Context context) {
         // Delete all associated images as well
-        for (DataCardImage image : mImages) {
+        for (CardDataImage image : mImages) {
             image.unpublish(context);
         }
 
@@ -395,53 +395,53 @@ public class DataCard extends PublishableCard {
     protected ContentValues getContentValues() {
         ContentValues values = new ContentValues();
 
-        values.put(CmHomeContract.DataCard.INTERNAL_ID_COL, getInternalId());
-        values.put(CmHomeContract.DataCard.REASON_COL, getReasonText());
+        values.put(CmHomeContract.CardDataContract.INTERNAL_ID_COL, getInternalId());
+        values.put(CmHomeContract.CardDataContract.REASON_COL, getReasonText());
 
         if (getContentCreatedDate() != null) {
-            values.put(CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL,
+            values.put(CmHomeContract.CardDataContract.DATE_CONTENT_CREATED_COL,
                        getContentCreatedDate().getTime());
         }
 
         if (getContentSourceImageUri() != null) {
-            values.put(CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL,
+            values.put(CmHomeContract.CardDataContract.CONTENT_SOURCE_IMAGE_URI_COL,
                        getContentSourceImageUri().toString());
         }
 
         if (getAvatarImageUri() != null) {
-            values.put(CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL,
+            values.put(CmHomeContract.CardDataContract.AVATAR_IMAGE_URI_COL,
                        getAvatarImageUri().toString());
         }
 
-        values.put(CmHomeContract.DataCard.TITLE_TEXT_COL,
+        values.put(CmHomeContract.CardDataContract.TITLE_TEXT_COL,
                    getTitle());
-        values.put(CmHomeContract.DataCard.SMALL_TEXT_COL,
+        values.put(CmHomeContract.CardDataContract.SMALL_TEXT_COL,
                    getSmallText());
-        values.put(CmHomeContract.DataCard.BODY_TEXT_COL,
+        values.put(CmHomeContract.CardDataContract.BODY_TEXT_COL,
                    getBodyText());
-        values.put(CmHomeContract.DataCard.ACTION_1_TEXT_COL,
+        values.put(CmHomeContract.CardDataContract.ACTION_1_TEXT_COL,
                    getAction1Text());
 
         if (getAction1IntentInfo() != null) {
-            values.put(CmHomeContract.DataCard.ACTION_1_URI_COL,
+            values.put(CmHomeContract.CardDataContract.ACTION_1_URI_COL,
                        getAction1IntentInfo().getIntent().toUri(Intent.URI_INTENT_SCHEME)
                                              .toString());
         }
 
-        values.put(CmHomeContract.DataCard.ACTION_2_TEXT_COL,
+        values.put(CmHomeContract.CardDataContract.ACTION_2_TEXT_COL,
                    getAction2Text());
 
         if (getAction2IntentInfo() != null) {
-            values.put(CmHomeContract.DataCard.ACTION_2_URI_COL,
+            values.put(CmHomeContract.CardDataContract.ACTION_2_URI_COL,
                        getAction2IntentInfo().getIntent().
                                toUri(Intent.URI_INTENT_SCHEME).toString());
         }
 
-        values.put(CmHomeContract.DataCard.PRIORITY_COL,
+        values.put(CmHomeContract.CardDataContract.PRIORITY_COL,
                    getPriorityAsInt());
 
         if (getCardClickIntentInfo() != null) {
-            values.put(CmHomeContract.DataCard.CARD_CLICK_URI_COL,
+            values.put(CmHomeContract.CardDataContract.CARD_CLICK_URI_COL,
                        getCardClickIntentInfo().getIntent().
                                toUri(Intent.URI_INTENT_SCHEME).toString());
         }
@@ -449,157 +449,159 @@ public class DataCard extends PublishableCard {
         return values;
     }
 
-    public static List<DataCard> getAllPublishedDataCards(Context context) {
-        return getAllPublishedDataCards(context,
-                                        CmHomeContract.DataCard.CONTENT_URI,
-                                        CmHomeContract.DataCardImage.CONTENT_URI);
+    public static List<CardData> getAllPublishedCardDatas(Context context) {
+        return getAllPublishedCardDatas(context,
+                                        CmHomeContract.CardDataContract.CONTENT_URI,
+                                        CmHomeContract.CardDataImageContract.CONTENT_URI);
     }
 
-    public static DataCard createFromCurrentCursorRow(Cursor cursor, String authority) {
-        DataCard card = createFromCurrentCursorRow(cursor);
+    public static CardData createFromCurrentCursorRow(Cursor cursor, String authority) {
+        CardData card = createFromCurrentCursorRow(cursor);
         card.setAuthority(authority);
         return card;
     }
 
-    public static DataCard createFromCurrentCursorRow(Cursor cursor) {
-        DataCard dataCard = new DataCard();
+    public static CardData createFromCurrentCursorRow(Cursor cursor) {
+        CardData cardData = new CardData();
 
-        dataCard.setId(cursor.getInt(cursor.getColumnIndex(CmHomeContract.DataCard._ID)));
-        dataCard.setInternalId(cursor.getString(cursor.getColumnIndex(CmHomeContract.DataCard
+        cardData.setId(cursor.getInt(cursor.getColumnIndex(CmHomeContract.CardDataContract._ID)));
+        cardData.setInternalId(cursor.getString(cursor.getColumnIndex(
+                CmHomeContract.CardDataContract
                                                                       .INTERNAL_ID_COL)));
-        long createdTime = cursor.getLong(cursor.getColumnIndex(CmHomeContract.DataCard
+        long createdTime = cursor.getLong(cursor.getColumnIndex(CmHomeContract.CardDataContract
                                                                 .DATE_CREATED_COL));
-        dataCard.setCreatedDate(new Date(createdTime));
-        long modifiedTime = cursor.getLong(cursor.getColumnIndex(CmHomeContract.DataCard
+        cardData.setCreatedDate(new Date(createdTime));
+        long modifiedTime = cursor.getLong(cursor.getColumnIndex(CmHomeContract.CardDataContract
                                                                  .LAST_MODIFIED_COL));
-        dataCard.setLastModifiedDate(new Date(modifiedTime));
+        cardData.setLastModifiedDate(new Date(modifiedTime));
         long contentCreatedTime = cursor.getLong(
-                cursor.getColumnIndex(CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL));
-        dataCard.setContentCreatedDate(new Date(contentCreatedTime));
-        dataCard.setReasonText(cursor.getString(cursor.getColumnIndex(CmHomeContract.DataCard
+                cursor.getColumnIndex(CmHomeContract.CardDataContract.DATE_CONTENT_CREATED_COL));
+        cardData.setContentCreatedDate(new Date(contentCreatedTime));
+        cardData.setReasonText(cursor.getString(cursor.getColumnIndex(
+                CmHomeContract.CardDataContract
                                                                            .REASON_COL)));
         String contentSourceUriString =
                 cursor.getString(cursor.getColumnIndex(
-                        CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL));
+                        CmHomeContract.CardDataContract.CONTENT_SOURCE_IMAGE_URI_COL));
 
         if (!TextUtils.isEmpty(contentSourceUriString)) {
-            dataCard.setContentSourceImage(Uri.parse(contentSourceUriString));
+            cardData.setContentSourceImage(Uri.parse(contentSourceUriString));
         }
 
         String avatarImageUriString =
                 cursor.getString(cursor.getColumnIndex(
-                        CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL));
+                        CmHomeContract.CardDataContract.AVATAR_IMAGE_URI_COL));
         if (!TextUtils.isEmpty(avatarImageUriString)) {
-            dataCard.setAvatarImage(Uri.parse(avatarImageUriString));
+            cardData.setAvatarImage(Uri.parse(avatarImageUriString));
         }
 
-        dataCard.setTitle(cursor.getString(
-                cursor.getColumnIndex(CmHomeContract.DataCard.TITLE_TEXT_COL)));
-        dataCard.setSmallText(
+        cardData.setTitle(cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.CardDataContract.TITLE_TEXT_COL)));
+        cardData.setSmallText(
                 cursor.getString(cursor.getColumnIndex(
-                        CmHomeContract.DataCard.SMALL_TEXT_COL)));
-        dataCard.setBodyText(cursor.getString(
-                cursor.getColumnIndex(CmHomeContract.DataCard.BODY_TEXT_COL)));
-        dataCard.setAction1Text(
+                        CmHomeContract.CardDataContract.SMALL_TEXT_COL)));
+        cardData.setBodyText(cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.CardDataContract.BODY_TEXT_COL)));
+        cardData.setAction1Text(
                 cursor.getString(cursor.getColumnIndex(
-                        CmHomeContract.DataCard.ACTION_1_TEXT_COL)));
+                        CmHomeContract.CardDataContract.ACTION_1_TEXT_COL)));
 
         String clickActionUriString = cursor.getString(
-                cursor.getColumnIndex(CmHomeContract.DataCard.CARD_CLICK_URI_COL));
+                cursor.getColumnIndex(CmHomeContract.CardDataContract.CARD_CLICK_URI_COL));
         if (!TextUtils.isEmpty(clickActionUriString)) {
             try {
                 Intent cardClickIntent = Intent.parseUri(clickActionUriString,
                                                          Intent.URI_INTENT_SCHEME);
-                dataCard.setCardClickIntent(cardClickIntent, isIntentBroadcast(cardClickIntent));
+                cardData.setCardClickIntent(cardClickIntent, isIntentBroadcast(cardClickIntent));
             } catch (URISyntaxException e) {
                 Log.e(TAG, "Unable to parse uri to Intent: " + clickActionUriString);
             }
         }
 
         String action1UriString = cursor.getString(
-                cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_1_URI_COL));
+                cursor.getColumnIndex(CmHomeContract.CardDataContract.ACTION_1_URI_COL));
         if (!TextUtils.isEmpty(action1UriString)) {
             try {
                 Intent action1Intent = Intent.parseUri(action1UriString,
                                                           Intent.URI_INTENT_SCHEME);
-                dataCard.setAction1Intent(action1Intent,
+                cardData.setAction1Intent(action1Intent,
                                           isIntentBroadcast(action1Intent));
             } catch (URISyntaxException e) {
                 Log.e(TAG, "Unable to parse uri to Intent: " + action1UriString);
             }
         }
 
-        dataCard.setAction2Text(cursor.getString(
-                cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_2_TEXT_COL)));
+        cardData.setAction2Text(cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.CardDataContract.ACTION_2_TEXT_COL)));
 
         String action2UriString = cursor.getString(
-                cursor.getColumnIndex(CmHomeContract.DataCard.ACTION_2_URI_COL));
+                cursor.getColumnIndex(CmHomeContract.CardDataContract.ACTION_2_URI_COL));
         if (!TextUtils.isEmpty(action2UriString)) {
             try {
                 Intent action2Intent = Intent.parseUri(action2UriString,
                                                           Intent.URI_INTENT_SCHEME);
-                dataCard.setAction2Intent(action2Intent,
+                cardData.setAction2Intent(action2Intent,
                                           isIntentBroadcast(action2Intent));
             } catch (URISyntaxException e) {
                 Log.e(TAG, "Unable to parse uri to Intent: " + action2UriString);
             }
         }
 
-        int priority = cursor.getInt(cursor.getColumnIndex(CmHomeContract.DataCard
+        int priority = cursor.getInt(cursor.getColumnIndex(CmHomeContract.CardDataContract
                                                                         .PRIORITY_COL));
-        dataCard.setPriority(priority);
+        cardData.setPriority(priority);
 
-        return dataCard;
+        return cardData;
     }
 
     private static boolean isIntentBroadcast(Intent intent) {
         boolean isBroadcast = false;
         if (intent != null) {
-            isBroadcast = intent.getBooleanExtra(CmHomeContract.DataCard.IS_BROADCAST_INTENT_EXTRA,
+            isBroadcast = intent.getBooleanExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA,
                                                  false);
         }
         return isBroadcast;
     }
 
-    public static List<DataCard> getAllPublishedDataCards(Context context,
-                                                          Uri dataCardContentUri,
-                                                          Uri dataCardImageContentUri) {
+    public static List<CardData> getAllPublishedCardDatas(Context context,
+                                                          Uri cardDataContentUri,
+                                                          Uri cardDataImageContentUri) {
         ContentResolver contentResolver = context.getContentResolver();
-        List<DataCard> allCards = new ArrayList<DataCard>();
+        List<CardData> allCards = new ArrayList<CardData>();
         Cursor cursor = null;
         try {
-            cursor = contentResolver.query(dataCardContentUri,
-                                           CmHomeContract.DataCard.PROJECTION_ALL,
+            cursor = contentResolver.query(cardDataContentUri,
+                                           CmHomeContract.CardDataContract.PROJECTION_ALL,
                                            null,
                                            null,
-                                           CmHomeContract.DataCard.DATE_CREATED_COL);
+                                           CmHomeContract.CardDataContract.DATE_CREATED_COL);
         // Catching all Exceptions, since we can't be sure what the extension will do.
         } catch (Exception e) {
-            Log.e(TAG, "Error querying for DataCards, ContentProvider threw an exception for uri:" +
-                       " " + dataCardContentUri, e);
+            Log.e(TAG, "Error querying for CardDatas, ContentProvider threw an exception for uri:" +
+                       " " + cardDataContentUri, e);
         }
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                DataCard dataCard = createFromCurrentCursorRow(cursor,
-                                                               dataCardContentUri.getAuthority());
-                allCards.add(dataCard);
+                CardData cardData = createFromCurrentCursorRow(cursor,
+                                                               cardDataContentUri.getAuthority());
+                allCards.add(cardData);
             }
 
             cursor.close();
         }
 
 
-        // Retrieve all DataCardImages for each DataCard.
+        // Retrieve all CardDataImages for each CardData.
         // Doing this in a separate loop since each iteration
         // will also be querying the ContentProvider.
-        for (DataCard card : allCards) {
-            List<DataCardImage> images = DataCardImage
-                    .getPublishedDataCardImagesForDataCardId(context,
-                                                             dataCardImageContentUri,
+        for (CardData card : allCards) {
+            List<CardDataImage> images = CardDataImage
+                    .getPublishedCardDataImagesForCardDataId(context,
+                                                             cardDataImageContentUri,
                                                              card.getId());
-            for (DataCardImage image : images) {
-                card.addDataCardImage(image);
+            for (CardDataImage image : images) {
+                card.addCardDataImage(image);
             }
         }
 
@@ -643,19 +645,19 @@ public class DataCard extends PublishableCard {
         };
 
         Uri deleteCardUri = Uri.withAppendedPath(CmHomeContract.CONTENT_URI,
-                                        CmHomeContract.DataCard.SINGLE_ROW_DELETE_URI_PATH);
+                                        CmHomeContract.CardDataContract.SINGLE_ROW_DELETE_URI_PATH);
         context.getContentResolver().registerContentObserver(deleteCardUri, true, observer);
     }
 
     /**
-     * A wrapper class that contains information about a DataCard related intent,
+     * A wrapper class that contains information about a CardData related intent,
      * as well as the Intent itself.
      */
-    public class DataCardIntentInfo {
+    public class CardDataIntentInfo {
         private boolean mIsBroadcast;
         private Intent mIntent;
 
-        public DataCardIntentInfo(boolean isBroadcast, Intent theIntent) {
+        public CardDataIntentInfo(boolean isBroadcast, Intent theIntent) {
             mIsBroadcast = isBroadcast;
             mIntent = theIntent;
         }

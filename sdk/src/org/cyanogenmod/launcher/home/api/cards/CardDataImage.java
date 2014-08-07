@@ -16,28 +16,28 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataCardImage extends PublishableCard {
-    private final static String   TAG = "DataCardImage";
-    private final static CmHomeContract.ICmHomeContract sContract
-                                       = new CmHomeContract.DataCardImage();
-    private long                  mDataCardId;
-    private DataCard              mLinkedDataCard;
+public class CardDataImage extends PublishableCard {
+    private final static String TAG = "CardDataImage";
+    private final static CmHomeContract.ICmHomeContract sContract =
+                                        new CmHomeContract.CardDataImageContract();
+    private long                  mCardDataId;
+    private CardData              mLinkedCardData;
     private Uri                   mImageUri;
     private String                mInternalId;
     private String                mImageLabel;
     private WeakReference<Bitmap> mImageBitmap;
     private int                   mImageResourceId = 0;
 
-    public DataCardImage(DataCard linkedDataCard) {
+    public CardDataImage(CardData linkedCardData) {
         super(sContract);
 
-        mLinkedDataCard = linkedDataCard;
+        mLinkedCardData = linkedCardData;
     }
 
-    private DataCardImage(long dataCardId, Uri imageUri) {
+    private CardDataImage(long cardDataId, Uri imageUri) {
         super(sContract);
 
-        mDataCardId = dataCardId;
+        mCardDataId = cardDataId;
         mImageUri = imageUri;
     }
 
@@ -49,12 +49,12 @@ public class DataCardImage extends PublishableCard {
         return mInternalId;
     }
 
-    public long getDataCardId() {
-        return mDataCardId;
+    public long getCardDataId() {
+        return mCardDataId;
     }
 
-    public void setDataCardId(long dataCardId) {
-        mDataCardId = dataCardId;
+    public void setCardDataId(long cardDataId) {
+        mCardDataId = cardDataId;
     }
 
     public Uri getImageUri() {
@@ -72,7 +72,7 @@ public class DataCardImage extends PublishableCard {
     /**
      * Sets the image bitmap to the given bitmap.
      *
-     * @param bitmap The Bitmap to save for this DataCardImage
+     * @param bitmap The Bitmap to save for this CardDataImage
      */
     public void setImage(Bitmap bitmap) {
         if (bitmap == null) return;
@@ -103,55 +103,55 @@ public class DataCardImage extends PublishableCard {
     protected ContentValues getContentValues() {
         ContentValues values = new ContentValues();
 
-        values.put(CmHomeContract.DataCardImage.INTERNAL_ID_COL, getInternalId());
-        values.put(CmHomeContract.DataCardImage.DATA_CARD_ID_COL, getDataCardId());
-        values.put(CmHomeContract.DataCardImage.IMAGE_LABEL_COL, getImageLabel());
+        values.put(CmHomeContract.CardDataImageContract.INTERNAL_ID_COL, getInternalId());
+        values.put(CmHomeContract.CardDataImageContract.CARD_DATA_ID_COL, getCardDataId());
+        values.put(CmHomeContract.CardDataImageContract.IMAGE_LABEL_COL, getImageLabel());
 
         if (getImageUri() != null) {
-            values.put(CmHomeContract.DataCardImage.IMAGE_URI_COL, getImageUri().toString());
+            values.put(CmHomeContract.CardDataImageContract.IMAGE_URI_COL, getImageUri().toString());
         }
 
         return values;
     }
 
-    public static List<DataCardImage> getAllPublishedDataCardImages(Context context) {
+    public static List<CardDataImage> getAllPublishedCardDataImages(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = null;
         try {
-            cursor = contentResolver.query(CmHomeContract.DataCardImage.CONTENT_URI,
-                                           CmHomeContract.DataCardImage.PROJECTION_ALL,
+            cursor = contentResolver.query(CmHomeContract.CardDataImageContract.CONTENT_URI,
+                                           CmHomeContract.CardDataImageContract.PROJECTION_ALL,
                                            null,
                                            null,
                                            null);
             // Catching all Exceptions, since we can't be sure what the extension will do.
         } catch (Exception e) {
-            Log.e(TAG, "Error querying for DataCards, ContentProvider threw an exception for uri:" +
-                       " " + CmHomeContract.DataCardImage.CONTENT_URI, e);
+            Log.e(TAG, "Error querying for CardDatas, ContentProvider threw an exception for uri:" +
+                       " " + CmHomeContract.CardDataImageContract.CONTENT_URI, e);
         }
 
-        List<DataCardImage> allImages = getAllDataCardImagesFromCursor(cursor);
+        List<CardDataImage> allImages = getAllCardDataImagesFromCursor(cursor);
         cursor.close();
         return allImages;
     }
 
-    private static List<DataCardImage> getAllDataCardImagesFromCursor(Cursor cursor) {
-        List<DataCardImage> allImages = new ArrayList<DataCardImage>();
+    private static List<CardDataImage> getAllCardDataImagesFromCursor(Cursor cursor) {
+        List<CardDataImage> allImages = new ArrayList<CardDataImage>();
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                int dataCardId = cursor.getInt(
-                        cursor.getColumnIndex(CmHomeContract.DataCardImage.DATA_CARD_ID_COL));
+                int cardDataId = cursor.getInt(
+                        cursor.getColumnIndex(CmHomeContract.CardDataImageContract.CARD_DATA_ID_COL));
                 String imageUriString = cursor.getString(
-                        cursor.getColumnIndex(CmHomeContract.DataCardImage.IMAGE_URI_COL));
+                        cursor.getColumnIndex(CmHomeContract.CardDataImageContract.IMAGE_URI_COL));
                 int imageId = cursor
-                        .getInt(cursor.getColumnIndex(CmHomeContract.DataCardImage._ID));
+                        .getInt(cursor.getColumnIndex(CmHomeContract.CardDataImageContract._ID));
                 String internalId = cursor.getString(
-                        cursor.getColumnIndex(CmHomeContract.DataCardImage.INTERNAL_ID_COL));
+                        cursor.getColumnIndex(CmHomeContract.CardDataImageContract.INTERNAL_ID_COL));
                 String imageLabel = cursor.getString(
-                        cursor.getColumnIndex(CmHomeContract.DataCardImage.IMAGE_LABEL_COL));
+                        cursor.getColumnIndex(CmHomeContract.CardDataImageContract.IMAGE_LABEL_COL));
 
                 if (!TextUtils.isEmpty(imageUriString)) {
-                    DataCardImage image = new DataCardImage(dataCardId, Uri.parse(imageUriString));
+                    CardDataImage image = new CardDataImage(cardDataId, Uri.parse(imageUriString));
                     image.setId(imageId);
                     image.setInternalId(internalId);
                     image.setImageLabel(imageLabel);
@@ -162,31 +162,31 @@ public class DataCardImage extends PublishableCard {
         return allImages;
     }
 
-    public static List<DataCardImage> getPublishedDataCardImagesForDataCardId(Context context,
-                                                                              long dataCardId) {
-        return getPublishedDataCardImagesForDataCardId(context,
-                                                       CmHomeContract.DataCardImage.CONTENT_URI,
-                                                       dataCardId);
+    public static List<CardDataImage> getPublishedCardDataImagesForCardDataId(Context context,
+                                                                              long cardDataId) {
+        return getPublishedCardDataImagesForCardDataId(context,
+                                                       CmHomeContract.CardDataImageContract.CONTENT_URI,
+                                                       cardDataId);
     }
 
-    public static List<DataCardImage> getPublishedDataCardImagesForDataCardId(Context context,
+    public static List<CardDataImage> getPublishedCardDataImagesForCardDataId(Context context,
                                                                               Uri contentUri,
-                                                                              long dataCardId) {
+                                                                              long cardDataId) {
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = null;
         try {
             cursor = contentResolver.query(contentUri,
-                                           CmHomeContract.DataCardImage.PROJECTION_ALL,
-                                           CmHomeContract.DataCardImage.DATA_CARD_ID_COL + " = ?",
-                                           new String[]{Long.toString(dataCardId)},
+                                           CmHomeContract.CardDataImageContract.PROJECTION_ALL,
+                                           CmHomeContract.CardDataImageContract.CARD_DATA_ID_COL + " = ?",
+                                           new String[]{Long.toString(cardDataId)},
                                            null);
             // Catching all Exceptions, since we can't be sure what the extension will do.
         } catch (Exception e) {
-            Log.e(TAG, "Error querying for DataCards, ContentProvider threw an exception for uri:" +
+            Log.e(TAG, "Error querying for CardDatas, ContentProvider threw an exception for uri:" +
                        " " + contentUri, e);
         }
 
-        List<DataCardImage> allImages = getAllDataCardImagesFromCursor(cursor);
+        List<CardDataImage> allImages = getAllCardDataImagesFromCursor(cursor);
         cursor.close();
         return allImages;
     }
@@ -199,10 +199,10 @@ public class DataCardImage extends PublishableCard {
 
     @Override
     protected void publishSynchronous(Context context){
-        // Store the current id of the linked DataCard, in case it has
+        // Store the current id of the linked CardData, in case it has
         // changed before publish.
-        if (mLinkedDataCard != null) {
-            mDataCardId = mLinkedDataCard.getId();
+        if (mLinkedCardData != null) {
+            mCardDataId = mLinkedCardData.getId();
         }
 
         if (mImageResourceId != 0) {
