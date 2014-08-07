@@ -467,6 +467,10 @@ public class CmHomeContentProvider extends ContentProvider {
                     if (outputStream != null) {
                         outputStream.close();
                     }
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable to save bitmap to temporary file, IOException occurred.");
+                }
+                try {
                     if (byteArrayOutputStream != null) {
                         byteArrayOutputStream.close();
                     }
