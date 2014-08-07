@@ -1,12 +1,13 @@
 package org.cyanogenmod.launcher.cards;
 
-import android.content.Context;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.Card.OnSwipeListener;
 
 import org.cyanogenmod.launcher.home.api.cards.DataCard;
 
-import it.gmariotti.cardslib.library.internal.Card;
+import android.content.Context;
 
-public class ApiCard extends Card {
+public class ApiCard extends Card implements OnSwipeListener {
 
     private DataCard mDataCard;
 
@@ -22,7 +23,7 @@ public class ApiCard extends Card {
 
     private void init(DataCard dataCard) {
         mDataCard = dataCard;
-        setSwipeable(true);
+        setOnSwipeListener(this);
         if (dataCard != null) {
             setId(dataCard.getGlobalId());
         }
@@ -46,5 +47,12 @@ public class ApiCard extends Card {
 
     public DataCard getDataCard() {
         return mDataCard;
+    }
+
+    @Override
+    public void onSwipe(Card card) {
+        if (mDataCard != null) {
+            mDataCard.unpublish(mContext);
+        }
     }
 }
