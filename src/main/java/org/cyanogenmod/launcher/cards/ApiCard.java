@@ -1,12 +1,14 @@
 package org.cyanogenmod.launcher.cards;
 
-import android.content.Context;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.Card.OnUndoSwipeListListener;
 
+import org.cyanogenmod.launcher.cardprovider.CmHomeApiCardProvider;
 import org.cyanogenmod.launcher.home.api.cards.DataCard;
 
-import it.gmariotti.cardslib.library.internal.Card;
+import android.content.Context;
 
-public class ApiCard extends Card {
+public class ApiCard extends Card implements OnUndoSwipeListListener {
 
     private DataCard mDataCard;
 
@@ -23,6 +25,7 @@ public class ApiCard extends Card {
     private void init(DataCard dataCard) {
         mDataCard = dataCard;
         setSwipeable(true);
+        setOnUndoSwipeListListener(this);
         if (dataCard != null) {
             setId(dataCard.getGlobalId());
         }
@@ -46,5 +49,15 @@ public class ApiCard extends Card {
 
     public DataCard getDataCard() {
         return mDataCard;
+    }
+
+    @Override
+    public void onUndoSwipe(Card card, boolean timedOut) {
+        if (mDataCard != null && timedOut) {
+            boolean deleted = mDataCard.unpublish(mContext);
+            if (deleted) {
+                CmHomeApiCardProvider.sendCardDeletedBroadcast(mContext, mDataCard);
+            }
+        }
     }
 }
