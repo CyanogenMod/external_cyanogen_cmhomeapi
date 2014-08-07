@@ -115,9 +115,7 @@ public class CmHomeApiCardProvider implements ICardProvider,
     public Card createCardForId(String id) {
         DataCard dataCard = mApiManager.getCardWithGlobalId(id);
         if (dataCard != null) {
-            ApiCard apiCard = new ApiCard(mCmHomeContext);
-            apiCard.updateFromDataCard(dataCard);
-            return apiCard;
+            return getCardFromDataCard(dataCard);
         }
         return null;
     }
