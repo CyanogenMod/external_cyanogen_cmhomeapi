@@ -13,48 +13,49 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME          = "CmHomeAPI.db";
     private static final String TAG                    = "CmHomeDatabaseHelper";
     private static final int    DATABASE_VERSION       = 1;
-    public static final String DATA_CARD_TABLE_NAME    = "DataCard";
-    private static final String DATA_CARD_TABLE_CREATE =
-            "CREATE TABLE " + DATA_CARD_TABLE_NAME +
-            "(" + CmHomeContract.DataCard._ID + " INTEGER PRIMARY KEY NOT NULL," +
-            CmHomeContract.DataCard.INTERNAL_ID_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.REASON_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.DATE_CONTENT_CREATED_COL + " TEXT NOT NULL," +
-            CmHomeContract.DataCard.DATE_CREATED_COL + " TEXT DEFAULT CURRENT_TIMESTAMP " +
+    public static final  String CARD_DATA_TABLE_NAME   = "CardData";
+    private static final String CARD_DATA_TABLE_CREATE =
+            "CREATE TABLE " + CARD_DATA_TABLE_NAME +
+            "(" + CmHomeContract.CardDataContract._ID + " INTEGER PRIMARY KEY NOT NULL," +
+            CmHomeContract.CardDataContract.INTERNAL_ID_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.REASON_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.DATE_CONTENT_CREATED_COL + " TEXT NOT NULL," +
+            CmHomeContract.CardDataContract.DATE_CREATED_COL + " TEXT DEFAULT CURRENT_TIMESTAMP " +
             "NOT NULL," +
-            CmHomeContract.DataCard.LAST_MODIFIED_COL + " TEXT DEFAULT CURRENT_TIMESTAMP " +
+            CmHomeContract.CardDataContract.LAST_MODIFIED_COL + " TEXT DEFAULT CURRENT_TIMESTAMP " +
             "NOT NULL," +
-            CmHomeContract.DataCard.CONTENT_SOURCE_IMAGE_URI_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.AVATAR_IMAGE_URI_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.TITLE_TEXT_COL + " TEXT NOT NULL," +
-            CmHomeContract.DataCard.SMALL_TEXT_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.BODY_TEXT_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.CARD_CLICK_URI_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.ACTION_1_TEXT_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.ACTION_1_URI_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.ACTION_2_TEXT_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.ACTION_2_URI_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCard.PRIORITY_COL + " INTEGER DEFAULT NULL);";
+            CmHomeContract.CardDataContract.CONTENT_SOURCE_IMAGE_URI_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.AVATAR_IMAGE_URI_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.TITLE_TEXT_COL + " TEXT NOT NULL," +
+            CmHomeContract.CardDataContract.SMALL_TEXT_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.BODY_TEXT_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.CARD_CLICK_URI_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.ACTION_1_TEXT_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.ACTION_1_URI_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.ACTION_2_TEXT_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.ACTION_2_URI_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.PRIORITY_COL + " INTEGER DEFAULT NULL);";
 
-    private static final String DATA_CARD_UPDATE_TIME_TRIGGER =
-            "CREATE TRIGGER data_card_update_time_trigger " +
-            "AFTER UPDATE ON " + DATA_CARD_TABLE_NAME + " FOR EACH ROW" +
+    private static final String CARD_DATA_UPDATE_TIME_TRIGGER =
+            "CREATE TRIGGER card_data_update_time_trigger " +
+            "AFTER UPDATE ON " + CARD_DATA_TABLE_NAME + " FOR EACH ROW" +
             " BEGIN " +
-            "UPDATE " + DATA_CARD_TABLE_NAME +
+            "UPDATE " + CARD_DATA_TABLE_NAME +
             " SET " + "last_modified" + " = CURRENT_TIMESTAMP" +
             " WHERE " + "_id" + " = old._id;" +
             " END";
 
-    public static final String DATA_CARD_IMAGE_TABLE_NAME   = "DataCardImage";
-    private static final String DATA_CARD_IMAGE_TABLE_CREATE =
-            "CREATE TABLE " + DATA_CARD_IMAGE_TABLE_NAME +
-            "(" + CmHomeContract.DataCardImage._ID + " INTEGER PRIMARY KEY," +
-            CmHomeContract.DataCardImage.DATA_CARD_ID_COL + " INTEGER NOT NULL," +
-            CmHomeContract.DataCardImage.INTERNAL_ID_COL + " TEXT DEFAULT NULL," +
-            CmHomeContract.DataCardImage.IMAGE_URI_COL + " TEXT NOT NULL," +
-            CmHomeContract.DataCardImage.IMAGE_LABEL_COL + " TEXT DEFAULT NULL," +
-            "FOREIGN KEY(" + CmHomeContract.DataCardImage.DATA_CARD_ID_COL  + ") REFERENCES " +
-            DATA_CARD_TABLE_NAME + "(" + CmHomeContract.DataCard._ID  + "));";
+    public static final  String CARD_DATA_IMAGE_TABLE_NAME   = "CardDataImage";
+    private static final String CARD_DATA_IMAGE_TABLE_CREATE =
+            "CREATE TABLE " + CARD_DATA_IMAGE_TABLE_NAME +
+            "(" + CmHomeContract.CardDataImageContract._ID + " INTEGER PRIMARY KEY," +
+            CmHomeContract.CardDataImageContract.CARD_DATA_ID_COL + " INTEGER NOT NULL," +
+            CmHomeContract.CardDataImageContract.INTERNAL_ID_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataImageContract.IMAGE_URI_COL + " TEXT NOT NULL," +
+            CmHomeContract.CardDataImageContract.IMAGE_LABEL_COL + " TEXT DEFAULT NULL," +
+            "FOREIGN KEY(" + CmHomeContract.CardDataImageContract.CARD_DATA_ID_COL +
+            ") REFERENCES " +
+            CARD_DATA_TABLE_NAME + "(" + CmHomeContract.CardDataContract._ID + "));";
 
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS";
 
@@ -64,17 +65,17 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        database.execSQL(DATA_CARD_TABLE_CREATE);
-        database.execSQL(DATA_CARD_UPDATE_TIME_TRIGGER);
-        database.execSQL(DATA_CARD_IMAGE_TABLE_CREATE);
+        database.execSQL(CARD_DATA_TABLE_CREATE);
+        database.execSQL(CARD_DATA_UPDATE_TIME_TRIGGER);
+        database.execSQL(CARD_DATA_IMAGE_TABLE_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion +
                    ". All existing data will be destroyed.");
-        database.execSQL(DROP_TABLE_STATEMENT + " " + DATA_CARD_TABLE_NAME);
-        database.execSQL(DROP_TABLE_STATEMENT + " " + DATA_CARD_IMAGE_TABLE_NAME);
+        database.execSQL(DROP_TABLE_STATEMENT + " " + CARD_DATA_TABLE_NAME);
+        database.execSQL(DROP_TABLE_STATEMENT + " " + CARD_DATA_IMAGE_TABLE_NAME);
         onCreate(database);
     }
 }

@@ -18,7 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
-import org.cyanogenmod.launcher.home.api.cards.DataCard;
+import org.cyanogenmod.launcher.home.api.cards.CardData;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
 import java.util.ArrayList;
@@ -30,19 +30,19 @@ public class CMHomeApiManager {
     private final static String TAG = "CMHomeApiManager";
     private final static String FEED_READ_PERM = "org.cyanogenmod.launcher.home.api.FEED_READ";
     private final static String FEED_WRITE_PERM = "org.cyanogenmod.launcher.home.api.FEED_WRITE";
-    private static final int    DATA_CARD_LIST                = 1;
-    private static final int    DATA_CARD_ITEM                = 2;
-    private static final int    DATA_CARD_DELETE_ITEM         = 3;
-    private static final int    DATA_CARD_IMAGE_LIST          = 4;
-    private static final int    DATA_CARD_IMAGE_ITEM          = 5;
-    private static final int    DATA_CARD_IMAGE_DELETE_ITEM   = 6;
-    private static final int    UPDATE_DATA_CARD_MESSAGE_WHAT = 0;
-    private static final int    DELETE_DATA_CARD_MESSAGE_WHAT = 1;
+    private static final int    CARD_DATA_LIST                = 1;
+    private static final int    CARD_DATA_ITEM                = 2;
+    private static final int    CARD_DATA_DELETE_ITEM         = 3;
+    private static final int    CARD_DATA_IMAGE_LIST          = 4;
+    private static final int    CARD_DATA_IMAGE_ITEM          = 5;
+    private static final int    CARD_DATA_IMAGE_DELETE_ITEM   = 6;
+    private static final int    UPDATE_CARD_DATA_MESSAGE_WHAT = 0;
+    private static final int    DELETE_CARD_DATA_MESSAGE_WHAT = 1;
     private static final String CARD_MESSAGE_BUNDLE_ID_KEY    = "CardId";
 
     private HashMap<String, ProviderInfo> mProviders = new HashMap<String, ProviderInfo>();
-    private HashMap<String, LongSparseArray<DataCard>> mCards = new HashMap<String,
-                                                                  LongSparseArray<DataCard>>();
+    private HashMap<String, LongSparseArray<CardData>> mCards = new HashMap<String,
+                                                                  LongSparseArray<CardData>>();
 
     private CardContentObserver mContentObserver;
     private HandlerThread mContentObserverHandlerThread;
@@ -58,11 +58,11 @@ public class CMHomeApiManager {
 
             if (!TextUtils.isEmpty(globalId)) {
                 switch (msg.what) {
-                    case UPDATE_DATA_CARD_MESSAGE_WHAT:
+                    case UPDATE_CARD_DATA_MESSAGE_WHAT:
                         // Update listeners that a card has changed.
                         mApiUpdateListener.onCardInsertOrUpdate(globalId);
                         break;
-                    case DELETE_DATA_CARD_MESSAGE_WHAT:
+                    case DELETE_CARD_DATA_MESSAGE_WHAT:
                         globalId = msg.getData().getString(CARD_MESSAGE_BUNDLE_ID_KEY);
                         // Update listeners that a card has been deleted
                         mApiUpdateListener.onCardDelete(globalId);
@@ -82,7 +82,7 @@ public class CMHomeApiManager {
     }
 
     public boolean hasCard(String apiAuthority, long cardId) {
-        LongSparseArray<DataCard> cards = mCards.get(apiAuthority);
+        LongSparseArray<CardData> cards = mCards.get(apiAuthority);
         boolean hasCard = false;
         if (cards != null) {
             hasCard = cards.get(cardId) != null;
@@ -90,16 +90,16 @@ public class CMHomeApiManager {
         return hasCard;
     }
 
-    public DataCard getCard(String apiAuthority, long cardId) {
-        LongSparseArray<DataCard> cards = mCards.get(apiAuthority);
-        DataCard card = null;
+    public CardData getCard(String apiAuthority, long cardId) {
+        LongSparseArray<CardData> cards = mCards.get(apiAuthority);
+        CardData card = null;
         if (cards != null) {
             card = cards.get(cardId);
         }
         return card;
     }
 
-    public DataCard getCardWithGlobalId(String cardId) {
+    public CardData getCardWithGlobalId(String cardId) {
         String[] idParts = cardId.split("/");
         if (idParts.length > 1) {
             String apiAuthority = idParts[0];
@@ -170,9 +170,11 @@ public class CMHomeApiManager {
          for (Map.Entry<String, ProviderInfo> entry : mProviders.entrySet()) {
              ProviderInfo providerInfo = entry.getValue();
              Uri getCardsUri = Uri.parse("content://" + providerInfo.authority + "/" +
-                                         CmHomeContract.DataCard.LIST_INSERT_UPDATE_URI_PATH);
+                                         CmHomeContract.CardDataContract
+                                                 .LIST_INSERT_UPDATE_URI_PATH);
              Uri getImagesUri = Uri.parse("content://" + providerInfo.authority + "/" +
-                                          CmHomeContract.DataCardImage.LIST_INSERT_UPDATE_URI_PATH);
+                                          CmHomeContract.CardDataImageContract
+                                                  .LIST_INSERT_UPDATE_URI_PATH);
              contentResolver.registerContentObserver(getCardsUri,
                                                           true,
                                                           mContentObserver);
@@ -186,15 +188,17 @@ public class CMHomeApiManager {
         for (Map.Entry<String, ProviderInfo> entry : mProviders.entrySet()) {
             ProviderInfo providerInfo = entry.getValue();
             Uri getCardsUri = Uri.parse("content://" + providerInfo.authority + "/" +
-                                        CmHomeContract.DataCard.LIST_INSERT_UPDATE_URI_PATH);
+                                        CmHomeContract.CardDataContract
+                                                .LIST_INSERT_UPDATE_URI_PATH);
             Uri getImagesUri = Uri.parse("content://" + providerInfo.authority + "/" +
-                                         CmHomeContract.DataCardImage.LIST_INSERT_UPDATE_URI_PATH);
-            List<DataCard> cards = DataCard.getAllPublishedDataCards(mContext,
+                                         CmHomeContract.CardDataImageContract
+                                                 .LIST_INSERT_UPDATE_URI_PATH);
+            List<CardData> cards = CardData.getAllPublishedCardDatas(mContext,
                                                                      getCardsUri,
                                                                      getImagesUri);
             // For quick access, build a HashMap using the id as the key
-            LongSparseArray<DataCard> cardMap = new LongSparseArray<DataCard>();
-            for (DataCard card : cards) {
+            LongSparseArray<CardData> cardMap = new LongSparseArray<CardData>();
+            for (CardData card : cards) {
                 cardMap.put(card.getId(), card);
             }
             mCards.put(entry.getKey(), cardMap);
@@ -224,24 +228,24 @@ public class CMHomeApiManager {
         String authority = uri.getAuthority();
         UriMatcher matcher = getUriMatcherForAuthority(authority);
         switch (matcher.match(uri)) {
-            case DATA_CARD_LIST:
+            case CARD_DATA_LIST:
                 // Todo: figure out what rows were changed?
                 // It might not be trivial to handle a list of changes
                 break;
-            case DATA_CARD_ITEM:
+            case CARD_DATA_ITEM:
                 onCardInsertOrUpdate(uri);
                 break;
-            case DATA_CARD_DELETE_ITEM:
+            case CARD_DATA_DELETE_ITEM:
                 onCardDelete(uri);
                 break;
-            case DATA_CARD_IMAGE_LIST:
+            case CARD_DATA_IMAGE_LIST:
                 // Todo: figure out what rows were changed?
                 // It might not be trivial to handle a list of changes
                 break;
-            case DATA_CARD_IMAGE_ITEM:
+            case CARD_DATA_IMAGE_ITEM:
                 onCardImageInsertOrUpdate(uri);
                 break;
-            case DATA_CARD_IMAGE_DELETE_ITEM:
+            case CARD_DATA_IMAGE_DELETE_ITEM:
                 onCardImageDelete(uri);
                 break;
             default:
@@ -253,20 +257,20 @@ public class CMHomeApiManager {
         String authority = uri.getAuthority();
         String idString = uri.getLastPathSegment();
         long id = Long.parseLong(idString);
-        LongSparseArray<DataCard> cards = mCards.get(authority);
+        LongSparseArray<CardData> cards = mCards.get(authority);
 
         ContentResolver contentResolver = mContext.getContentResolver();
         Cursor cursor = contentResolver.query(uri,
-                                              CmHomeContract.DataCard.PROJECTION_ALL,
+                                              CmHomeContract.CardDataContract.PROJECTION_ALL,
                                               null,
                                               null,
-                                              CmHomeContract.DataCard.DATE_CREATED_COL);
+                                              CmHomeContract.CardDataContract.DATE_CREATED_COL);
 
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            DataCard theNewCard = DataCard.createFromCurrentCursorRow(cursor, authority);
+            CardData theNewCard = CardData.createFromCurrentCursorRow(cursor, authority);
             if (cards == null) {
-                cards = new LongSparseArray<DataCard>();
+                cards = new LongSparseArray<CardData>();
                 cards.put(theNewCard.getId(), theNewCard);
                 mCards.put(authority, cards);
             } else {
@@ -274,7 +278,7 @@ public class CMHomeApiManager {
             }
 
             Message uiMessage = new Message();
-            uiMessage.what = UPDATE_DATA_CARD_MESSAGE_WHAT;
+            uiMessage.what = UPDATE_CARD_DATA_MESSAGE_WHAT;
             Bundle messageData = new Bundle();
             messageData.putString(CARD_MESSAGE_BUNDLE_ID_KEY, theNewCard.getGlobalId());
             uiMessage.setData(messageData);
@@ -287,14 +291,14 @@ public class CMHomeApiManager {
 
     private void onCardDelete(Uri uri) {
         String authority = uri.getAuthority();
-        LongSparseArray<DataCard> cards = mCards.get(authority);
+        LongSparseArray<CardData> cards = mCards.get(authority);
         if (cards != null) {
             long id = Long.parseLong(uri.getLastPathSegment());
             String globalId = cards.get(id).getGlobalId();
             cards.delete(id);
 
             Message uiMessage = new Message();
-            uiMessage.what = DELETE_DATA_CARD_MESSAGE_WHAT;
+            uiMessage.what = DELETE_CARD_DATA_MESSAGE_WHAT;
             Bundle messageData = new Bundle();
             messageData.putString(CARD_MESSAGE_BUNDLE_ID_KEY, globalId);
             uiMessage.setData(messageData);
@@ -314,29 +318,29 @@ public class CMHomeApiManager {
     private UriMatcher getUriMatcherForAuthority(String authority) {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         matcher.addURI(authority,
-                       CmHomeContract.DataCard.LIST_INSERT_UPDATE_URI_PATH,
-                       DATA_CARD_LIST);
+                       CmHomeContract.CardDataContract.LIST_INSERT_UPDATE_URI_PATH,
+                       CARD_DATA_LIST);
         matcher.addURI(authority,
-                       CmHomeContract.DataCard.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
-                       DATA_CARD_ITEM);
+                       CmHomeContract.CardDataContract.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
+                       CARD_DATA_ITEM);
         matcher.addURI(authority,
-                       CmHomeContract.DataCard.SINGLE_ROW_DELETE_URI_PATH_MATCH,
-                       DATA_CARD_DELETE_ITEM);
+                       CmHomeContract.CardDataContract.SINGLE_ROW_DELETE_URI_PATH_MATCH,
+                       CARD_DATA_DELETE_ITEM);
         matcher.addURI(authority,
-                       CmHomeContract.DataCardImage.LIST_INSERT_UPDATE_URI_PATH,
-                       DATA_CARD_IMAGE_LIST);
+                       CmHomeContract.CardDataImageContract.LIST_INSERT_UPDATE_URI_PATH,
+                       CARD_DATA_IMAGE_LIST);
         matcher.addURI(authority,
-                       CmHomeContract.DataCardImage.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
-                       DATA_CARD_IMAGE_ITEM);
+                       CmHomeContract.CardDataImageContract.SINGLE_ROW_INSERT_UPDATE_URI_PATH,
+                       CARD_DATA_IMAGE_ITEM);
         matcher.addURI(authority,
-                       CmHomeContract.DataCardImage.SINGLE_ROW_DELETE_URI_PATH_MATCH,
-                       DATA_CARD_IMAGE_DELETE_ITEM);
+                       CmHomeContract.CardDataImageContract.SINGLE_ROW_DELETE_URI_PATH_MATCH,
+                       CARD_DATA_IMAGE_DELETE_ITEM);
         return matcher;
     }
 
-    public List<DataCard> getAllDataCards() {
-        List<DataCard> theCards = new ArrayList<DataCard>();
-        for (LongSparseArray<DataCard> cards : mCards.values()) {
+    public List<CardData> getAllCardDatas() {
+        List<CardData> theCards = new ArrayList<CardData>();
+        for (LongSparseArray<CardData> cards : mCards.values()) {
             for (int i = 0; i < cards.size(); i++) {
                 theCards.add(cards.valueAt(i));
             }
