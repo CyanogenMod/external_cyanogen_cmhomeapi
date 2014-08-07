@@ -7,37 +7,43 @@ import org.cyanogenmod.launcher.home.api.cards.DataCard;
 import it.gmariotti.cardslib.library.internal.Card;
 
 public class ApiCard extends Card {
-    private String mApiAuthority;
-    private long mDbId;
 
-    public ApiCard(Context context) {
+    private DataCard mDataCard;
+
+    public ApiCard(Context context, DataCard dataCard) {
         super(context);
+        init(dataCard);
     }
 
-    public ApiCard(Context context, int innerLayout) {
+    public ApiCard(Context context, int innerLayout, DataCard dataCard) {
         super(context, innerLayout);
+        init(dataCard);
     }
 
+    private void init(DataCard dataCard) {
+        mDataCard = dataCard;
+        setSwipeable(true);
+        if (dataCard != null) {
+            setId(dataCard.getGlobalId());
+        }
+    }
     public void setApiAuthority(String authority) {
-        mApiAuthority = authority;
+        mDataCard.setAuthority(authority);
     }
 
     public String getApiAuthority() {
-        return mApiAuthority;
+        return mDataCard.getAuthority();
     }
 
     public long getDbId() {
-        return mDbId;
-    }
-
-    public void setDbId(long dbId) {
-        mDbId = dbId;
+        return mDataCard.getId();
     }
 
     public void updateFromDataCard(DataCard dataCard) {
-        setId(dataCard.getGlobalId());
-        setDbId(dataCard.getId());
-        setApiAuthority(dataCard.getAuthority());
-        setSwipeable(true);
+        mDataCard = dataCard;
+    }
+
+    public DataCard getDataCard() {
+        return mDataCard;
     }
 }
