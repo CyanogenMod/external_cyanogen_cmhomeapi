@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider;
@@ -613,5 +615,82 @@ public class DataCard extends PublishableCard {
         public Intent getIntent() {
             return mIntent;
         }
+    }
+
+    public static class CardDeletedInfo implements Parcelable {
+        private long   mId;
+        private String mInternalId;
+        private String mGlobalId;
+        private String mAuthority;
+
+        public CardDeletedInfo(long id, String internalId, String globalId, String authority) {
+            setId(id);
+            setInternalId(internalId);
+            setGlobalId(globalId);
+            setAuthority(authority);
+        }
+
+        private CardDeletedInfo(Parcel in) {
+            mId = in.readLong();
+            mInternalId = in.readString();
+            mGlobalId = in.readString();
+            mAuthority = in.readString();
+        }
+
+        protected void setId(long id) {
+            mId = id;
+        }
+
+        public long getId() {
+            return mId;
+        }
+
+        protected void setInternalId(String internalId) {
+            mInternalId = internalId;
+        }
+
+        public String getInternalId() {
+            return mInternalId;
+        }
+
+        protected void setGlobalId(String globalId) {
+            mGlobalId = globalId;
+        }
+
+        public String getGlobalId() {
+            return mGlobalId;
+        }
+
+        protected void setAuthority(String authority) {
+            mAuthority = authority;
+        }
+
+        public String getAuthority() {
+            return mAuthority;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeLong(mId);
+            parcel.writeString(mInternalId);
+            parcel.writeString(mGlobalId);
+            parcel.writeString(mAuthority);
+        }
+
+        public static final Creator<CardDeletedInfo> CREATOR =
+                new Creator<CardDeletedInfo>() {
+                    public CardDeletedInfo createFromParcel(Parcel in) {
+                        return new CardDeletedInfo(in);
+                    }
+
+                    public CardDeletedInfo[] newArray(int size) {
+                        return new CardDeletedInfo[size];
+                    }
+        };
     }
 }
