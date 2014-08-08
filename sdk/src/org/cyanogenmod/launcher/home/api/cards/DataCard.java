@@ -618,4 +618,51 @@ public class DataCard extends PublishableCard {
             return mIntent;
         }
     }
+
+    public static class CardDeletedInfo {
+        protected final static String ID_QUERY_PARAM = "id";
+        protected final static String INTERNAL_ID_QUERY_PARAM = "internalId";
+        protected final static String GLOBAL_ID_QUERY_PARAM = "globalId";
+        protected final static String AUTHORITY_QUERY_PARAM = "authority";
+
+        private long mId;
+        private String mInternalId;
+        private String mGlobalId;
+        private String mAuthority;
+
+        public CardDeletedInfo(long id, String internalId, String globalId, String authority) {
+            setId(id);
+            setInternalId(internalId);
+            setGlobalId(globalId);
+            setAuthority(authority);
+        }
+
+        protected void setId(long id) {
+            mId = id;
+        }
+
+        public long getId() {
+            return mId;
+        }
+
+        protected void setInternalId(String internalId) {
+            mInternalId = internalId;
+        }
+
+        public String getInternalId() {
+            return mInternalId;
+        }
+
+        protected void setGlobalId(String globalId) {
+            mGlobalId = globalId;
+        }
+
+        protected void setAuthority(String authority) {
+            mAuthority = authority;
+        }
+
+        public String getAuthority() {
+            return mAuthority;
+        }
+    }
 }
