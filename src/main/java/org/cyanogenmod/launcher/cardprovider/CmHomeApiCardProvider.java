@@ -1,10 +1,13 @@
 package org.cyanogenmod.launcher.cardprovider;
 
 import android.content.Context;
+import android.content.Intent;
 
 import org.cyanogenmod.launcher.cards.ApiCard;
 import org.cyanogenmod.launcher.home.api.CMHomeApiManager;
 import org.cyanogenmod.launcher.home.api.cards.DataCard;
+import org.cyanogenmod.launcher.home.api.cards.DataCard.CardDeletedInfo;
+import org.cyanogenmod.launcher.home.api.receiver.CmHomeCardChangeReceiver;
 
 import com.cyanogen.cardbuilder.DataCardBuilderFactory;
 
@@ -19,6 +22,10 @@ public class CmHomeApiCardProvider implements ICardProvider,
     private Context mCmHomeContext;
     private Context mHostActivityContext;
     private List<CardProviderUpdateListener> mUpdateListeners = new ArrayList<CardProviderUpdateListener>();
+
+    private static final String CM_HOME_API_CARD_DELETED_BROADCAST_ACTION =
+                                            "org.cyanogenmod.launcher.home.api.CARD_DELETED";
+    private static final String CARD_AUTHORITY_APPEND_STRING = ".cmhomeapi";
 
     public CmHomeApiCardProvider(Context cmHomeContext, Context hostActivityContext) {
         mCmHomeContext = cmHomeContext;
@@ -158,6 +165,28 @@ public class CmHomeApiCardProvider implements ICardProvider,
     public void onCardDelete(String globalId) {
         for (CardProviderUpdateListener listener : mUpdateListeners) {
             listener.onCardDelete(globalId);
+        }
+    }
+
+    public static void sendCardDeletedBroadcast(Context context, DataCard deletedDataCard) {
+        Intent broadcast = new Intent();
+        broadcast.setAction(CM_HOME_API_CARD_DELETED_BROADCAST_ACTION);
+        CardDeletedInfo deletedInfo = new CardDeletedInfo(deletedDataCard.getId(),
+                                                          deletedDataCard.getInternalId(),
+                                                          deletedDataCard.getGlobalId(),
+                                                          deletedDataCard.getAuthority());
+
+        broadcast.putExtra(CmHomeCardChangeReceiver.DATA_CARD_DELETED_INFO_BROADCAST_EXTRA,
+                           deletedInfo);
+
+        String authority = deletedDataCard.getAuthority();
+
+        // API cards provider authorities are in the form of <package-name>.cmhomeapi
+        if (authority.contains(CARD_AUTHORITY_APPEND_STRING)) {
+            int cmhomeIndex = authority.indexOf(CARD_AUTHORITY_APPEND_STRING);
+            String appPackageName = deletedDataCard.getGlobalId().substring(0, cmhomeIndex);
+            broadcast.setPackage(appPackageName);
+            context.sendBroadcast(broadcast);
         }
     }
 }
