@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
@@ -64,13 +65,13 @@ public abstract class PublishableCard {
 
             Uri result = null;
             try {
-                result = contentResolver.insert(mICmHomeContract.getContentUri(), values);
+                result = contentResolver.insert(getBaseUri(), values);
             // Catching all Exceptions, since we can't be sure what the extension will do.
             } catch (Exception e) {
                 Log.e(TAG,
                       "Error publishing PublishableCard, ContentProvider threw an exception for " +
                       "uri:" +
-                      " " + mICmHomeContract.getContentUri(), e);
+                      " " + getBaseUri(), e);
             }
 
             if (result != null) {
@@ -91,7 +92,7 @@ public abstract class PublishableCard {
         int rows = 0;
         try {
             rows = contentResolver.update(ContentUris.withAppendedId(
-                                                      mICmHomeContract.getContentUri(),
+                                                      getBaseUri(),
                                                       getId()),
                                               getContentValues(),
                                               null,
@@ -100,7 +101,7 @@ public abstract class PublishableCard {
         } catch (Exception e) {
             Log.e(TAG,
                   "Error updating PublishableCard, ContentProvider threw an exception for uri:" +
-                  " " + mICmHomeContract.getContentUri(), e);
+                  " " + getBaseUri(), e);
         }
 
         // We must have updated at least one row
@@ -116,7 +117,7 @@ public abstract class PublishableCard {
         int rows = 0;
         try {
             rows = contentResolver.delete(ContentUris.withAppendedId(
-                                                      mICmHomeContract.getContentUri(),
+                                                      getBaseUri(),
                                                       getId()),
                                               null,
                                               null);
@@ -124,7 +125,7 @@ public abstract class PublishableCard {
         } catch (Exception e) {
             Log.e(TAG,
                   "Error unpublishing PublishableCard, ContentProvider threw an exception for " +
-                  "uri:" + mICmHomeContract.getContentUri(), e);
+                  "uri:" + getBaseUri(), e);
         }
 
         return rows > 0;
@@ -144,7 +145,7 @@ public abstract class PublishableCard {
         Cursor cursor = null;
         try {
             cursor = contentResolver.query(ContentUris.withAppendedId(
-                                                   mICmHomeContract.getContentUri(),
+                                                   getBaseUri(),
                                                    getId()),
                                            new String[]{mICmHomeContract.getIdColumnName()},
                                            null,
@@ -154,7 +155,7 @@ public abstract class PublishableCard {
         } catch (Exception e) {
             Log.e(TAG,
                   "Error querying PublishableCard, ContentProvider threw an exception for uri:" +
-                  " " + mICmHomeContract.getContentUri(), e);
+                  " " + getBaseUri(), e);
         }
 
         int cursorCount = 0;
@@ -163,6 +164,16 @@ public abstract class PublishableCard {
             cursor.close();
         }
         return cursorCount > 0;
+    }
+
+    private Uri getBaseUri() {
+        Uri theUri = mICmHomeContract.getContentUri();
+
+        // If this PublishableCard has an authority set, use that in the URI.
+        if (!TextUtils.isEmpty(getAuthority())) {
+            return theUri.buildUpon().authority(getAuthority()).build();
+        }
+        return theUri;
     }
 
     public static class PublishCardTask extends AsyncTask<Void, Void, Void> {

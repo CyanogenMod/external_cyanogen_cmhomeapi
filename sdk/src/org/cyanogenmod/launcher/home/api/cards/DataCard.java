@@ -371,15 +371,11 @@ public class DataCard extends PublishableCard {
      */
     @Override
     public boolean unpublish(Context context) {
-        boolean deleted = super.unpublish(context);
-        if (deleted) {
-            // Delete all associated images as well
-            for (DataCardImage image : mImages) {
-                image.unpublish(context);
-            }
+        // Delete all associated images first
+        for (DataCardImage image : mImages) {
+            image.unpublish(context);
         }
-
-        return deleted;
+        return super.unpublish(context);
     }
 
     @Override
