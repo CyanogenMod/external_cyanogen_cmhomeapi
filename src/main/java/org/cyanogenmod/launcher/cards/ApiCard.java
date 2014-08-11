@@ -45,6 +45,9 @@ public class ApiCard extends Card implements OnUndoSwipeListListener {
 
     public void updateFromDataCard(DataCard dataCard) {
         mDataCard = dataCard;
+        if (dataCard != null) {
+            setId(dataCard.getGlobalId());
+        }
     }
 
     public DataCard getDataCard() {
