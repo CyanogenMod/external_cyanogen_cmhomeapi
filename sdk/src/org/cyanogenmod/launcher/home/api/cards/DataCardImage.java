@@ -34,6 +34,12 @@ public class DataCardImage extends PublishableCard {
         mLinkedDataCard = linkedDataCard;
     }
 
+    public DataCardImage(Uri imageUri) {
+        super(sContract);
+
+        mImageUri = imageUri;
+    }
+
     private DataCardImage(long dataCardId, Uri imageUri) {
         super(sContract);
 
