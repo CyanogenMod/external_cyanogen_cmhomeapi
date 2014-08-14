@@ -25,7 +25,7 @@ public class CmHomeApiCardProvider implements ICardProvider,
 
     private static final String CM_HOME_API_CARD_DELETED_BROADCAST_ACTION =
                                             "org.cyanogenmod.launcher.home.api.CARD_DELETED";
-    private static final String CARD_AUTHORITY_APPEND_STRING = ".cmhomeapi";
+    public static final String CARD_AUTHORITY_APPEND_STRING = ".cmhomeapi";
 
     public CmHomeApiCardProvider(Context cmHomeContext, Context hostActivityContext) {
         mCmHomeContext = cmHomeContext;
