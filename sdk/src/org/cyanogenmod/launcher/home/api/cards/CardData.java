@@ -98,6 +98,21 @@ public class CardData extends PublishableCard {
         mImages.add(image);
     }
 
+    public void addOrUpdateCardDataImage(CardDataImage newImage) {
+        CardDataImage matchingImage = null;
+        for (CardDataImage image : mImages) {
+            if (image.getGlobalId().equals(newImage.getGlobalId())) {
+                matchingImage = image;
+                break;
+            }
+        }
+
+        if (matchingImage != null) {
+            mImages.remove(matchingImage);
+        }
+        mImages.add(newImage);
+    }
+
     public void setInternalId(String internalId) {
         mInternalId = internalId;
     }
