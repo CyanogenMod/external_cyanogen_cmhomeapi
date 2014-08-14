@@ -145,27 +145,45 @@ public class CardDataImage extends PublishableCard {
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                int cardDataId = cursor.getInt(
-                        cursor.getColumnIndex(CmHomeContract.CardDataImageContract.CARD_DATA_ID_COL));
-                String imageUriString = cursor.getString(
-                        cursor.getColumnIndex(CmHomeContract.CardDataImageContract.IMAGE_URI_COL));
-                int imageId = cursor
-                        .getInt(cursor.getColumnIndex(CmHomeContract.CardDataImageContract._ID));
-                String internalId = cursor.getString(
-                        cursor.getColumnIndex(CmHomeContract.CardDataImageContract.INTERNAL_ID_COL));
-                String imageLabel = cursor.getString(
-                        cursor.getColumnIndex(CmHomeContract.CardDataImageContract.IMAGE_LABEL_COL));
-
-                if (!TextUtils.isEmpty(imageUriString)) {
-                    CardDataImage image = new CardDataImage(cardDataId, Uri.parse(imageUriString));
-                    image.setId(imageId);
-                    image.setInternalId(internalId);
-                    image.setImageLabel(imageLabel);
+                CardDataImage image = createFromCurrentCursorRow(cursor);
+                if (image != null) {
                     allImages.add(image);
                 }
             }
         }
         return allImages;
+    }
+
+    public static CardDataImage createFromCurrentCursorRow(Cursor cursor, String authority) {
+        CardDataImage cardImage = createFromCurrentCursorRow(cursor);
+        cardImage.setAuthority(authority);
+        return cardImage;
+    }
+
+    private static CardDataImage createFromCurrentCursorRow(Cursor cursor) {
+        // Can't work with a cursor in this state
+        if (cursor.isClosed() || cursor.isAfterLast()) return null;
+
+        int cardDataId = cursor.getInt(
+                cursor.getColumnIndex(CmHomeContract.CardDataImageContract.CARD_DATA_ID_COL));
+        String imageUriString = cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.CardDataImageContract.IMAGE_URI_COL));
+        int imageId = cursor
+                .getInt(cursor.getColumnIndex(CmHomeContract.CardDataImageContract._ID));
+        String internalId = cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.CardDataImageContract.INTERNAL_ID_COL));
+        String imageLabel = cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.CardDataImageContract.IMAGE_LABEL_COL));
+
+        if (!TextUtils.isEmpty(imageUriString)) {
+            CardDataImage image = new CardDataImage(cardDataId, Uri.parse(imageUriString));
+            image.setId(imageId);
+            image.setInternalId(internalId);
+            image.setImageLabel(imageLabel);
+            return image;
+        }
+
+        return null;
     }
 
     public static List<CardDataImage> getPublishedCardDataImagesForCardDataId(Context context,
