@@ -12,6 +12,7 @@ import it.gmariotti.cardslib.library.internal.Card;
 public interface ICardProvider {
     public void onHide(Context context);
     public void onShow();
+    public void onDestroy(Context context);
     public void requestRefresh();
 
     /**
