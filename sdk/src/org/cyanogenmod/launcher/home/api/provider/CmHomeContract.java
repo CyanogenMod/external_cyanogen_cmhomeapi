@@ -4,6 +4,11 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * <p>The database contracts for all tables in the CM Home extension Database.</p>
+ * <p><b>This class is intended to be internal, and does not need to be referenced by
+ * applications using the SDK.</b></p>
+ */
 public class CmHomeContract {
     public static String AUTHORITY =
             "org.cyanogenmod.launcher.home.api";

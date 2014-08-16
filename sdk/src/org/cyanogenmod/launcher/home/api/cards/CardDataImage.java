@@ -16,8 +16,24 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class representing an image that should be displayed along with a parent
+ * {@link org.cyanogenmod.launcher.home.api.cards.CardData}. Any number of CardDataImage objects
+ * can be associated with a CardData, and as many as possible will attempt to be displayed with
+ * the Card in CM Home.
+ *
+ * As with {@link org.cyanogenmod.launcher.home.api.cards.CardData},
+ * a CardDataImage will be published when
+ * {@link org.cyanogenmod.launcher.home.api.cards.CardDataImage#publish(Context)} is called.
+ * CardDataImage objects can similarly be removed from view by calling
+ * {@link org.cyanogenmod.launcher.home.api.cards.CardDataImage#unpublish(android.content.Context)}.
+ */
 public class CardDataImage extends PublishableCard {
     private final static String TAG = "CardDataImage";
+    /**
+     * Store a reference to the Database Contract that represents this object,
+     * so that the superclass can figure out what columns to write.
+    */
     private final static CmHomeContract.ICmHomeContract sContract =
                                         new CmHomeContract.CardDataImageContract();
     private long                  mCardDataId;
@@ -34,6 +50,10 @@ public class CardDataImage extends PublishableCard {
         mLinkedCardData = linkedCardData;
     }
 
+    /**
+     * Construct a new CardDataImage using the given Uri as the image source for this image.
+     * @param imageUri A Uri that resolves to the image that this CardDataImage will display.
+     */
     public CardDataImage(Uri imageUri) {
         super(sContract);
 
@@ -47,26 +67,57 @@ public class CardDataImage extends PublishableCard {
         mImageUri = imageUri;
     }
 
+    /**
+     * Sets the ID field that should be used for a unique string that can identify this Card
+     * within your application. This field is optional and can be used for internal tracking
+     * within this application.
+     * @param internalId The String to be used to uniquely identify this card.
+     */
     public void setInternalId(String internalId) {
         mInternalId = internalId;
     }
 
+    /**
+     * Retrieves the currenly set internal ID.
+     * @see org.cyanogenmod.launcher.home.api.cards.CardDataImage#setInternalId(java.lang.String)
+     * @return The internal ID String that is currently set for this CardDataImage.
+     */
     public String getInternalId() {
         return mInternalId;
     }
 
+    /**
+     * Retrieves the ID for this CardDataImage. This is the primary key of this object within
+     * this application.
+     * @return The ID of this CardDataImage within this application.
+     */
     public long getCardDataId() {
         return mCardDataId;
     }
 
+    /**
+     * Sets the ID of the {@link org.cyanogenmod.launcher.home.api.cards.CardData} that this
+     * image is associated with. This required field tells CM Home which Card this image will be
+     * displayed with.
+     * @param cardDataId The ID of the Card that this image is a child of, as returned by
+     *                   {@link org.cyanogenmod.launcher.home.api.cards.CardData#getId()}.
+     */
     public void setCardDataId(long cardDataId) {
         mCardDataId = cardDataId;
     }
 
+    /**
+     * Retrieves the Uri that resolves to the image that this CardDataImage will display.
+     * @return The Uri that resolves to the image this object represents.
+     */
     public Uri getImageUri() {
         return mImageUri;
     }
 
+    /**
+     * Sets the Uri that resolves to the image that this CardDataImage will display.
+     * @param imageUri A URI to this image (all types, including internet resources, are allowed).
+     */
     public void setImage(Uri imageUri) {
         mImageUri = imageUri;
 
@@ -78,7 +129,12 @@ public class CardDataImage extends PublishableCard {
     /**
      * Sets the image bitmap to the given bitmap.
      *
-     * @param bitmap The Bitmap to save for this CardDataImage
+     * <p>When {@link org.cyanogenmod.launcher.home.api.cards.CardDataImage#publish(Context)} is
+     * called on this CardDataImage, this bitmap is saved to a cache within the internal storage for
+     * this application, to be accessed only by CM Home through a ContentProvider. If the same
+     * Bitmap is passed for any other image, the same cached image will be used. </p>
+     *
+     * @param bitmap The Bitmap to save for this CardDataImage.
      */
     public void setImage(Bitmap bitmap) {
         if (bitmap == null) return;
@@ -89,6 +145,16 @@ public class CardDataImage extends PublishableCard {
         mImageUri = null;
     }
 
+    /**
+     * Sets the image to the image that the given resource ID resolves to.
+     *
+     * <p>When {@link org.cyanogenmod.launcher.home.api.cards.CardDataImage#publish(Context)} is
+     * called on this CardDataImage, this image is saved to a cache within the internal storage for
+     * this application, to be accessed only by CM Home through a ContentProvider. If the same
+     * Bitmap is passed for any other image, the same cached image will be used. </p>
+     *
+     * @param resource The resource to save for this CardDataImage.
+     */
     public void setImage(int resource) {
         mImageResourceId = resource;
 
@@ -97,10 +163,22 @@ public class CardDataImage extends PublishableCard {
         mImageUri = null;
     }
 
+    /**
+     * Sets a String that will be used to identify this image.
+     *
+     * This may be used for a caption or title for this image.
+     * @param imageLabel A String that identifies this image.
+     */
     public void setImageLabel(String imageLabel) {
         mImageLabel = imageLabel;
     }
 
+    /**
+     * Retrieves the image label for this image.
+     *
+     * @see org.cyanogenmod.launcher.home.api.cards.CardDataImage#setImageLabel(java.lang.String)
+     * @return The currently set Image label String.
+     */
     public String getImageLabel() {
         return mImageLabel;
     }
@@ -120,6 +198,11 @@ public class CardDataImage extends PublishableCard {
         return values;
     }
 
+    /**
+     * Retrieves all currently published CardDataImages for this application.
+     * @param context A Context of the application that published the CardDataImages originally.
+     * @return A list of all currently live and published CardDataImages for this application only.
+     */
     public static List<CardDataImage> getAllPublishedCardDataImages(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = null;
@@ -154,6 +237,16 @@ public class CardDataImage extends PublishableCard {
         return allImages;
     }
 
+    /**
+     * Creates a new CardDataImage from the data row that the input cursor currently points to.
+     *
+     * <b>This is intended to be an internal method. Please use one of the helper methods to
+     * retrieve CardDataImages.</b>
+     * @param cursor A Cursor object that currently points to a row with CardDataImage data.
+     * @param authority The authority of the ContentProvider that hosts the ContentProvider being
+     *                  read from.
+     * @return A CardDataImage containing the data from the input cursor row.
+     */
     public static CardDataImage createFromCurrentCursorRow(Cursor cursor, String authority) {
         CardDataImage cardImage = createFromCurrentCursorRow(cursor);
         cardImage.setAuthority(authority);
@@ -186,6 +279,14 @@ public class CardDataImage extends PublishableCard {
         return null;
     }
 
+    /**
+     * Retrieve a list of all currently published CardDataImages that have the CardData given by
+     * cardDataId as a parent.
+     * @param context The A Context of the application that published the CardDataImages originally.
+     * @param cardDataId The ID of the CardData that is the parent of the CardDataImages being
+     *                   queried for.
+     * @return A list of CardDataImages that have the given CardData as a parent.
+     */
     public static List<CardDataImage> getPublishedCardDataImagesForCardDataId(Context context,
                                                                               long cardDataId) {
         return getPublishedCardDataImagesForCardDataId(context,

@@ -32,6 +32,25 @@ import java.util.Set;
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.CARD_DATA_IMAGE_TABLE_NAME;
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.CARD_DATA_TABLE_NAME;
 
+/**
+ * <p>The ContentProvider that shares data for all types of Cards to CM Home.</p>
+ *
+ * <p><b>This ContentProvider is intended to be internal. When importing the CM Home SDK,
+ * you do not need to subclass or otherwise reference this ContentProvider,
+ * besides declaring it in your manifest.</b></p>
+ *
+ * <p>Be sure to declare this content provider as such:</p>
+ * <pre>
+ *    @code
+ *    <provider android:name="org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider"
+ *              android:label="@string/provider_name"
+ *              android:authorities="org.cyanogenmod.launcher.home.api.sdkexample.cmhomeapi"
+ *              android:enabled="true"
+ *              android:exported="true"
+ *              android:readPermission="org.cyanogenmod.launcher.home.api.FEED_READ"
+ *              android:writePermission="org.cyanogenmod.launcher.home.api.FEED_WRITE" />
+ * </pre>
+ */
 public class CmHomeContentProvider extends ContentProvider {
     CmHomeDatabaseHelper mCmHomeDatabaseHelper;
     public final static  String IMAGE_FILE_CACHE_DIR = "CardDataImageCache";

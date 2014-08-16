@@ -41,10 +41,20 @@ public abstract class PublishableCard {
         return mAuthority;
     }
 
+    /**
+     * Retrieve a global identifier that is unique among all CardData objects on the device.
+     * @return A global ID String for this PublishableCard.
+     */
     public String getGlobalId() {
         return mAuthority + "/" + mId;
     }
 
+    /**
+     * Publish this PublishableCard to CM Home, to be immediately be displayed to the user.
+     * This operation is completed asynchronously. If this card has been previously published,
+     * it will be updated in place.
+     * @param context The context of the publishing application.
+     */
     public void publish(Context context) {
         new PublishCardTask(this, context).execute();
     }
@@ -108,6 +118,13 @@ public abstract class PublishableCard {
         return rows > 0;
     }
 
+    /**
+     * Unpublishes a PublishableCard, removing it from CM Home immediately. The card can be
+     * republished at a later time, but will obtain a new ID and potentially a new position in CM
+     * Home.
+     * @param context A Context of the publishing application.
+     * @return true if the unpublish was successful, false otherwise.
+     */
     public boolean unpublish(Context context) {
         if (getId() == -1) {
             return false;
@@ -176,7 +193,7 @@ public abstract class PublishableCard {
         return theUri;
     }
 
-    public static class PublishCardTask extends AsyncTask<Void, Void, Void> {
+    private static class PublishCardTask extends AsyncTask<Void, Void, Void> {
         PublishableCard mPublishableCard;
         Context mContext;
 
