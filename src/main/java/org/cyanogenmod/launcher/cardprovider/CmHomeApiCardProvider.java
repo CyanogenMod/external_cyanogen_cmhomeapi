@@ -56,6 +56,11 @@ public class CmHomeApiCardProvider implements ICardProvider,
     }
 
     @Override
+    public void onDestroy(Context context) {
+        mApiManager.destroy();
+    }
+
+    @Override
     public void requestRefresh() {
         for (CardData cardData : mApiManager.getAllCardDatas()) {
             onCardInsertOrUpdate(cardData.getGlobalId());
