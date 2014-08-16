@@ -7,7 +7,9 @@ import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
 /**
- * Creates the SQLite database that backs CMHomeContentProvider.
+ * <p>Creates the SQLite database that backs CMHomeContentProvider.</p>
+ * <p><b>This class is intended to be internal, and does not need to be referenced by
+ * applications using the SDK.</b></p>
  */
 public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME          = "CmHomeAPI.db";
