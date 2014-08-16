@@ -4,16 +4,34 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * <p>The database contracts for all tables in the CM Home extension Database.</p>
+ * <p><b>This class is intended to be internal, and does not need to be referenced by
+ * applications using the SDK.</b></p>
+ */
 public class CmHomeContract {
+    /**
+     * The authority for the CM Home API provider that exists in this application.
+     */
     public static String AUTHORITY =
             "org.cyanogenmod.launcher.home.api";
 
+    /**
+     * The base content URI for the CM Home API provider that exists in this application.
+     */
     public static Uri CONTENT_URI =
             Uri.parse("content://" + AUTHORITY);
 
+    /**
+     * The database contract for persisting
+     * {@link org.cyanogenmod.launcher.home.api.cards.CardData} objects.
+     *
+     * <p><b>This class is intended to be internal, and does not need to be referenced by
+     * applications using the SDK.</b></p>
+     */
     public static final class CardDataContract implements BaseColumns, ICmHomeContract {
-        public static final String INTERNAL_ID_COL = "internal_id";
-        public static final String REASON_COL = "reason_text";
+        public static final String INTERNAL_ID_COL          = "internal_id";
+        public static final String REASON_COL               = "reason_text";
         public static final String DATE_CONTENT_CREATED_COL = "date_content_created";
         public static final String DATE_CREATED_COL = "date_created";
         public static final String LAST_MODIFIED_COL = "last_modified";
@@ -68,6 +86,13 @@ public class CmHomeContract {
         }
     }
 
+    /**
+     * The database contract for persisting
+     * {@link org.cyanogenmod.launcher.home.api.cards.CardDataImage} objects.
+     *
+     * <p><b>This class is intended to be internal, and does not need to be referenced by
+     * applications using the SDK.</b></p>
+     */
     public static final class CardDataImageContract implements BaseColumns, ICmHomeContract {
         public static final String INTERNAL_ID_COL  = "internal_id";
         public static final String CARD_DATA_ID_COL = "card_data_id";
@@ -107,6 +132,12 @@ public class CmHomeContract {
         }
     }
 
+    /**
+     * The provider constants for exposing cached images from this application to CM Home.
+     *
+     * <p><b>This class is intended to be internal, and does not need to be referenced by
+     * applications using the SDK.</b></p>
+     */
     public static final class ImageFile {
         public static final String PATH = "imagefile";
         public static Uri CONTENT_URI  =
@@ -116,6 +147,12 @@ public class CmHomeContract {
                 "/org.cyanogenmod.home.api.imagefile";
     }
 
+    /**
+     * Sets the static {@link #AUTHORITY} constant and all derived Uris to use a new authority
+     * String.
+     *
+     * @param authority The authority to use to set all content uris to use.
+     */
     public static void setAuthority(String authority) {
         AUTHORITY = authority;
         CONTENT_URI = Uri.parse("content://" + AUTHORITY);
@@ -125,6 +162,12 @@ public class CmHomeContract {
         ImageFile.CONTENT_URI = Uri.withAppendedPath(CmHomeContract.CONTENT_URI, "imagefile");
     }
 
+    /**
+     * A basic interface for all CM Home database Contract classes.
+     *
+     * <p><b>This class is intended to be internal, and does not need to be referenced by
+     * applications using the SDK.</b></p>
+     */
     public interface ICmHomeContract {
         public Uri getContentUri();
 
