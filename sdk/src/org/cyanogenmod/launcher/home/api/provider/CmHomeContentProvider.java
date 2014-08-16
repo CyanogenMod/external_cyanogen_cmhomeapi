@@ -32,16 +32,39 @@ import java.util.Set;
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.CARD_DATA_IMAGE_TABLE_NAME;
 import static org.cyanogenmod.launcher.home.api.db.CmHomeDatabaseHelper.CARD_DATA_TABLE_NAME;
 
+/**
+ * <p>The ContentProvider that shares data for all types of Cards to CM Home.</p>
+ *
+ * <p><b>This ContentProvider is intended to be internal. When importing the CM Home SDK,
+ * you do not need to subclass or otherwise reference this ContentProvider,
+ * besides declaring it in your manifest.</b></p>
+ *
+ * <p>Be sure to declare this content provider as such:</p>
+ * <pre>
+ * {@code
+ *    <provider android:name="org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider"
+ *              android:label="@string/provider_name"
+ *              android:authorities="org.cyanogenmod.launcher.home.api.sdkexample.cmhomeapi"
+ *              android:enabled="true"
+ *              android:exported="true"
+ *              android:readPermission="org.cyanogenmod.launcher.home.api.FEED_READ"
+ *              android:writePermission="org.cyanogenmod.launcher.home.api.FEED_WRITE" />
+ * }
+ * </pre>
+ */
 public class CmHomeContentProvider extends ContentProvider {
     CmHomeDatabaseHelper mCmHomeDatabaseHelper;
-    public final static  String IMAGE_FILE_CACHE_DIR = "CardDataImageCache";
+    /**
+     * The internal storage directory where cached images will be stored.
+     */
+    public final static String IMAGE_FILE_CACHE_DIR = "CardDataImageCache";
 
-    private static final String TAG                   = "CmHomeContentProvider";
-    private static final int    CARD_DATA_LIST        = 1;
-    private static final int    CARD_DATA_ITEM        = 2;
-    private static final int    CARD_DATA_IMAGE_LIST  = 3;
-    private static final int    CARD_DATA_IMAGE_ITEM  = 4;
-    private static final int    IMAGE_FILE            = 5;
+    private static final String TAG                  = "CmHomeContentProvider";
+    private static final int    CARD_DATA_LIST       = 1;
+    private static final int    CARD_DATA_ITEM       = 2;
+    private static final int    CARD_DATA_IMAGE_LIST = 3;
+    private static final int    CARD_DATA_IMAGE_ITEM = 4;
+    private static final int    IMAGE_FILE           = 5;
     private static UriMatcher URI_MATCHER;
 
     static {
@@ -407,14 +430,14 @@ public class CmHomeContentProvider extends ContentProvider {
     }
 
     /**
-     * Stores the given bitmap in internal storage in {@link org.cyanogenmod.launcher
-     * .home.api.provider.CmHomeContentProvider.IMAGE_FILE_CACHE_DIR} using an MD5 sum of the
-     * bitmap content as the filename, if the cache does not exist already.
-     * @param bitmap The Bitmap to store in the cache
-     * @param context A Context of the application that will share this image in this
-     *                ContentProvider.
+     * Stores the given bitmap in internal storage in {@link #IMAGE_FILE_CACHE_DIR} using an MD5
+     * sum of the bitmap content as the filename, if the cache does not exist already.
+     * @param bitmap The <a href="http://developer.android.com/reference/android/graphics/Bitmap.html">Bitmap</a>
+     *               to store in the cache.
+     * @param context A <a href="http://developer.android.com/reference/android/content/Context.html">Context</a>
+     *                of the application that will share this image in this ContentProvider.
      * @return A Uri pointing to the newly stored image file in the cache, or the existing image,
-     * if one is found.
+     *         if one is found.
      */
     public static Uri storeBitmapInCache(Bitmap bitmap, Context context) {
         FileOutputStream outputStream = null;
