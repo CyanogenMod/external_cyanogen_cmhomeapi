@@ -21,8 +21,44 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * <p>CardData contains data representing a single card that will appear in CM Home. This class
+ * allows an application to create new cards, publish them to CM Home, remove them,
+ * and receive callbacks when events related to cards occur.</p>
+ *
+ * <p>CardData includes many possible fields, and not all of them are required. The idea is that
+ * an extension application can publish whatever data or content they have available,
+ * and CM Home will do it's very best to find the best Card UI for the data available. At
+ * minimum, a card should have a ContentCreatedDate and a Title.
+ *
+ * More Card types will be created in the future, so publish as much data as you have,
+ * so that they will be used in rich ways within CM Home.
+ * </p>
+ *
+ * <p>To publish a new Card to CM Home, just create a new CardData object,
+ * set the desired fields, and call {@link #publish(android.content.Context)}. This publishes
+ * your data in the ContentProvider backing CardData and notifies CM Home that a new card is
+ * available.
+ *
+ * To query the currently published cards at any time, use
+ * {@link #getAllPublishedCardDatas(android.content.Context)} to retrieve a list of CardData objects.
+ *
+ * To remove any card that is currently published, call
+ * {@link #unpublish(android.content.Context)} on that card.</p>
+ *
+ * <p>CardData also contains a list of related images, retrievable in {@link #getImages()}. Any
+ * images that have been added will be published when
+ * {@link #publish(android.content.Context)} is called on a CardData object.
+ *
+ * @see org.cyanogenmod.launcher.home.api.cards.CardDataImage
+ * </p>
+ */
 public class CardData extends PublishableCard {
-    private static final String TAG = "CardData";
+    private static final String                         TAG       = "CardData";
+    /**
+     * Store a reference to the Database Contract that represents this object,
+     * so that the superclass can figure out what columns to write.
+     */
     private static final CmHomeContract.ICmHomeContract sContract =
             new CmHomeContract.CardDataContract();
 
@@ -32,13 +68,14 @@ public class CardData extends PublishableCard {
     private Date   mCreatedDate;
     private Date   mLastModifiedDate;
 
-    private Uri    mContentSourceImageUri;
+    // Only one of these fields will be assigned at publish time
+    private Uri                   mContentSourceImageUri;
     private WeakReference<Bitmap> mContentSourceImageBitmap;
-    private int    mContentSourceImageResourceId;
+    private int                   mContentSourceImageResourceId;
 
-    private Uri    mAvatarImageUri;
+    private Uri                   mAvatarImageUri;
     private WeakReference<Bitmap> mAvatarImageBitmap;
-    private int    mAvatarImageResourceId;
+    private int                   mAvatarImageResourceId;
 
     private String mTitle;
     private String mSmallText;
@@ -50,9 +87,25 @@ public class CardData extends PublishableCard {
     private Intent mAction2Intent;
     private Priority mPriority = Priority.MID;
 
+    /**
+     * The priority of this Card. Applications can report the priority of a card to hint to CM
+     * Home where it should appear in the list of cards. There are three possibilities for
+     * priority: low, medium and high.
+     */
     public enum Priority {
+        /**
+         * The highest priority. This hints that this card should appear as high on the list as
+         * possible.
+         */
         HIGH(0),
+        /**
+         * Medium priority. This card will appear above low priority cards but below low priority
+         * cards.
+         */
         MID(1),
+        /**
+         * Low priority. This card will be shown at the bottom of the list.
+         */
         LOW(2);
 
         private final int mValue;
@@ -79,12 +132,20 @@ public class CardData extends PublishableCard {
         }
     }
 
+    /**
+     * All associated CardDataImages for this CardData.
+     */
     private List<CardDataImage> mImages = new ArrayList<CardDataImage>();
 
     private CardData() {
         super(sContract);
     }
 
+    /**
+     * Creates a new card that has only a title and content created date.
+     * @param title The title string to display on the card.
+     * @param contentCreatedDate The date that the content this card represents was created.
+     */
     public CardData(String title, Date contentCreatedDate) {
         super(sContract);
 
@@ -92,12 +153,23 @@ public class CardData extends PublishableCard {
         setContentCreatedDate(contentCreatedDate);
     }
 
+    /**
+     * Add a related CardDataImage object to this CardData. Any images added will be considered
+     * for display in CM Home as part of this card.
+     * @param uri A URI to this image (all types, including internet resources, are allowed).
+     */
     public void addCardDataImage(Uri uri) {
         CardDataImage image = new CardDataImage(this);
         image.setImage(uri);
         mImages.add(image);
     }
 
+    /**
+     * Adds a CardDataImage to this DataCard, if this CardDataImage is not already associated
+     * with this image. If a CardDataImage is already associated with this CardData,
+     * that instance is removed and replaced with this one.
+     * @param newImage The CardDataImage instance to add or update.
+     */
     public void addOrUpdateCardDataImage(CardDataImage newImage) {
         CardDataImage matchingImage = null;
         for (CardDataImage image : mImages) {
@@ -107,32 +179,70 @@ public class CardData extends PublishableCard {
             }
         }
 
+        // Remove the old one, if it was found, it will be replaced
         if (matchingImage != null) {
             mImages.remove(matchingImage);
         }
+
         mImages.add(newImage);
     }
 
+    /**
+     * Set an internal ID for use in tracking the card. This should be a unique ID per card,
+     * and can be any String. To be used by the app developer to track a Card,
+     * as it relates to their own internal data. (e.g. a primary key in a third party database
+     * table).
+     * @param internalId  A string with which to identify this Card, unique among other CardData
+     *                    instances.
+     */
     public void setInternalId(String internalId) {
         mInternalId = internalId;
     }
 
+    /**
+     * Retrieves the currently set internal ID for this CardData.
+     * @see org.cyanogenmod.launcher.home.api.cards.CardData#setInternalId(String)
+     * @return The internal ID string for this CardData.
+     */
     public String getInternalId() {
         return mInternalId;
     }
 
+    /**
+     * Sets the created date for this CardData. To be used internally as the actual creation date
+     * should be enforced here.
+     * @param date The actual date that this CardData was created.
+     */
     private void setCreatedDate(Date date) {
         mCreatedDate = date;
     }
 
+    /**
+     * Sets the modified date for this CardData. To be used internally as the most recent
+     * modified date as reported by the SQLite Database. A database trigger will set this for all
+     * modified rows, and this value will be passed here.
+     * @param date The actual date that this CardData was created.
+     */
     private void setLastModifiedDate(Date date) {
         mLastModifiedDate = date;
     }
 
+    /**
+     * <p>Adds a new CardDataImage to this CardData. A CardData can be associated with any
+     * number of images. When the Card is generated in CM Home, a suitable number of images will
+     * be shown, depending on what is supported. For example, you can attach images related to a
+     * news article or social media event.</p>
+     *
+     * <p>When this card is published, all added images will be published as well.</p>
+     * @param image A CardDataImage to add to this CardData.
+     */
     public void addCardDataImage(CardDataImage image) {
         mImages.add(image);
     }
 
+    /**
+     * Removes all associated images and unpublishes them.
+     */
     public void clearImages() {
         mImages.clear();
     }
@@ -165,10 +275,20 @@ public class CardData extends PublishableCard {
         this.mContentCreatedDate = contentCreatedDate;
     }
 
+    /**
+     * Gets the modified date for this CardData. This will be the modified date as reported by the
+     * SQLite Database. A database trigger will set this for all modified rows,
+     * and this value will be passed here.
+     */
     public Date getLastModifiedDate() {
         return mLastModifiedDate;
     }
 
+    /**
+     * Retrieve the Uri that points to the Content Source image.
+     * @return A {@link android.net.Uri} object that will resolve to the image file for the
+     * Content Source image.
+     */
     public Uri getContentSourceImageUri() {
         return mContentSourceImageUri;
     }
@@ -249,7 +369,8 @@ public class CardData extends PublishableCard {
 
     public void setCardClickIntent(Intent cardClickIntent, boolean isBroadcast) {
         mCardClickIntent = cardClickIntent;
-        mCardClickIntent.putExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
+        mCardClickIntent
+                .putExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
     }
 
     public String getAction1Text() {
