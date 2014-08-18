@@ -8,7 +8,7 @@ import org.cyanogenmod.launcher.home.api.cards.CardData;
 
 import android.content.Context;
 
-public class ApiCard extends Card implements OnUndoSwipeListListener {
+public class ApiCard extends CmCard implements OnUndoSwipeListListener {
 
     private CardData mCardData;
 
@@ -24,11 +24,7 @@ public class ApiCard extends Card implements OnUndoSwipeListListener {
 
     private void init(CardData cardData) {
         mCardData = cardData;
-        setSwipeable(true);
-        setOnUndoSwipeListListener(this);
-        if (cardData != null) {
-            setId(cardData.getGlobalId());
-        }
+        setId(cardData.getGlobalId());
     }
 
     public void setApiAuthority(String authority) {
