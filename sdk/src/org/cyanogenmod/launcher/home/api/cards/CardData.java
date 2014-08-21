@@ -15,9 +15,12 @@ import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
+import java.lang.Override;
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Date;
 import java.util.List;
 
@@ -137,6 +140,11 @@ public class CardData extends PublishableCard {
      */
     private List<CardDataImage> mImages = new ArrayList<CardDataImage>();
 
+    /**
+     * A list of images that have been removed from the card
+     */
+    private Set<CardDataImage> mRemovedImages = new HashSet<CardDataImage>();
+
     private CardData() {
         super(sContract);
     }
@@ -182,6 +190,7 @@ public class CardData extends PublishableCard {
         // Remove the old one, if it was found, it will be replaced
         if (matchingImage != null) {
             mImages.remove(matchingImage);
+            mRemovedImages.add(matchingImage);
         }
 
         mImages.add(newImage);
@@ -241,9 +250,15 @@ public class CardData extends PublishableCard {
     }
 
     /**
-     * Removes all associated images and unpublishes them immediately.
+     * Removes all associated images.
+     *
+     * When publish is called on this DataCard, the removed images will be unpublished.
      */
     public void clearImages() {
+        for (CardDataImage image : mImages) {
+            mRemovedImages.add(image);
+        }
+
         mImages.clear();
     }
 
@@ -253,6 +268,8 @@ public class CardData extends PublishableCard {
      * @param image The CardDataImage to remove from this CardData.
      */
     public void removeCardDataImage(CardDataImage image) {
+        mRemovedImages.add(image);
+
         mImages.remove(image);
     }
 
@@ -591,7 +608,8 @@ public class CardData extends PublishableCard {
      */
     public void setAction1Intent(Intent action1Intent, boolean isBroadcast) {
         this.mAction1Intent = action1Intent;
-        mAction1Intent.putExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
+        mAction1Intent.putExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA,
+                                isBroadcast);
     }
 
 
@@ -747,6 +765,10 @@ public class CardData extends PublishableCard {
                 Log.e(TAG, "Invalid CardDataImage. At least uri or bitmap must be specified");
             }
         }
+
+        for (CardDataImage image : mRemovedImages) {
+            image.unpublish(context);
+        }
     }
 
     /**
@@ -755,6 +777,7 @@ public class CardData extends PublishableCard {
      * @param context A Context object to retrieve the ContentResolver
      * @return true if the update successfully updates a row, false otherwise.
      */
+    @Override
     protected boolean update(Context context) {
         boolean updated = super.update(context);
         if (updated) {
@@ -765,6 +788,10 @@ public class CardData extends PublishableCard {
                 } else {
                     Log.e(TAG, "Invalid CardDataImage. At least uri or bitmap must be specified");
                 }
+            }
+
+            for (CardDataImage image : mRemovedImages) {
+                image.unpublish(context);
             }
         }
 

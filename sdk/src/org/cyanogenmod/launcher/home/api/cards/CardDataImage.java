@@ -47,7 +47,7 @@ public class CardDataImage extends PublishableCard {
     /**
      * Create a new CardDataImage by passing in a parent {@link CardData} that this
      * CardDataImage will be linked to.
-     * @param linkedCardData
+     * @param linkedCardData The CardData that will be the parent of this CardImageData.
      */
     public CardDataImage(CardData linkedCardData) {
         super(sContract);
@@ -58,11 +58,13 @@ public class CardDataImage extends PublishableCard {
     /**
      * Construct a new CardDataImage using the given Uri as the image source for this image.
      * @param imageUri A Uri that resolves to the image that this CardDataImage will display.
+     * @param linkedCardData The CardData that will be the parent of this CardImageData.
      */
-    public CardDataImage(Uri imageUri) {
+    public CardDataImage(Uri imageUri, CardData linkedCardData) {
         super(sContract);
 
         mImageUri = imageUri;
+        mLinkedCardData = linkedCardData;
     }
 
     private CardDataImage(long cardDataId, Uri imageUri) {
@@ -107,7 +109,7 @@ public class CardDataImage extends PublishableCard {
      * @param cardDataId The ID of the Card that this image is a child of, as returned by
      *                   {@link org.cyanogenmod.launcher.home.api.cards.CardData#getId()}.
      */
-    public void setCardDataId(long cardDataId) {
+    private void setCardDataId(long cardDataId) {
         mCardDataId = cardDataId;
     }
 
