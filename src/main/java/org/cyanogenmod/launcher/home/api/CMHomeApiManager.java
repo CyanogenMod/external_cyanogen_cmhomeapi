@@ -384,16 +384,19 @@ public class CMHomeApiManager {
         LongSparseArray<CardData> cards = mCards.get(authority);
         if (cards != null) {
             long id = Long.parseLong(uri.getLastPathSegment());
-            String globalId = cards.get(id).getGlobalId();
-            cards.delete(id);
+            CardData cardData = cards.get(id);
+            if (cardData != null) {
+                String globalId = cardData.getGlobalId();
+                cards.delete(id);
 
-            Message uiMessage = new Message();
-            uiMessage.what = DELETE_CARD_DATA_MESSAGE_WHAT;
-            Bundle messageData = new Bundle();
-            messageData.putString(CARD_MESSAGE_BUNDLE_ID_KEY, globalId);
-            uiMessage.setData(messageData);
+                Message uiMessage = new Message();
+                uiMessage.what = DELETE_CARD_DATA_MESSAGE_WHAT;
+                Bundle messageData = new Bundle();
+                messageData.putString(CARD_MESSAGE_BUNDLE_ID_KEY, globalId);
+                uiMessage.setData(messageData);
 
-            mUiThreadHandler.sendMessage(uiMessage);
+                mUiThreadHandler.sendMessage(uiMessage);
+            }
         }
     }
 

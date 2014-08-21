@@ -90,7 +90,7 @@ public abstract class PublishableCard {
 
             if (result != null) {
                 // Store the resulting ID
-                setId(Integer.parseInt(result.getLastPathSegment()));
+                setId(Long.parseLong(result.getLastPathSegment()));
             }
         }
     }
