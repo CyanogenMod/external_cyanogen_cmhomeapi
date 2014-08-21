@@ -298,7 +298,7 @@ public class CmHomeContentProvider extends ContentProvider {
             }
             if(uriMatch == CARD_DATA_IMAGE_ITEM) {
                 // Notifies for a delete
-                getUriForId(Long.getLong(idStr),
+                getUriForId(Long.parseLong(idStr),
                             Uri.withAppendedPath(CmHomeContract.CONTENT_URI,
                                     CmHomeContract.CardDataImageContract.SINGLE_ROW_DELETE_URI_PATH));
             }

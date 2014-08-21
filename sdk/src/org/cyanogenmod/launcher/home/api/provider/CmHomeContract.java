@@ -54,8 +54,8 @@ public class CmHomeContract {
 
         public static String LIST_INSERT_UPDATE_URI_PATH = "carddata";
         public static String SINGLE_ROW_INSERT_UPDATE_URI_PATH = "carddata/#";
-        public static String SINGLE_ROW_DELETE_URI_PATH = "/carddata/delete";
-        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH = "/carddata/delete/#";
+        public static String SINGLE_ROW_DELETE_URI_PATH = "carddata/delete";
+        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH = "carddata/delete/#";
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE +
@@ -104,8 +104,8 @@ public class CmHomeContract {
 
         public static String LIST_INSERT_UPDATE_URI_PATH       = "carddataimage";
         public static String SINGLE_ROW_INSERT_UPDATE_URI_PATH = "carddataimage/#";
-        public static String SINGLE_ROW_DELETE_URI_PATH        = "/carddataimage/delete";
-        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH  = "/carddataimage/delete/#";
+        public static String SINGLE_ROW_DELETE_URI_PATH        = "carddataimage/delete";
+        public static String SINGLE_ROW_DELETE_URI_PATH_MATCH  = "carddataimage/delete/#";
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE +
