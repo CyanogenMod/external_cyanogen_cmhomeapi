@@ -22,7 +22,6 @@ public class CmHomeApiCardProvider implements ICardProvider,
     private Context mCmHomeContext;
     private Context mHostActivityContext;
     private List<CardProviderUpdateListener> mUpdateListeners = new ArrayList<CardProviderUpdateListener>();
-
     private static final String CM_HOME_API_CARD_DELETED_BROADCAST_ACTION =
                                             "org.cyanogenmod.launcher.home.api.CARD_DELETED";
     public static final String CARD_AUTHORITY_APPEND_STRING = ".cmhomeapi";
@@ -117,8 +116,14 @@ public class CmHomeApiCardProvider implements ICardProvider,
             ApiCard apiCard = (ApiCard) card;
             long cardId = apiCard.getDbId();
             CardData cardData = mApiManager.getCard(apiCard.getApiAuthority(), cardId);
-            if (cardData != null) {
+
+            boolean stillMatches = apiCard.getMatcher().hasMatchingContent(cardData);
+            if (cardData != null && stillMatches) {
                 apiCard.updateFromCardData(cardData);
+            } else if (cardData != null) {
+                // The card no longer matches, we will remove it and add a new one.
+                onCardDelete(cardData.getGlobalId());
+                onCardInsertOrUpdate(cardData.getGlobalId());
             }
         }
     }

@@ -11,6 +11,7 @@ import android.content.Context;
 public class ApiCard extends CmCard implements OnUndoSwipeListListener {
 
     private CardData mCardData;
+    private ApiCardMatcher mMatcher;
 
     public ApiCard(Context context, CardData cardData) {
         super(context);
@@ -20,6 +21,14 @@ public class ApiCard extends CmCard implements OnUndoSwipeListListener {
     public ApiCard(Context context, int innerLayout, CardData cardData) {
         super(context, innerLayout);
         init(cardData);
+    }
+
+    public void setMatcher(ApiCardMatcher matcher) {
+        mMatcher = matcher;
+    }
+
+    public ApiCardMatcher getMatcher() {
+        return mMatcher;
     }
 
     private void init(CardData cardData) {
