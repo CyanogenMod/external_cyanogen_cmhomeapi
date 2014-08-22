@@ -71,34 +71,6 @@
  visibility="public"
 >
 </method>
-<method name="createFromCurrentCursorRow"
- return="org.cyanogenmod.launcher.home.api.cards.CardData"
- abstract="false"
- native="false"
- synchronized="false"
- static="true"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="cursor" type="android.database.Cursor">
-</parameter>
-<parameter name="authority" type="java.lang.String">
-</parameter>
-</method>
-<method name="createFromCurrentCursorRow"
- return="org.cyanogenmod.launcher.home.api.cards.CardData"
- abstract="false"
- native="false"
- synchronized="false"
- static="true"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="cursor" type="android.database.Cursor">
-</parameter>
-</method>
 <method name="getAction1IntentInfo"
  return="org.cyanogenmod.launcher.home.api.cards.CardData.CardDataIntentInfo"
  abstract="false"
@@ -154,23 +126,6 @@
  visibility="public"
 >
 <parameter name="context" type="android.content.Context">
-</parameter>
-</method>
-<method name="getAllPublishedCardDatas"
- return="java.util.List&lt;org.cyanogenmod.launcher.home.api.cards.CardData&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="true"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="context" type="android.content.Context">
-</parameter>
-<parameter name="cardDataContentUri" type="android.net.Uri">
-</parameter>
-<parameter name="cardDataImageContentUri" type="android.net.Uri">
 </parameter>
 </method>
 <method name="getAvatarImageUri"
@@ -338,6 +293,19 @@
  visibility="public"
 >
 <parameter name="image" type="org.cyanogenmod.launcher.home.api.cards.CardDataImage">
+</parameter>
+</method>
+<method name="removeCardDataImage"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="imageGlobalId" type="java.lang.String">
 </parameter>
 </method>
 <method name="setAction1Intent"
@@ -867,22 +835,9 @@
 >
 <parameter name="imageUri" type="android.net.Uri">
 </parameter>
+<parameter name="linkedCardData" type="org.cyanogenmod.launcher.home.api.cards.CardData">
+</parameter>
 </constructor>
-<method name="createFromCurrentCursorRow"
- return="org.cyanogenmod.launcher.home.api.cards.CardDataImage"
- abstract="false"
- native="false"
- synchronized="false"
- static="true"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="cursor" type="android.database.Cursor">
-</parameter>
-<parameter name="authority" type="java.lang.String">
-</parameter>
-</method>
 <method name="getAllPublishedCardDataImages"
  return="java.util.List&lt;org.cyanogenmod.launcher.home.api.cards.CardDataImage&gt;"
  abstract="false"
@@ -966,23 +921,6 @@
 <parameter name="cardDataId" type="long">
 </parameter>
 </method>
-<method name="getPublishedCardDataImagesForCardDataId"
- return="java.util.List&lt;org.cyanogenmod.launcher.home.api.cards.CardDataImage&gt;"
- abstract="false"
- native="false"
- synchronized="false"
- static="true"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="context" type="android.content.Context">
-</parameter>
-<parameter name="contentUri" type="android.net.Uri">
-</parameter>
-<parameter name="cardDataId" type="long">
-</parameter>
-</method>
 <method name="hasValidContent"
  return="boolean"
  abstract="false"
@@ -993,19 +931,6 @@
  deprecated="not deprecated"
  visibility="protected"
 >
-</method>
-<method name="setCardDataId"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="cardDataId" type="long">
-</parameter>
 </method>
 <method name="setImage"
  return="void"
@@ -2130,6 +2055,19 @@
 <parameter name="context" type="android.content.Context">
 </parameter>
 <parameter name="intent" type="android.content.Intent">
+</parameter>
+</method>
+<method name="onRefreshRequested"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="context" type="android.content.Context">
 </parameter>
 </method>
 <field name="CARD_DATA_DELETED_INFO_BROADCAST_EXTRA"

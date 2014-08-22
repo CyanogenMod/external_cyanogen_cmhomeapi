@@ -479,7 +479,7 @@ Summary:
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html#CardDataImage(android.net.Uri)">CardDataImage</a></span>(<a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri)
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html#CardDataImage(android.net.Uri, org.cyanogenmod.launcher.home.api.cards.CardData)">CardDataImage</a></span>(<a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri, <a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a> linkedCardData)
         
         <div class="jd-descrdiv">Construct a new CardDataImage using the given Uri as the image source for this image.</div>
   
@@ -507,24 +507,6 @@ Summary:
             
             static
             
-            <a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html">CardDataImage</a>
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html#createFromCurrentCursorRow(android.database.Cursor, java.lang.String)">createFromCurrentCursorRow</a></span>(<a href="http://d.android.com/reference/android/database/Cursor.html">Cursor</a> cursor, <a href="http://d.android.com/reference/java/lang/String.html">String</a> authority)
-        
-        <div class="jd-descrdiv">Creates a new CardDataImage from the data row that the input cursor currently points to.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
             <a href="http://d.android.com/reference/java/util/List.html">List</a>&lt;<a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html">CardDataImage</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -536,7 +518,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -554,7 +536,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -572,7 +554,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -590,7 +572,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -608,7 +590,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -622,59 +604,6 @@ Summary:
         
         <div class="jd-descrdiv">Retrieve a list of all currently published CardDataImages that have the <code><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a></code>
  given by cardDataId as a parent.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
-            <a href="http://d.android.com/reference/java/util/List.html">List</a>&lt;<a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html">CardDataImage</a>&gt;
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html#getPublishedCardDataImagesForCardDataId(android.content.Context, android.net.Uri, long)">getPublishedCardDataImagesForCardDataId</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context, <a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> contentUri, long cardDataId)
-        
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            void
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html#setCardDataId(long)">setCardDataId</a></span>(long cardDataId)
-        
-        <div class="jd-descrdiv">Sets the ID of the <code><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a></code> that this
- image is associated with.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            void
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html#setImage(android.net.Uri)">setImage</a></span>(<a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri)
-        
-        <div class="jd-descrdiv">Sets the Uri that resolves to the image that this CardDataImage will display.</div>
   
   </td></tr>
 
@@ -708,6 +637,24 @@ Summary:
             void
         </td>
         <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html#setImage(android.net.Uri)">setImage</a></span>(<a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri)
+        
+        <div class="jd-descrdiv">Sets the Uri that resolves to the image that this CardDataImage will display.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html#setImage(android.graphics.Bitmap)">setImage</a></span>(<a href="http://d.android.com/reference/android/graphics/Bitmap.html">Bitmap</a> bitmap)
         
         <div class="jd-descrdiv">Sets the image bitmap to the given bitmap.</div>
@@ -716,7 +663,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -734,7 +681,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1296,12 +1243,22 @@ From class
       
   <div class="jd-tagdata jd-tagdescr"><p>Create a new CardDataImage by passing in a parent <code><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a></code> that this
  CardDataImage will be linked to.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>linkedCardData</th>
+          <td>The CardData that will be the parent of this CardImageData.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
 
 
-<a id="CardDataImage(android.net.Uri)"></a>
+<a id="CardDataImage(android.net.Uri, org.cyanogenmod.launcher.home.api.cards.CardData)"></a>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1314,7 +1271,7 @@ From class
         
       </span>
       <span class="sympad">CardDataImage</span>
-      <span class="normal">(<a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri)</span>
+      <span class="normal">(<a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri, <a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a> linkedCardData)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1332,7 +1289,11 @@ From class
       <table class="jd-tagtable">
         <tr>
           <th>imageUri</th>
-          <td>A Uri that resolves to the image that this CardDataImage will display.
+          <td>A Uri that resolves to the image that this CardDataImage will display.</td>
+        </tr>
+        <tr>
+          <th>linkedCardData</th>
+          <td>The CardData that will be the parent of this CardImageData.
 </td>
         </tr>
       </table>
@@ -1355,59 +1316,6 @@ From class
 
 <h2>Public Methods</h2>
 
-
-
-<a id="createFromCurrentCursorRow(android.database.Cursor, java.lang.String)"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-         
-         
-         
-        <a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html">CardDataImage</a>
-      </span>
-      <span class="sympad">createFromCurrentCursorRow</span>
-      <span class="normal">(<a href="http://d.android.com/reference/android/database/Cursor.html">Cursor</a> cursor, <a href="http://d.android.com/reference/java/lang/String.html">String</a> authority)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new CardDataImage from the data row that the input cursor currently points to.
-
- <b>This is intended to be an internal method. Please use one of the helper methods to
- retrieve CardDataImages.</b></p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>cursor</th>
-          <td>A Cursor object that currently points to a row with CardDataImage data.</td>
-        </tr>
-        <tr>
-          <th>authority</th>
-          <td>The authority of the ContentProvider that hosts the ContentProvider being
-                  read from.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>A CardDataImage containing the data from the input cursor row.
-</li></ul>
-  </div>
-
-    </div>
-</div>
 
 
 <a id="getAllPublishedCardDataImages(android.content.Context)"></a>
@@ -1661,38 +1569,7 @@ From class
 </div>
 
 
-<a id="getPublishedCardDataImagesForCardDataId(android.content.Context, android.net.Uri, long)"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-         
-         
-         
-        <a href="http://d.android.com/reference/java/util/List.html">List</a>&lt;<a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html">CardDataImage</a>&gt;
-      </span>
-      <span class="sympad">getPublishedCardDataImagesForCardDataId</span>
-      <span class="normal">(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context, <a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> contentUri, long cardDataId)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    </div>
-</div>
-
-
-<a id="setCardDataId(long)"></a>
+<a id="setImage(int)"></a>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1704,8 +1581,8 @@ From class
          
         void
       </span>
-      <span class="sympad">setCardDataId</span>
-      <span class="normal">(long cardDataId)</span>
+      <span class="sympad">setImage</span>
+      <span class="normal">(int resource)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1717,16 +1594,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the ID of the <code><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a></code> that this
- image is associated with. This required field tells CM Home which Card this image will be
- displayed with.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the image to the image that the given resource ID resolves to.
+
+ <p>When <code><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#publish(android.content.Context)">publish(Context)</a></code> is
+ called on this CardDataImage, this image is saved to a cache within the internal storage for
+ this application, to be accessed only by CM Home through a ContentProvider. If the same
+ Bitmap is passed for any other image, the same cached image will be used. </p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>cardDataId</th>
-          <td>The ID of the Card that this image is a child of, as returned by
-                   <code><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#getId()">getId()</a></code>.
+          <th>resource</th>
+          <td>The resource to save for this CardDataImage.
 </td>
         </tr>
       </table>
@@ -1768,52 +1647,6 @@ From class
         <tr>
           <th>imageUri</th>
           <td>A URI to this image (all types, including internet resources, are allowed).
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="setImage(int)"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-         
-         
-         
-         
-        void
-      </span>
-      <span class="sympad">setImage</span>
-      <span class="normal">(int resource)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the image to the image that the given resource ID resolves to.
-
- <p>When <code><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#publish(android.content.Context)">publish(Context)</a></code> is
- called on this CardDataImage, this image is saved to a cache within the internal storage for
- this application, to be accessed only by CM Home through a ContentProvider. If the same
- Bitmap is passed for any other image, the same cached image will be used. </p></p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>resource</th>
-          <td>The resource to save for this CardDataImage.
 </td>
         </tr>
       </table>
