@@ -245,6 +245,8 @@ public class CardDataImage extends PublishableCard {
     }
 
     /**
+     * @hide
+     *
      * Creates a new CardDataImage from the data row that the input cursor currently points to.
      *
      * <b>This is intended to be an internal method. Please use one of the helper methods to
@@ -301,6 +303,20 @@ public class CardDataImage extends PublishableCard {
                                                        cardDataId);
     }
 
+    /**
+     * @hide
+     *
+     * Retrieve a list of currently published DataCardImages that have the CardData
+     * given by cardDataId as a parent.
+     *
+     * <b>This is intended to be an internal method. Please use one of the helper methods to
+     * retrieve CardDataImages.</b>
+     * @param context The Context of the application that published the CardDataImages originally.
+     * @param contentUri The ContentUri of the images being queried for.
+     * @param cardDataId The ID of the {@link CardData} that is the parent of the CardDataImages
+     *                   being queried for.
+     * @return A list of CardDataImages that have the given {@link CardData} as a parent.
+     */
     public static List<CardDataImage> getPublishedCardDataImagesForCardDataId(Context context,
                                                                               Uri contentUri,
                                                                               long cardDataId) {

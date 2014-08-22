@@ -882,6 +882,7 @@ public class CardData extends PublishableCard {
     }
 
     /**
+     * @hide
      * <p>Creates a CardData object from a Database cursor that is set to a current row
      * containing CardData data.</p>
      *
@@ -901,6 +902,7 @@ public class CardData extends PublishableCard {
     }
 
     /**
+     * @hide
      * Creates a CardData object from a Database cursor that is set to a current row containing
      * CardData data.
      * <p><b>This is intended to be an internal SDK method.
@@ -1017,6 +1019,7 @@ public class CardData extends PublishableCard {
     }
 
     /**
+     * @hide
      * Retrieves a list of cards that are currently published for the given CardData Uri and
      * CardDataImage Uri.
      * <p><b>This is intended to be an internal SDK method. You should use
