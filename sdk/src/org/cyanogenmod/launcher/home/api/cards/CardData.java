@@ -264,13 +264,31 @@ public class CardData extends PublishableCard {
 
     /**
      * Removes a CardDataImage from this CardData, if it is currently linked to this CardData.
-     * This CardDataImage is also unpublished immediately.
+     * When publish is called on this DataCard, the removed image will be unpublished.
      * @param image The CardDataImage to remove from this CardData.
      */
     public void removeCardDataImage(CardDataImage image) {
         mRemovedImages.add(image);
 
         mImages.remove(image);
+    }
+
+    /**
+     * Removes a CardDataImage from this CardData, if it is currently linked to this CardData.
+     * When publish is called on this DataCard, the removed image will be unpublished.
+     * @param image The global ID of the CardDataImage to remove.
+     */
+    public void removeCardDataImage(String imageGlobalId) {
+        CardDataImage theImage = null;
+        for (CardDataImage image : mImages) {
+            if (imageGlobalId.equals(image.getGlobalId())) {
+                theImage = image;
+            }
+        }
+
+        if (theImage != null) {
+            mImages.remove(theImage);
+        }
     }
 
     /**
