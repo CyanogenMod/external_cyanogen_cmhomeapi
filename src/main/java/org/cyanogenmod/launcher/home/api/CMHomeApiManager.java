@@ -34,26 +34,29 @@ import java.util.Map;
 
 public class CMHomeApiManager {
     private final static String TAG = "CMHomeApiManager";
-    private final static String FEED_READ_PERM = "org.cyanogenmod.launcher.home.api.FEED_READ";
-    private final static String FEED_WRITE_PERM = "org.cyanogenmod.launcher.home.api.FEED_WRITE";
-    private static final int    CARD_DATA_LIST                = 1;
-    private static final int    CARD_DATA_ITEM                = 2;
-    private static final int    CARD_DATA_DELETE_ITEM         = 3;
-    private static final int    CARD_DATA_IMAGE_LIST          = 4;
-    private static final int    CARD_DATA_IMAGE_ITEM          = 5;
-    private static final int    CARD_DATA_IMAGE_DELETE_ITEM   = 6;
-    private static final String CARD_MESSAGE_BUNDLE_ID_KEY    = "CardId";
+    private final static String FEED_READ_PERM
+                                    = "org.cyanogenmod.launcher.home.api.FEED_READ";
+    private final static String FEED_WRITE_PERM
+                                                            = "org.cyanogenmod.launcher.home.api.FEED_WRITE";
+    private static final int    CARD_DATA_LIST              = 1;
+    private static final int    CARD_DATA_ITEM              = 2;
+    private static final int    CARD_DATA_DELETE_ITEM       = 3;
+    private static final int    CARD_DATA_IMAGE_LIST        = 4;
+    private static final int    CARD_DATA_IMAGE_ITEM        = 5;
+    private static final int    CARD_DATA_IMAGE_DELETE_ITEM = 6;
+    private static final String CARD_MESSAGE_BUNDLE_ID_KEY  = "CardId";
 
     // All provider authorities that contain Cards.
     private List<String> mProviders = new ArrayList<String>();
     // Provider authority string -> SparseArray from card ID -> CardData
     private HashMap<String, LongSparseArray<CardData>> mCards = new HashMap<String,
-                                                                  LongSparseArray<CardData>>();
+                                                                    LongSparseArray<CardData>>();
+    private HashMap<String, CardData> mImageIdsToCards = new HashMap<String, CardData>();
 
-    private CardContentObserver mContentObserver;
-    private HandlerThread mContentObserverHandlerThread;
-    private Handler mContentObserverHandler;
-    private ICMHomeApiUpdateListener mApiUpdateListener;
+    private CardContentObserver           mContentObserver;
+    private HandlerThread                 mContentObserverHandlerThread;
+    private Handler                       mContentObserverHandler;
+    private ICMHomeApiUpdateListener      mApiUpdateListener;
     private ApiCardPackageChangedReceiver mPackageChangedReceiver;
 
     private Context mContext;
@@ -251,10 +254,17 @@ public class CMHomeApiManager {
 
         for (CardData card : cards) {
             cardMap.put(card.getId(), card);
+            storeCardDataImagesForCardData(card);
 
             if (notifyListener) {
                 mApiUpdateListener.onCardInsertOrUpdate(card.getGlobalId());
             }
+        }
+    }
+
+    private void storeCardDataImagesForCardData(CardData cardData) {
+        for (CardDataImage image : cardData.getImages()) {
+            mImageIdsToCards.put(image.getGlobalId(), cardData);
         }
     }
 
@@ -346,6 +356,8 @@ public class CMHomeApiManager {
             cards.put(theNewCard.getId(), theNewCard);
         }
 
+        storeCardDataImagesForCardData(theNewCard);
+
         mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId());
     }
 
@@ -355,6 +367,11 @@ public class CMHomeApiManager {
         if (cards != null) {
             long id = Long.parseLong(uri.getLastPathSegment());
             CardData cardData = cards.get(id);
+
+            for (CardDataImage image : cardData.getImages()) {
+                mImageIdsToCards.remove(image.getGlobalId());
+            }
+
             if (cardData != null) {
                 String globalId = cardData.getGlobalId();
                 cards.delete(id);
@@ -390,15 +407,29 @@ public class CMHomeApiManager {
         if (newImage != null) {
             CardData associatedCard = getCard(uri.getAuthority(), newImage.getCardDataId());
             associatedCard.addOrUpdateCardDataImage(newImage);
+            mImageIdsToCards.put(newImage.getGlobalId(), associatedCard);
 
             mApiUpdateListener.onCardInsertOrUpdate(associatedCard.getGlobalId());
         }
     }
 
     private void onCardImageDelete(Uri uri) {
-        // Get a DataCardImage with the ID in the uri
-        // Find the datacard associated with it and remove the image
-        // call update on that datacard
+        if (uri != null) {
+            try {
+                long id = Long.parseLong(uri.getLastPathSegment());
+                String authority = uri.getAuthority();
+                String cardDataImageGlobalId = authority + "/" + id;
+
+                // Find the CardData it is associated with, remove the image and notify about the update.
+                CardData associatedCard = mImageIdsToCards.get(cardDataImageGlobalId);
+                associatedCard.removeCardDataImage(cardDataImageGlobalId);
+                mImageIdsToCards.remove(cardDataImageGlobalId);
+
+                mApiUpdateListener.onCardInsertOrUpdate(associatedCard.getGlobalId());
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Unable to handle CardDataImage deletion for Uri: " + uri.toString());
+            }
+        }
     }
 
     private UriMatcher getUriMatcherForAuthority(String authority) {
