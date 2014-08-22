@@ -42,8 +42,6 @@ public class CMHomeApiManager {
     private static final int    CARD_DATA_IMAGE_LIST          = 4;
     private static final int    CARD_DATA_IMAGE_ITEM          = 5;
     private static final int    CARD_DATA_IMAGE_DELETE_ITEM   = 6;
-    private static final int    UPDATE_CARD_DATA_MESSAGE_WHAT = 0;
-    private static final int    DELETE_CARD_DATA_MESSAGE_WHAT = 1;
     private static final String CARD_MESSAGE_BUNDLE_ID_KEY    = "CardId";
 
     // All provider authorities that contain Cards.
@@ -57,31 +55,6 @@ public class CMHomeApiManager {
     private Handler mContentObserverHandler;
     private ICMHomeApiUpdateListener mApiUpdateListener;
     private ApiCardPackageChangedReceiver mPackageChangedReceiver;
-
-    private Handler mUiThreadHandler = new Handler() {
-        @Override
-        public
-        void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            String globalId = msg.getData().getString(CARD_MESSAGE_BUNDLE_ID_KEY);
-
-            if (!TextUtils.isEmpty(globalId)) {
-                switch (msg.what) {
-                    case UPDATE_CARD_DATA_MESSAGE_WHAT:
-                        // Update listeners that a card has changed.
-                        mApiUpdateListener.onCardInsertOrUpdate(globalId);
-                        break;
-                    case DELETE_CARD_DATA_MESSAGE_WHAT:
-                        globalId = msg.getData().getString(CARD_MESSAGE_BUNDLE_ID_KEY);
-                        // Update listeners that a card has been deleted
-                        mApiUpdateListener.onCardDelete(globalId);
-                        break;
-                    default:
-                        // nothing
-                }
-            }
-        }
-    };
 
     private Context mContext;
 
@@ -226,8 +199,7 @@ public class CMHomeApiManager {
             for (int i = 0; i < cards.size(); i++) {
                 CardData cardData = cards.valueAt(i);
 
-                sendNotifyCardDataChangeMessageOnUIHandler(cardData.getGlobalId(),
-                                                           DELETE_CARD_DATA_MESSAGE_WHAT);
+                mApiUpdateListener.onCardDelete(cardData.getGlobalId());
             }
 
             // Clear storage of all cards for this provider
@@ -287,8 +259,7 @@ public class CMHomeApiManager {
             cardMap.put(card.getId(), card);
 
             if (notifyListener) {
-                sendNotifyCardDataChangeMessageOnUIHandler(card.getGlobalId(),
-                                                           UPDATE_CARD_DATA_MESSAGE_WHAT);
+                mApiUpdateListener.onCardInsertOrUpdate(card.getGlobalId());
             }
         }
     }
@@ -381,8 +352,7 @@ public class CMHomeApiManager {
             cards.put(theNewCard.getId(), theNewCard);
         }
 
-        sendNotifyCardDataChangeMessageOnUIHandler(theNewCard.getGlobalId(),
-                                                   UPDATE_CARD_DATA_MESSAGE_WHAT);
+        mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId());
     }
 
     private void onCardDelete(Uri uri) {
@@ -395,13 +365,7 @@ public class CMHomeApiManager {
                 String globalId = cardData.getGlobalId();
                 cards.delete(id);
 
-                Message uiMessage = new Message();
-                uiMessage.what = DELETE_CARD_DATA_MESSAGE_WHAT;
-                Bundle messageData = new Bundle();
-                messageData.putString(CARD_MESSAGE_BUNDLE_ID_KEY, globalId);
-                uiMessage.setData(messageData);
-
-                mUiThreadHandler.sendMessage(uiMessage);
+                mApiUpdateListener.onCardDelete(globalId);
             }
         }
     }
@@ -433,9 +397,7 @@ public class CMHomeApiManager {
             CardData associatedCard = getCard(uri.getAuthority(), newImage.getCardDataId());
             associatedCard.addOrUpdateCardDataImage(newImage);
 
-            // Call update on that CardDataImage
-            sendNotifyCardDataChangeMessageOnUIHandler(associatedCard.getGlobalId(),
-                                                       UPDATE_CARD_DATA_MESSAGE_WHAT);
+            mApiUpdateListener.onCardInsertOrUpdate(associatedCard.getGlobalId());
         }
     }
 
@@ -443,22 +405,6 @@ public class CMHomeApiManager {
         // Get a DataCardImage with the ID in the uri
         // Find the datacard associated with it and remove the image
         // call update on that datacard
-    }
-
-    /**
-     * Sends a message to mUIThreadHandler to notify listeners on the UI thread of a card
-     * deletion or removal.
-     * @param globalId The global ID of the card to remove.
-     * @param what One of UPDATE_CARD_DATA_MESSAGE_WHAT or DELETE_CARD_DATA_MESSAGE_WHAT.
-     */
-    private void sendNotifyCardDataChangeMessageOnUIHandler(String globalId, int what) {
-        Message uiMessage = new Message();
-        uiMessage.what = what;
-        Bundle messageData = new Bundle();
-        messageData.putString(CARD_MESSAGE_BUNDLE_ID_KEY, globalId);
-        uiMessage.setData(messageData);
-
-        mUiThreadHandler.sendMessage(uiMessage);
     }
 
     private UriMatcher getUriMatcherForAuthority(String authority) {
