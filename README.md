@@ -49,8 +49,8 @@ Before you can publish cards, there are a few prerequisites to take care of:
               android:authorities="org.cyanogenmod.launcher.home.api.sdkexample.cmhomeapi"
               android:enabled="true"
               android:exported="true"
-              android:readPermission="org.cyanogenmod.launcher.home.api.FEED_READ"
-              android:writePermission="org.cyanogenmod.launcher.home.api.FEED_WRITE" />
+              android:readPermission="org.cyanogenmod.launcher.home.api.FEED_HOST"
+              android:writePermission="org.cyanogenmod.launcher.home.api.FEED_HOST" />
     ```
 
 ## Cards, Cards, Cards
