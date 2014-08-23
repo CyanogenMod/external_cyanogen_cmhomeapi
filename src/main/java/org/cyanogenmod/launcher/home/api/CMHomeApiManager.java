@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.UriMatcher;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PermissionInfo;
 import android.content.pm.ProviderInfo;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -34,10 +35,9 @@ import java.util.Map;
 
 public class CMHomeApiManager {
     private final static String TAG = "CMHomeApiManager";
-    private final static String FEED_READ_PERM
-                                    = "org.cyanogenmod.launcher.home.api.FEED_READ";
-    private final static String FEED_WRITE_PERM
-                                                            = "org.cyanogenmod.launcher.home.api.FEED_WRITE";
+    private final static String FEED_HOST_PERM = "org.cyanogenmod.launcher.home.api.FEED_HOST";
+    private final static String FEED_PUBLISH_PERM =
+                                "org.cyanogenmod.launcher.home.api.FEED_PUBLISH";
     private static final int    CARD_DATA_LIST              = 1;
     private static final int    CARD_DATA_ITEM              = 2;
     private static final int    CARD_DATA_DELETE_ITEM       = 3;
@@ -45,7 +45,8 @@ public class CMHomeApiManager {
     private static final int    CARD_DATA_IMAGE_ITEM        = 5;
     private static final int    CARD_DATA_IMAGE_DELETE_ITEM = 6;
     private static final String CARD_MESSAGE_BUNDLE_ID_KEY  = "CardId";
-
+    private static final int RETRIEVE_PACKAGES_FLAGS = PackageManager.GET_PROVIDERS
+                                                       | PackageManager.GET_PERMISSIONS;
     // All provider authorities that contain Cards.
     private List<String> mProviders = new ArrayList<String>();
     // Provider authority string -> SparseArray from card ID -> CardData
@@ -163,8 +164,8 @@ public class CMHomeApiManager {
             ProviderInfo[] providers = packageInfo.providers;
             if (providers != null) {
                 for (ProviderInfo providerInfo : providers) {
-                    if (FEED_READ_PERM.equals(providerInfo.readPermission)
-                        && FEED_WRITE_PERM.equals(providerInfo.writePermission)) {
+                    if (FEED_HOST_PERM.equals(providerInfo.readPermission)
+                        && FEED_HOST_PERM.equals(providerInfo.writePermission)) {
                         mProviders.add(providerInfo.authority);
                         return providerInfo.authority;
                     }
@@ -178,20 +179,35 @@ public class CMHomeApiManager {
                                                             boolean notifyListener) {
         PackageManager pm = mContext.getPackageManager();
         try {
-            PackageInfo packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_PROVIDERS);
-            String authority = loadExtensionIfSupported(packageInfo);
+            PackageInfo packageInfo = pm.getPackageInfo(packageName, RETRIEVE_PACKAGES_FLAGS);
+            boolean authorized = checkPublishPerm(packageInfo);
+            if (authorized) {
+                String authority = loadExtensionIfSupported(packageInfo);
 
-            boolean alreadyExists = mProviders.contains(authority) &&
-                                    mCards.containsKey(authority);
+                boolean alreadyExists = mProviders.contains(authority) &&
+                                        mCards.containsKey(authority);
 
-            // If the provider is already being tracked, our work is done
-            if (authority != null && !alreadyExists) {
-                trackExtension(authority);
-                loadCards(authority, notifyListener);
+                // If the provider is already being tracked, our work is done
+                if (authority != null && !alreadyExists) {
+                    trackExtension(authority);
+                    loadCards(authority, notifyListener);
+                }
             }
         } catch (PackageManager.NameNotFoundException e) {
             Log.w(TAG, "Unable to load providers for package: " + packageName);
         }
+    }
+
+    private boolean checkPublishPerm(PackageInfo packageInfo) {
+        if (packageInfo.permissions != null) {
+            for (PermissionInfo permissionInfo : packageInfo.permissions) {
+                if (FEED_PUBLISH_PERM.equals(permissionInfo.name)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void removeAllCardsForPackage(String packageName) {
