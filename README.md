@@ -142,31 +142,93 @@ List<CardData> allTheCards = CardData.getAllPublishedCardDatas(this);
 
 Now that you have a reference to the cards, feel free to update them or unpublish them as you see fit!
 
-#### Handling a Card Deletion
+#### Handling Card Events
+
+##### Card Deletion
 
 CM Home can also modify the cards hosted by your application. Currently, the only time this will happen is when a card is deleted by the user or by the application. For some applications (though not all), this can be an important event to handle.
 
-To receive a Broadcast when a card is deleted, subclass CmHomeCardChangeReceiver and override the onCardDeleted method as shown below:
+To receive a Broadcast when a card is deleted:
 
-```java
-/**
- * An extension of CmHomeCardChangeReceiver, that implements the callback for
- * when a card is deleted.
- */
-public class CardDeletedBroadcastReceiver extends CmHomeCardChangeReceiver{
-    public static final String TAG = "CardDeletedBroadcastReceiver";
-
-    @Override
-    protected void onCardDeleted(Context context, CardData.CardDeletedInfo cardDeletedInfo) {
-        Log.i(TAG, "CM Home card was deleted: id: " + cardDeletedInfo.getId()
-                   + ", internalID: " + cardDeletedInfo.getInternalId()
-                   + ", authority: " + cardDeletedInfo.getAuthority()
-                   + ", globalID: " + cardDeletedInfo.getGlobalId());    
+1. Subclass CmHomeCardChangeReceiver and override the onCardDeleted method as shown below:
+    ```java
+    /**
+     * An extension of CmHomeCardChangeReceiver, that implements the callback for
+     * when a card is deleted.
+     */
+    public class MyCardChangeBroadcastReceiver extends CmHomeCardChangeReceiver{
+        public static final String TAG = "CardDeletedBroadcastReceiver";
+    
+        @Override
+        protected void onCardDeleted(Context context, CardData.CardDeletedInfo cardDeletedInfo) {
+            Log.i(TAG, "CM Home card was deleted: id: " + cardDeletedInfo.getId()
+                       + ", internalID: " + cardDeletedInfo.getInternalId()
+                       + ", authority: " + cardDeletedInfo.getAuthority()
+                       + ", globalID: " + cardDeletedInfo.getGlobalId());    
+        }
     }
-}
-```
+    ```
+    
+    The [CardDeletedInfo][5] object passed to `onCardDeleted` contains the necessary identifying information to handle a deleted card.
+    
+2. Add your new BroadcastReceiver subclass to your AndroidManifest.xml:
 
-The [CardDeletedInfo][5] object passed to `onCardDeleted` contains the necessary identifying information to handle a deleted card.
+    ```xml
+     <receiver
+                android:name="org.cyanogenmod.launcher.home.api.sdkexample.receiver.MyCardChangeBroadcastReceiver"
+                android:permission="org.cyanogenmod.launcher.home.api.FEED_HOST">
+                      <intent-filter>
+                          <action android:name="org.cyanogenmod.launcher.home.api.CARD_DELETED" />
+                      </intent-filter>
+            </receiver>
+    ```
+    
+    Make sure to protect this BroadcastReceiver with the FEED_HOST permission, as defined above. Only CM Home will hold this permission, so malicious apps cannot send bogus Broadcasts.
+    
+##### Refresh Requests 
+
+CM Home will, at times, send a Broadcast to inform all applications that have implemented the SDK that Cards should be updated. This may occur in the background to keep the content at it's freshest. However, the most likely use case is that the user has opened CM Home and the newest content should be published immediately.
+
+This is the time to remove stale content, update existing content, and publish new content. However, if nothing has changed for your application since the last time you published, this Broadcast can be safely ignored.
+
+To handle this request:
+
+1. Add an overriden method implementation for onRefreshRequested(Context context) to `MyCardChangeReceiver` that we defined above:
+
+    ```java
+    /**
+         * An extension of CmHomeCardChangeReceiver, that implements the callback for
+         * when a card is deleted, and handles the refresh request Broadcast.
+         */
+        public class MyCardChangeBroadcastReceiver extends CmHomeCardChangeReceiver{
+            public static final String TAG = "CardDeletedBroadcastReceiver";
+        
+            @Override
+            protected void onCardDeleted(Context context, CardData.CardDeletedInfo cardDeletedInfo) {
+                Log.i(TAG, "CM Home card was deleted: id: " + cardDeletedInfo.getId()
+                           + ", internalID: " + cardDeletedInfo.getInternalId()
+                           + ", authority: " + cardDeletedInfo.getAuthority()
+                           + ", globalID: " + cardDeletedInfo.getGlobalId());    
+            }
+            
+            @Override
+            protected void onRefreshRequested(Context context) {
+                // Update your cards now!
+            }
+        }
+    ```
+2. Add the intent filter to your receiver declaration in AndroidManifest.xml as defined above:
+
+    ```xml
+     <receiver
+                android:name="org.cyanogenmod.launcher.home.api.sdkexample.receiver.MyCardChangeBroadcastReceiver"
+                android:permission="org.cyanogenmod.launcher.home.api.FEED_HOST">
+                      <intent-filter>
+                          <action android:name="org.cyanogenmod.launcher.home.api.CARD_DELETED" />
+                          <action android:name="org.cyanogenmod.launcher.home.api.REFRESH_REQUESTED" />
+                      </intent-filter>
+            </receiver>
+    ```
 
 
 ## Example Projects
