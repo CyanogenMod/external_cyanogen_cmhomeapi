@@ -345,19 +345,28 @@ public class CMHomeApiManager {
     }
 
     private CardData retrieveCardDataFromProvider(Uri uri) {
-        ContentResolver contentResolver = mContext.getContentResolver();
-        Cursor cursor = contentResolver.query(uri,
-                                              CmHomeContract.CardDataContract.PROJECTION_ALL,
-                                              null,
-                                              null,
-                                              CmHomeContract.CardDataContract.DATE_CREATED_COL);
+        Cursor cursor = null;
+        try {
+            ContentResolver contentResolver = mContext.getContentResolver();
+            cursor = contentResolver.query(uri,
+                                            CmHomeContract.CardDataContract.PROJECTION_ALL,
+                                            null,
+                                            null,
+                                            CmHomeContract.CardDataContract.DATE_CREATED_COL);
+        // Catching all Exceptions, since we can't be sure what the extension will do.
+        } catch (Exception e) {
+            Log.e(TAG, "Error querying for CardDatas, ContentProvider threw an exception for uri:" +
+                       " " + uri, e);
+        }
 
         CardData theCard = null;
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            theCard = CardData.createFromCurrentCursorRow(cursor, uri.getAuthority());
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                theCard = CardData.createFromCurrentCursorRow(cursor, uri.getAuthority());
+            }
+            cursor.close();
         }
-        cursor.close();
         return theCard;
     }
 
@@ -370,17 +379,19 @@ public class CMHomeApiManager {
         LongSparseArray<CardData> cards = mCards.get(authority);
 
         CardData theNewCard = retrieveCardDataFromProvider(uri);
-        if (cards == null) {
-            cards = new LongSparseArray<CardData>();
-            cards.put(theNewCard.getId(), theNewCard);
-            mCards.put(authority, cards);
-        } else {
-            cards.put(theNewCard.getId(), theNewCard);
+        if (theNewCard != null) {
+            if (cards == null) {
+                cards = new LongSparseArray<CardData>();
+                cards.put(theNewCard.getId(), theNewCard);
+                mCards.put(authority, cards);
+            } else {
+                cards.put(theNewCard.getId(), theNewCard);
+            }
+
+            storeCardDataImagesForCardData(theNewCard);
+
+            mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId());
         }
-
-        storeCardDataImagesForCardData(theNewCard);
-
-        mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId());
     }
 
     private void onCardDelete(Uri uri) {
@@ -390,11 +401,11 @@ public class CMHomeApiManager {
             long id = Long.parseLong(uri.getLastPathSegment());
             CardData cardData = cards.get(id);
 
-            for (CardDataImage image : cardData.getImages()) {
-                mImageIdsToCards.remove(image.getGlobalId());
-            }
-
             if (cardData != null) {
+                for (CardDataImage image : cardData.getImages()) {
+                    mImageIdsToCards.remove(image.getGlobalId());
+                }
+
                 String globalId = cardData.getGlobalId();
                 cards.delete(id);
 
@@ -404,20 +415,29 @@ public class CMHomeApiManager {
     }
 
     private CardDataImage retrieveCardDataImageFromProvider(Uri uri) {
-        ContentResolver contentResolver = mContext.getContentResolver();
-        Cursor cursor = contentResolver.query(uri,
-                                              CmHomeContract.CardDataImageContract.PROJECTION_ALL,
-                                              null,
-                                              null,
-                                              null);
+        Cursor cursor = null;
+        try {
+            ContentResolver contentResolver = mContext.getContentResolver();
+            cursor = contentResolver.query(uri,
+                                           CmHomeContract.CardDataImageContract.PROJECTION_ALL,
+                                           null,
+                                           null,
+                                           null);
+        // Catching all Exceptions, since we can't be sure what the extension will do.
+        } catch (Exception e) {
+            Log.e(TAG, "Error querying for CardDatas, ContentProvider threw an exception for uri:" +
+                       " " + uri, e);
+        }
 
         CardDataImage theImage = null;
-        if (cursor.getCount() > 0) {
-            // This will be called only for a single image insertion or update
-            cursor.moveToFirst();
-            theImage = CardDataImage.createFromCurrentCursorRow(cursor, uri.getAuthority());
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                // This will be called only for a single image insertion or update
+                cursor.moveToFirst();
+                theImage = CardDataImage.createFromCurrentCursorRow(cursor, uri.getAuthority());
+            }
+            cursor.close();
         }
-        cursor.close();
         return theImage;
     }
 
@@ -428,10 +448,12 @@ public class CMHomeApiManager {
         // Find the CardData it is associated with and update its images
         if (newImage != null) {
             CardData associatedCard = getCard(uri.getAuthority(), newImage.getCardDataId());
-            associatedCard.addOrUpdateCardDataImage(newImage);
-            mImageIdsToCards.put(newImage.getGlobalId(), associatedCard);
+            if (associatedCard != null) {
+                associatedCard.addOrUpdateCardDataImage(newImage);
+                mImageIdsToCards.put(newImage.getGlobalId(), associatedCard);
 
-            mApiUpdateListener.onCardInsertOrUpdate(associatedCard.getGlobalId());
+                mApiUpdateListener.onCardInsertOrUpdate(associatedCard.getGlobalId());
+            }
         }
     }
 
@@ -445,10 +467,12 @@ public class CMHomeApiManager {
                 // Find the CardData it is associated with,
                 // remove the image and notify about the update.
                 CardData associatedCard = mImageIdsToCards.get(cardDataImageGlobalId);
-                associatedCard.removeCardDataImage(cardDataImageGlobalId);
-                mImageIdsToCards.remove(cardDataImageGlobalId);
+                if (associatedCard != null) {
+                    associatedCard.removeCardDataImage(cardDataImageGlobalId);
+                    mImageIdsToCards.remove(cardDataImageGlobalId);
 
-                mApiUpdateListener.onCardInsertOrUpdate(associatedCard.getGlobalId());
+                    mApiUpdateListener.onCardInsertOrUpdate(associatedCard.getGlobalId());
+                }
             } catch (NumberFormatException e) {
                 Log.e(TAG, "Unable to handle CardDataImage deletion for Uri: " + uri.toString());
             }
