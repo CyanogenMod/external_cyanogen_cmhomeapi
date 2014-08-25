@@ -87,7 +87,6 @@ public class CMHomeApiManager {
 
     public CMHomeApiManager(Context context) {
         mContext = context;
-        mPackageChangedReceiver = new ApiCardPackageChangedReceiver(this);
         init();
     }
 
@@ -137,6 +136,7 @@ public class CMHomeApiManager {
         mContentObserverHandler = new Handler(mContentObserverHandlerThread.getLooper());
 
         // Register the package changed broadcast receiver
+        mPackageChangedReceiver = new ApiCardPackageChangedReceiver(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
         intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
@@ -152,7 +152,13 @@ public class CMHomeApiManager {
     public void destroy() {
         mContentObserverHandlerThread.quitSafely();
         mContext.getContentResolver().unregisterContentObserver(mContentObserver);
-        mContext.unregisterReceiver(mPackageChangedReceiver);
+
+        // After unregistering, clear the reference to mPackageChangedReceiver
+        // so that it cannot be attempted to be unregistered twice in abnormal circumstances.
+        if (mPackageChangedReceiver != null) {
+            mContext.unregisterReceiver(mPackageChangedReceiver);
+            mPackageChangedReceiver = null;
+        }
     }
 
     private class LoadExtensionsAndCardsAsync extends AsyncTask<Void, Void, Void> {
