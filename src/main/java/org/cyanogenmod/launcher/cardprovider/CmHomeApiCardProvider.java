@@ -21,9 +21,12 @@ public class CmHomeApiCardProvider implements ICardProvider,
     private CMHomeApiManager mApiManager;
     private Context mCmHomeContext;
     private Context mHostActivityContext;
-    private List<CardProviderUpdateListener> mUpdateListeners = new ArrayList<CardProviderUpdateListener>();
+    private List<CardProviderUpdateListener> mUpdateListeners =
+                                            new ArrayList<CardProviderUpdateListener>();
     private static final String CM_HOME_API_CARD_DELETED_BROADCAST_ACTION =
                                             "org.cyanogenmod.launcher.home.api.CARD_DELETED";
+    private static final String CM_HOME_API_REFRESH_REQUESTED_BROADCAST_ACTION =
+                                            "org.cyanogenmod.launcher.home.api.REFRESH_REQUESTED";
     public static final String CARD_AUTHORITY_APPEND_STRING = ".cmhomeapi";
 
     public CmHomeApiCardProvider(Context cmHomeContext, Context hostActivityContext) {
@@ -61,8 +64,14 @@ public class CmHomeApiCardProvider implements ICardProvider,
 
     @Override
     public void requestRefresh() {
-        for (CardData cardData : mApiManager.getAllCardDatas()) {
-            onCardInsertOrUpdate(cardData.getGlobalId());
+        sendRefreshBroadcast();
+    }
+
+    private void sendRefreshBroadcast() {
+        if (mHostActivityContext != null) {
+            Intent broadcast = new Intent();
+            broadcast.setAction(CM_HOME_API_REFRESH_REQUESTED_BROADCAST_ACTION);
+            mHostActivityContext.sendBroadcast(broadcast);
         }
     }
 
