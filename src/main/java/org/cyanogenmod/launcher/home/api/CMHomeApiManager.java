@@ -128,7 +128,9 @@ public class CMHomeApiManager {
 
     public void destroy() {
         mContentObserverHandlerThread.quitSafely();
-        mContext.getContentResolver().unregisterContentObserver(mContentObserver);
+        if (mContentObserver != null) {
+            mContext.getContentResolver().unregisterContentObserver(mContentObserver);
+        }
 
         // After unregistering, clear the reference to mPackageChangedReceiver
         // so that it cannot be attempted to be unregistered twice in abnormal circumstances.
