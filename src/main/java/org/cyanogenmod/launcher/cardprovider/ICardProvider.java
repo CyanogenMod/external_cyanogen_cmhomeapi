@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.List;
 
 import it.gmariotti.cardslib.library.internal.Card;
+import org.cyanogenmod.launcher.cards.CmCard;
 
 /**
  * An interface for classes that can manage data for and provide Cards to be displayed.
@@ -21,13 +22,13 @@ public interface ICardProvider {
      * @param cards Cards to update
      * @return A list of cards that must be added
      */
-    public CardProviderUpdateResult updateAndAddCards(List<Card> cards);
+    public CardProviderUpdateResult updateAndAddCards(List<CmCard> cards);
 
     /**
      * Given a card, update it to the freshest data.
      * @param card The card to update.
      */
-    public void updateCard(Card card);
+    public void updateCard(CmCard card);
 
     /**
      * Given an ID known to this ICardProvider,
@@ -36,8 +37,8 @@ public interface ICardProvider {
      * @param id An ID string known to this card provider, such as
      *           passed in CardProviderUpdateListener.onCardProviderUpdate
      */
-    public Card createCardForId(String id);
-    public List<Card> getCards();
+    public CmCard createCardForId(String id);
+    public List<CmCard> getCards();
     public void addOnUpdateListener(CardProviderUpdateListener listener);
 
     public interface CardProviderUpdateListener {
@@ -46,19 +47,19 @@ public interface ICardProvider {
     }
 
     public class CardProviderUpdateResult {
-        List<Card> mCardsToAdd;
-        List<Card> mCardsToRemove;
+        List<CmCard> mCardsToAdd;
+        List<CmCard> mCardsToRemove;
 
-        public CardProviderUpdateResult(List<Card> cardsToAdd, List<Card> cardsToRemove) {
+        public CardProviderUpdateResult(List<CmCard> cardsToAdd, List<CmCard> cardsToRemove) {
             mCardsToAdd = cardsToAdd;
             mCardsToRemove = cardsToRemove;
         }
 
-        public List<Card> getCardsToAdd() {
+        public List<CmCard> getCardsToAdd() {
             return mCardsToAdd;
         }
 
-        public List<Card> getCardsToRemove() {
+        public List<CmCard> getCardsToRemove() {
             return mCardsToRemove;
         }
     }

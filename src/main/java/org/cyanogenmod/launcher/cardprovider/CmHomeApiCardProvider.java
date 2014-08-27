@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.cyanogenmod.launcher.cards.ApiCard;
+import org.cyanogenmod.launcher.cards.CmCard;
 import org.cyanogenmod.launcher.home.api.CMHomeApiManager;
 import org.cyanogenmod.launcher.home.api.cards.CardData;
 import org.cyanogenmod.launcher.home.api.cards.CardData.CardDeletedInfo;
@@ -75,8 +76,8 @@ public class CmHomeApiCardProvider implements ICardProvider,
         }
     }
 
-    private boolean cardExists(String globalId, List<Card> cards) {
-        for (Card card : cards) {
+    private boolean cardExists(String globalId, List<CmCard> cards) {
+        for (CmCard card : cards) {
             if (card instanceof ApiCard) {
                 ApiCard apiCard = (ApiCard) card;
                 if (apiCard.getId().equals(globalId)) {
@@ -87,14 +88,14 @@ public class CmHomeApiCardProvider implements ICardProvider,
         return false;
     }
     @Override
-    public CardProviderUpdateResult updateAndAddCards(List<Card> cards) {
-        List<Card> cardsToAdd = new ArrayList<Card>();
-        List<Card> cardsToRemove = new ArrayList<Card>();
+    public CardProviderUpdateResult updateAndAddCards(List<CmCard> cards) {
+        List<CmCard> cardsToAdd = new ArrayList<CmCard>();
+        List<CmCard> cardsToRemove = new ArrayList<CmCard>();
 
         // Add
         for (CardData cardData : mApiManager.getAllCardDatas()) {
             if (!cardExists(cardData.getGlobalId(), cards)) {
-                Card card = getCardFromCardData(cardData);
+                CmCard card = getCardFromCardData(cardData);
                 if (card != null) {
                     cardsToAdd.add(card);
                 }
@@ -102,7 +103,7 @@ public class CmHomeApiCardProvider implements ICardProvider,
         }
 
         // Update and remove
-        for (Card card : cards) {
+        for (CmCard card : cards) {
             if (card instanceof ApiCard) {
                 ApiCard apiCard = (ApiCard) card;
                 long cardId = Long.parseLong(card.getId());
@@ -120,7 +121,7 @@ public class CmHomeApiCardProvider implements ICardProvider,
     }
 
     @Override
-    public void updateCard(Card card) {
+    public void updateCard(CmCard card) {
         if (card instanceof ApiCard) {
             ApiCard apiCard = (ApiCard) card;
             long cardId = apiCard.getDbId();
@@ -138,7 +139,7 @@ public class CmHomeApiCardProvider implements ICardProvider,
     }
 
     @Override
-    public Card createCardForId(String id) {
+    public CmCard createCardForId(String id) {
         CardData cardData = mApiManager.getCardWithGlobalId(id);
         if (cardData != null) {
             return getCardFromCardData(cardData);
@@ -147,8 +148,8 @@ public class CmHomeApiCardProvider implements ICardProvider,
     }
 
     @Override
-    public List<Card> getCards() {
-        List<Card> listOfCards = new ArrayList<Card>();
+    public List<CmCard> getCards() {
+        List<CmCard> listOfCards = new ArrayList<CmCard>();
         if (mApiManager == null) {
             return listOfCards;
         }
@@ -160,7 +161,7 @@ public class CmHomeApiCardProvider implements ICardProvider,
         return listOfCards;
     }
 
-    private Card getCardFromCardData(CardData cardData) {
+    private CmCard getCardFromCardData(CardData cardData) {
         ApiCard card = (ApiCard) DataCardBuilderFactory.getCardForCardData(mCmHomeContext,
                                                                            cardData);
         if (card != null) {
