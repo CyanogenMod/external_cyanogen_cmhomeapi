@@ -225,18 +225,21 @@ public class CardDataImage extends PublishableCard {
                        " " + CmHomeContract.CardDataImageContract.CONTENT_URI, e);
         }
 
-        List<CardDataImage> allImages = getAllCardDataImagesFromCursor(cursor);
+        List<CardDataImage> allImages = getAllCardDataImagesFromCursor(cursor,
+                               CmHomeContract.CardDataImageContract.CONTENT_URI.getAuthority());
         cursor.close();
         return allImages;
     }
 
-    private static List<CardDataImage> getAllCardDataImagesFromCursor(Cursor cursor) {
+    private static List<CardDataImage> getAllCardDataImagesFromCursor(Cursor cursor,
+                                                                      String authority) {
         List<CardDataImage> allImages = new ArrayList<CardDataImage>();
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 CardDataImage image = createFromCurrentCursorRow(cursor);
                 if (image != null) {
+                    image.setAuthority(authority);
                     allImages.add(image);
                 }
             }
@@ -334,7 +337,8 @@ public class CardDataImage extends PublishableCard {
                        " " + contentUri, e);
         }
 
-        List<CardDataImage> allImages = getAllCardDataImagesFromCursor(cursor);
+        List<CardDataImage> allImages = getAllCardDataImagesFromCursor(cursor,
+                                                                       contentUri.getAuthority());
         cursor.close();
         return allImages;
     }
