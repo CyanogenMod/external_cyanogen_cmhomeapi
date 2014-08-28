@@ -82,6 +82,7 @@ public class CardData extends PublishableCard {
     private String mTitle;
     private String mSmallText;
     private String mBodyText;
+    private String mCategory;
     private Intent mCardClickIntent;
     private String mAction1Text;
     private Intent mAction1Intent;
@@ -561,6 +562,27 @@ public class CardData extends PublishableCard {
     }
 
     /**
+     * <p>Sets the category of this CardData.</p>
+     *
+     * <p>This String will be used only internally to assign the Card a category.
+     * Each application can define their own categories. The Category value will be used in
+     * sorting to group related cards together. </p>
+     * @param category A String representing the category for this card.
+     */
+    public void setCategory(String category) {
+        this.mCategory = category;
+    }
+
+    /**
+     * Retrieves the currently set category text String for this CardData.
+     * @see org.cyanogenmod.launcher.home.api.cards.CardData#setCategory(java.lang.String)
+     * @return A String that is currently set as the category text for this Card.
+     */
+    public String getCategory() {
+        return mCategory;
+    }
+
+    /**
      * Retrieves the currently set {@link org.cyanogenmod.launcher.home.api.cards.CardData.CardDataIntentInfo}
      * for this CardData.
      * @return An instance of {@link org.cyanogenmod.launcher.home.api.cards.CardData.CardDataIntentInfo}
@@ -857,6 +879,8 @@ public class CardData extends PublishableCard {
                    getSmallText());
         values.put(CmHomeContract.CardDataContract.BODY_TEXT_COL,
                    getBodyText());
+        values.put(CmHomeContract.CardDataContract.CATEGORY_COL,
+                   getCategory());
         values.put(CmHomeContract.CardDataContract.ACTION_1_TEXT_COL,
                    getAction1Text());
 
@@ -968,6 +992,8 @@ public class CardData extends PublishableCard {
                         CmHomeContract.CardDataContract.SMALL_TEXT_COL)));
         cardData.setBodyText(cursor.getString(
                 cursor.getColumnIndex(CmHomeContract.CardDataContract.BODY_TEXT_COL)));
+        cardData.setCategory(cursor.getString(
+                cursor.getColumnIndex(CmHomeContract.CardDataContract.CATEGORY_COL)));
         cardData.setAction1Text(
                 cursor.getString(cursor.getColumnIndex(
                         CmHomeContract.CardDataContract.ACTION_1_TEXT_COL)));

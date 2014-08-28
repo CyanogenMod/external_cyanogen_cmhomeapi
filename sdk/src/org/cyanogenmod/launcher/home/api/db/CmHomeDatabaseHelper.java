@@ -30,6 +30,7 @@ public class CmHomeDatabaseHelper extends SQLiteOpenHelper {
             CmHomeContract.CardDataContract.AVATAR_IMAGE_URI_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.CardDataContract.TITLE_TEXT_COL + " TEXT NOT NULL," +
             CmHomeContract.CardDataContract.SMALL_TEXT_COL + " TEXT DEFAULT NULL," +
+            CmHomeContract.CardDataContract.CATEGORY_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.CardDataContract.BODY_TEXT_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.CardDataContract.CARD_CLICK_URI_COL + " TEXT DEFAULT NULL," +
             CmHomeContract.CardDataContract.ACTION_1_TEXT_COL + " TEXT DEFAULT NULL," +

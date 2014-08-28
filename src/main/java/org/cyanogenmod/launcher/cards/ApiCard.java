@@ -34,6 +34,7 @@ public class ApiCard extends CmCard implements OnUndoSwipeListListener {
     private void init(CardData cardData) {
         mCardData = cardData;
         setId(cardData.getGlobalId());
+        setCategory(cardData.getCategory());
     }
 
     public void setApiAuthority(String authority) {
@@ -52,6 +53,7 @@ public class ApiCard extends CmCard implements OnUndoSwipeListListener {
         mCardData = cardData;
         if (cardData != null) {
             setId(cardData.getGlobalId());
+            setCategory(cardData.getCategory());
         }
     }
 
