@@ -13,6 +13,15 @@ public abstract class CmCard extends Card implements OnUndoSwipeListListener {
         init();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CmCard) {
+            CmCard cmCard = (CmCard) obj;
+            return cmCard.getId().equals(this.getId());
+        }
+        return false;
+    }
+
     public void setCategory(String category) {
         mCategory = category;
     }
