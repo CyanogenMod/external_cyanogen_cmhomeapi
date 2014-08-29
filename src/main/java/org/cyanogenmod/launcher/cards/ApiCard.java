@@ -1,5 +1,6 @@
 package org.cyanogenmod.launcher.cards;
 
+import android.text.TextUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.Card.OnUndoSwipeListListener;
 
@@ -34,7 +35,9 @@ public class ApiCard extends CmCard implements OnUndoSwipeListListener {
     private void init(CardData cardData) {
         mCardData = cardData;
         setId(cardData.getGlobalId());
-        setCategory(cardData.getCategory());
+        if (!TextUtils.isEmpty(cardData.getCategory())) {
+            setCategory(cardData.getCategory());
+        }
     }
 
     public void setApiAuthority(String authority) {
@@ -53,7 +56,9 @@ public class ApiCard extends CmCard implements OnUndoSwipeListListener {
         mCardData = cardData;
         if (cardData != null) {
             setId(cardData.getGlobalId());
-            setCategory(cardData.getCategory());
+            if (!TextUtils.isEmpty(cardData.getCategory())) {
+                setCategory(cardData.getCategory());
+            }
         }
     }
 
