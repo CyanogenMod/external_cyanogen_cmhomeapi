@@ -45,8 +45,7 @@ public class CMHomeApiManager {
     private static final int    CARD_DATA_IMAGE_ITEM        = 5;
     private static final int    CARD_DATA_IMAGE_DELETE_ITEM = 6;
     private static final String CARD_MESSAGE_BUNDLE_ID_KEY  = "CardId";
-    private static final int RETRIEVE_PACKAGES_FLAGS = PackageManager.GET_PROVIDERS
-                                                       | PackageManager.GET_PERMISSIONS;
+
     // All provider authorities that contain Cards.
     private List<String> mProviders = new ArrayList<String>();
     // Provider authority string -> SparseArray from card ID -> CardData
@@ -181,8 +180,9 @@ public class CMHomeApiManager {
                                                             boolean notifyListener) {
         PackageManager pm = mContext.getPackageManager();
         try {
-            PackageInfo packageInfo = pm.getPackageInfo(packageName, RETRIEVE_PACKAGES_FLAGS);
-            boolean authorized = checkPublishPerm(packageInfo);
+            PackageInfo packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_PROVIDERS);
+            boolean authorized = pm.checkPermission(FEED_PUBLISH_PERM, packageName)
+                                 == PackageManager.PERMISSION_GRANTED;
             if (authorized) {
                 String authority = loadExtensionIfSupported(packageInfo);
 
@@ -198,18 +198,6 @@ public class CMHomeApiManager {
         } catch (PackageManager.NameNotFoundException e) {
             Log.w(TAG, "Unable to load providers for package: " + packageName);
         }
-    }
-
-    private boolean checkPublishPerm(PackageInfo packageInfo) {
-        if (packageInfo.permissions != null) {
-            for (PermissionInfo permissionInfo : packageInfo.permissions) {
-                if (FEED_PUBLISH_PERM.equals(permissionInfo.name)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     private void removeAllCardsForPackage(String packageName) {
