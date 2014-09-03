@@ -41,11 +41,20 @@ public abstract class CmHomeCardChangeReceiver extends BroadcastReceiver {
      */
     public final static String CARD_DATA_DELETED_INFO_BROADCAST_EXTRA = "CardDataDeletedInfo";
 
+    private static final String CM_HOME_API_CARD_DELETED_BROADCAST_ACTION =
+                                            "org.cyanogenmod.launcher.home.api.CARD_DELETED";
+    private static final String CM_HOME_API_REFRESH_REQUESTED_BROADCAST_ACTION =
+                                            "org.cyanogenmod.launcher.home.api.REFRESH_REQUESTED";
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        CardDeletedInfo deletedInfo = (CardDeletedInfo)
-                intent.getParcelableExtra(CARD_DATA_DELETED_INFO_BROADCAST_EXTRA);
-        onCardDeleted(context, deletedInfo);
+        if (CM_HOME_API_CARD_DELETED_BROADCAST_ACTION.equals(intent.getAction())) {
+            CardDeletedInfo deletedInfo = (CardDeletedInfo)
+                    intent.getParcelableExtra(CARD_DATA_DELETED_INFO_BROADCAST_EXTRA);
+            onCardDeleted(context, deletedInfo);
+        } else if (CM_HOME_API_REFRESH_REQUESTED_BROADCAST_ACTION.equals(intent.getAction())) {
+            onRefreshRequested(context);
+        }
     }
 
     /**
