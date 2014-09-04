@@ -387,9 +387,12 @@ public class CmHomeContentProvider extends ContentProvider {
         // Delete all files that do not exist in the database
         File internalStorageDir = getContext().getFilesDir();
         File imageCacheDir = new File(internalStorageDir, IMAGE_FILE_CACHE_DIR);
-        for (File file : imageCacheDir.listFiles()) {
-            if (!filenames.contains(file.getName())) {
-                file.delete();
+
+        if (imageCacheDir != null && imageCacheDir.listFiles() != null) {
+            for (File file : imageCacheDir.listFiles()) {
+                if (!filenames.contains(file.getName())) {
+                    file.delete();
+                }
             }
         }
     }
