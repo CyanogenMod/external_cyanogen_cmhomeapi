@@ -388,8 +388,9 @@ public class CmHomeContentProvider extends ContentProvider {
         File internalStorageDir = getContext().getFilesDir();
         File imageCacheDir = new File(internalStorageDir, IMAGE_FILE_CACHE_DIR);
 
-        if (imageCacheDir != null && imageCacheDir.listFiles() != null) {
-            for (File file : imageCacheDir.listFiles()) {
+        File[] imageFiles = imageCacheDir.listFiles();
+        if (imageCacheDir != null && imageFiles != null) {
+            for (File file : imageFiles) {
                 if (!filenames.contains(file.getName())) {
                     file.delete();
                 }
