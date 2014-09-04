@@ -408,8 +408,8 @@ public class CardData extends PublishableCard {
     public void setContentSourceImage(Bitmap bitmap) {
         mContentSourceImageBitmap = new WeakReference<Bitmap>(bitmap);
 
-        mAvatarImageResourceId = 0;
-        mAvatarImageUri = null;
+        mContentSourceImageResourceId = 0;
+        mContentSourceImageUri = null;
     }
 
     /**
