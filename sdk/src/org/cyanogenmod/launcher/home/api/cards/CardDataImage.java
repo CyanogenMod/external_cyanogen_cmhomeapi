@@ -258,10 +258,16 @@ public class CardDataImage extends PublishableCard {
      * @param authority The authority of the ContentProvider that hosts the ContentProvider being
      *                  read from.
      * @return A CardDataImage containing the data from the input cursor row.
+     * @throws IllegalArgumentException {@link java.lang.IllegalArgumentException}
      */
-    public static CardDataImage createFromCurrentCursorRow(Cursor cursor, String authority) {
+    public static CardDataImage createFromCurrentCursorRow(Cursor cursor, String authority) throws IllegalArgumentException {
+        if (cursor == null) {
+            throw new IllegalArgumentException("'cursor' cannot be null!");
+        }
         CardDataImage cardImage = createFromCurrentCursorRow(cursor);
-        cardImage.setAuthority(authority);
+        if (cardImage != null && !TextUtils.isEmpty(authority)) {
+            cardImage.setAuthority(authority);
+        }
         return cardImage;
     }
 
