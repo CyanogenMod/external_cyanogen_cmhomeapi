@@ -169,7 +169,9 @@ public class CardData extends PublishableCard {
     public void addCardDataImage(Uri uri) {
         CardDataImage image = new CardDataImage(this);
         image.setImage(uri);
-        mImages.add(image);
+        synchronized (mImages) {
+            mImages.add(image);
+        }
     }
 
     /**
@@ -180,20 +182,22 @@ public class CardData extends PublishableCard {
      */
     public void addOrUpdateCardDataImage(CardDataImage newImage) {
         CardDataImage matchingImage = null;
-        for (CardDataImage image : mImages) {
-            if (image.getGlobalId().equals(newImage.getGlobalId())) {
-                matchingImage = image;
-                break;
+        synchronized (mImages) {
+            for (CardDataImage image : mImages) {
+                if (image.getGlobalId().equals(newImage.getGlobalId())) {
+                    matchingImage = image;
+                    break;
+                }
             }
-        }
 
-        // Remove the old one, if it was found, it will be replaced
-        if (matchingImage != null) {
-            mImages.remove(matchingImage);
-            mRemovedImages.add(matchingImage);
-        }
+            // Remove the old one, if it was found, it will be replaced
+            if (matchingImage != null) {
+                mImages.remove(matchingImage);
+                mRemovedImages.add(matchingImage);
+            }
 
-        mImages.add(newImage);
+            mImages.add(newImage);
+        }
     }
 
     /**
@@ -255,11 +259,13 @@ public class CardData extends PublishableCard {
      * When publish is called on this DataCard, the removed images will be unpublished.
      */
     public void clearImages() {
-        for (CardDataImage image : mImages) {
-            mRemovedImages.add(image);
-        }
+        synchronized (mImages) {
+            for (CardDataImage image : mImages) {
+                mRemovedImages.add(image);
+            }
 
-        mImages.clear();
+            mImages.clear();
+        }
     }
 
     /**
@@ -270,7 +276,9 @@ public class CardData extends PublishableCard {
     public void removeCardDataImage(CardDataImage image) {
         mRemovedImages.add(image);
 
-        mImages.remove(image);
+        synchronized (mImages) {
+            mImages.remove(image);
+        }
     }
 
     /**
@@ -280,14 +288,17 @@ public class CardData extends PublishableCard {
      */
     public void removeCardDataImage(String imageGlobalId) {
         CardDataImage theImage = null;
-        for (CardDataImage image : mImages) {
-            if (imageGlobalId.equals(image.getGlobalId())) {
-                theImage = image;
-            }
-        }
 
-        if (theImage != null) {
-            mImages.remove(theImage);
+        synchronized (mImages) {
+            for (CardDataImage image : mImages) {
+                if (imageGlobalId.equals(image.getGlobalId())) {
+                    theImage = image;
+                }
+            }
+
+            if (theImage != null) {
+                mImages.remove(theImage);
+            }
         }
     }
 
@@ -797,11 +808,13 @@ public class CardData extends PublishableCard {
 
         super.publishSynchronous(context);
 
-        for (CardDataImage image : mImages) {
-            if (image.hasValidContent()) {
-                image.publish(context);
-            } else {
-                Log.e(TAG, "Invalid CardDataImage. At least uri or bitmap must be specified");
+        synchronized (mImages) {
+            for (CardDataImage image : mImages) {
+                if (image.hasValidContent()) {
+                    image.publish(context);
+                } else {
+                    Log.e(TAG, "Invalid CardDataImage. At least uri or bitmap must be specified");
+                }
             }
         }
 
@@ -821,11 +834,13 @@ public class CardData extends PublishableCard {
         boolean updated = super.update(context);
         if (updated) {
             // Update all associated images as well
-            for (CardDataImage image : mImages) {
-                if (image.hasValidContent()) {
-                    image.publish(context);
-                } else {
-                    Log.e(TAG, "Invalid CardDataImage. At least uri or bitmap must be specified");
+            synchronized (mImages) {
+                for (CardDataImage image : mImages) {
+                    if (image.hasValidContent()) {
+                        image.publish(context);
+                    } else {
+                        Log.e(TAG, "Invalid CardDataImage. At least uri or bitmap must be specified");
+                    }
                 }
             }
 
@@ -845,8 +860,10 @@ public class CardData extends PublishableCard {
     @Override
     public boolean unpublish(Context context) {
         // Delete all associated images first
-        for (CardDataImage image : mImages) {
-            image.unpublish(context);
+        synchronized (mImages) {
+            for (CardDataImage image : mImages) {
+                image.unpublish(context);
+            }
         }
         return super.unpublish(context);
     }

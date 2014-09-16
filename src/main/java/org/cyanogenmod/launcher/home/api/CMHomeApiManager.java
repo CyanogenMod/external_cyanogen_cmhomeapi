@@ -275,8 +275,10 @@ public class CMHomeApiManager {
     }
 
     private void storeCardDataImagesForCardData(CardData cardData) {
-        for (CardDataImage image : cardData.getImages()) {
-            mImageIdsToCards.put(image.getGlobalId(), cardData);
+        synchronized (cardData.getImages()) {
+            for (CardDataImage image : cardData.getImages()) {
+                mImageIdsToCards.put(image.getGlobalId(), cardData);
+            }
         }
     }
 
@@ -392,8 +394,10 @@ public class CMHomeApiManager {
             CardData cardData = cards.get(id);
 
             if (cardData != null) {
-                for (CardDataImage image : cardData.getImages()) {
-                    mImageIdsToCards.remove(image.getGlobalId());
+                synchronized (cardData.getImages()) {
+                    for (CardDataImage image : cardData.getImages()) {
+                        mImageIdsToCards.remove(image.getGlobalId());
+                    }
                 }
 
                 String globalId = cardData.getGlobalId();
