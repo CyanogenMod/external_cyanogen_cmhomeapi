@@ -771,7 +771,7 @@ public class CardData extends PublishableCard {
     }
 
     @Override
-    protected void publishSynchronous(Context context) {
+    public void publishAndWait(Context context) {
         if (!isPublished(context)) {
             // Initialize the created date and modified date to now.
             mCreatedDate = new Date();
@@ -806,7 +806,7 @@ public class CardData extends PublishableCard {
             }
         }
 
-        super.publishSynchronous(context);
+        super.publishAndWait(context);
 
         synchronized (mImages) {
             for (CardDataImage image : mImages) {
