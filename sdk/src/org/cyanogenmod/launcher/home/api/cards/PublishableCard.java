@@ -63,7 +63,7 @@ public abstract class PublishableCard {
         new PublishCardTask(this, context).execute();
     }
 
-    protected void publishSynchronous(Context context) {
+    public void publishSynchronous(Context context) {
         boolean updated = false;
         // If we have an ID, try to update that row first.
         if (getId() != -1) {

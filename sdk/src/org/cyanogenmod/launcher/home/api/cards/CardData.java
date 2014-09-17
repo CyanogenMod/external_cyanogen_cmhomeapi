@@ -771,7 +771,7 @@ public class CardData extends PublishableCard {
     }
 
     @Override
-    protected void publishSynchronous(Context context) {
+    public void publishSynchronous(Context context) {
         if (!isPublished(context)) {
             // Initialize the created date and modified date to now.
             mCreatedDate = new Date();

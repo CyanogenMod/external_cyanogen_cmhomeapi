@@ -357,7 +357,7 @@ public class CardDataImage extends PublishableCard {
     }
 
     @Override
-    protected void publishSynchronous(Context context){
+    public void publishSynchronous(Context context){
         // Store the current id of the linked CardData, in case it has
         // changed before publish.
         if (mLinkedCardData != null) {
