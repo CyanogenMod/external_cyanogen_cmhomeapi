@@ -15,7 +15,6 @@ import android.util.Log;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
-import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -72,11 +71,11 @@ public class CardData extends PublishableCard {
 
     // Only one of these fields will be assigned at publish time
     private Uri                   mContentSourceImageUri;
-    private WeakReference<Bitmap> mContentSourceImageBitmap;
+    private Bitmap                mContentSourceImageBitmap;
     private int                   mContentSourceImageResourceId;
 
     private Uri                   mAvatarImageUri;
-    private WeakReference<Bitmap> mAvatarImageBitmap;
+    private Bitmap                mAvatarImageBitmap;
     private int                   mAvatarImageResourceId;
 
     private String mTitle;
@@ -406,7 +405,7 @@ public class CardData extends PublishableCard {
      * @param bitmap A Bitmap to be used as the content source image.
      */
     public void setContentSourceImage(Bitmap bitmap) {
-        mContentSourceImageBitmap = new WeakReference<Bitmap>(bitmap);
+        mContentSourceImageBitmap = bitmap;
 
         mContentSourceImageResourceId = 0;
         mContentSourceImageUri = null;
@@ -475,7 +474,7 @@ public class CardData extends PublishableCard {
      * @param bitmap A {@link android.graphics.Bitmap} to use as the avatar image.
      */
     public void setAvatarImage(Bitmap bitmap) {
-        mAvatarImageBitmap = new WeakReference<Bitmap>(bitmap);
+        mAvatarImageBitmap = bitmap;
 
         mAvatarImageResourceId = 0;
         mAvatarImageUri = null;
@@ -773,10 +772,12 @@ public class CardData extends PublishableCard {
             setContentSourceImage(bitmap);
         }
 
-        if (mContentSourceImageBitmap != null && mContentSourceImageBitmap.get() != null) {
-            Uri uri = CmHomeContentProvider.storeBitmapInCache(mContentSourceImageBitmap.get(),
+        if (mContentSourceImageBitmap != null) {
+            Uri uri = CmHomeContentProvider.storeBitmapInCache(mContentSourceImageBitmap,
                                                                context);
             if (uri != null) {
+                mContentSourceImageBitmap.recycle();
+                mContentSourceImageBitmap = null;
                 setContentSourceImage(uri);
             }
         }
@@ -787,10 +788,12 @@ public class CardData extends PublishableCard {
             setAvatarImage(bitmap);
         }
 
-        if (mAvatarImageBitmap != null && mAvatarImageBitmap.get() != null) {
-            Uri uri = CmHomeContentProvider.storeBitmapInCache(mAvatarImageBitmap.get(),
+        if (mAvatarImageBitmap != null) {
+            Uri uri = CmHomeContentProvider.storeBitmapInCache(mAvatarImageBitmap,
                                                                context);
             if (uri != null) {
+                mAvatarImageBitmap.recycle();
+                mAvatarImageBitmap = null;
                 setAvatarImage(uri);
             }
         }
