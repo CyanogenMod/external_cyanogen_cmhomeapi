@@ -42,7 +42,7 @@ public interface ICardProvider {
     public void addOnUpdateListener(CardProviderUpdateListener listener);
 
     public interface CardProviderUpdateListener {
-        public void onCardProviderUpdate(String cardId);
+        public void onCardProviderUpdate(String cardId, boolean wasPending);
         public void onCardDelete(String cardId);
     }
 

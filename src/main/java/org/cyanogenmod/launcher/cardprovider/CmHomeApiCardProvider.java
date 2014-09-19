@@ -133,9 +133,13 @@ public class CmHomeApiCardProvider implements ICardProvider,
             } else if (cardData != null) {
                 // The card no longer matches, we will remove it and add a new one.
                 onCardDelete(cardData.getGlobalId());
-                onCardInsertOrUpdate(cardData.getGlobalId());
+                onCardInsertOrUpdate(cardData.getGlobalId(), false);
             }
         }
+    }
+
+    public void processUpdates() {
+        mApiManager.processPendingUpdates();
     }
 
     @Override
@@ -176,9 +180,9 @@ public class CmHomeApiCardProvider implements ICardProvider,
     }
 
     @Override
-    public void onCardInsertOrUpdate(String globalId) {
+    public void onCardInsertOrUpdate(String globalId, boolean wasPending) {
         for (CardProviderUpdateListener listener : mUpdateListeners) {
-            listener.onCardProviderUpdate(globalId);
+            listener.onCardProviderUpdate(globalId, wasPending);
         }
     }
 
