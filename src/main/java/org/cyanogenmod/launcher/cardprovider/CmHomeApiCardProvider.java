@@ -138,6 +138,10 @@ public class CmHomeApiCardProvider implements ICardProvider,
         }
     }
 
+    public void processUpdates() {
+        mApiManager.processPendingUpdates();
+    }
+
     @Override
     public CmCard createCardForId(String id) {
         CardData cardData = mApiManager.getCardWithGlobalId(id);
