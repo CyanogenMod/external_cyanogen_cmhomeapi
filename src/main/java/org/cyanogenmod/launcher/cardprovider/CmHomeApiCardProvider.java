@@ -156,18 +156,24 @@ public class CmHomeApiCardProvider implements ICardProvider,
         List<CardData> theCards = mApiManager.getAllCardDatas();
 
         for (CardData cardData : theCards) {
-            listOfCards.add(getCardFromCardData(cardData));
+            CmCard cmCard = getCardFromCardData(cardData);
+            if (cmCard != null) {
+                listOfCards.add(cmCard);
+            }
         }
         return listOfCards;
     }
 
     private CmCard getCardFromCardData(CardData cardData) {
-        ApiCard card = (ApiCard) DataCardBuilderFactory.getCardForCardData(mCmHomeContext,
-                                                                           cardData);
-        if (card != null) {
-            card.updateFromCardData(cardData);
+        if (cardData != null) {
+            ApiCard card = (ApiCard) DataCardBuilderFactory.getCardForCardData(mCmHomeContext,
+                                                                               cardData);
+            if (card != null) {
+                card.updateFromCardData(cardData);
+            }
+            return card;
         }
-        return card;
+        return null;
     }
 
     @Override
