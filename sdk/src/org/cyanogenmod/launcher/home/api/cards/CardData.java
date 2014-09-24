@@ -934,7 +934,8 @@ public class CardData extends PublishableCard {
     /**
      * Retrieves all published cards from this application that are available at the current time.
      * @param context The context of the publishing application.
-     * @return A List of all live, published cards in CM Home from this application.
+     * @return A List of all live, published cards in CM Home from this application,
+     * sorted in ascending order by the createdDate field.
      */
     public static List<CardData> getAllPublishedCardDatas(Context context) {
         return getAllPublishedCardDatas(context,
