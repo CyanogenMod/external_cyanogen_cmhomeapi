@@ -3,6 +3,8 @@ package org.cyanogenmod.launcher.cardprovider;
 import android.content.Context;
 import android.content.Intent;
 
+import com.cyanogen.cardbuilder.DataCardFactory;
+
 import org.cyanogenmod.launcher.cards.ApiCard;
 import org.cyanogenmod.launcher.cards.CmCard;
 import org.cyanogenmod.launcher.home.api.CMHomeApiManager;
@@ -10,12 +12,8 @@ import org.cyanogenmod.launcher.home.api.cards.CardData;
 import org.cyanogenmod.launcher.home.api.cards.CardData.CardDeletedInfo;
 import org.cyanogenmod.launcher.home.api.receiver.CmHomeCardChangeReceiver;
 
-import com.cyanogen.cardbuilder.DataCardBuilderFactory;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import it.gmariotti.cardslib.library.internal.Card;
 
 public class CmHomeApiCardProvider implements ICardProvider,
         CMHomeApiManager.ICMHomeApiUpdateListener {
@@ -170,8 +168,8 @@ public class CmHomeApiCardProvider implements ICardProvider,
 
     private CmCard getCardFromCardData(CardData cardData) {
         if (cardData != null) {
-            ApiCard card = (ApiCard) DataCardBuilderFactory.getCardForCardData(mCmHomeContext,
-                                                                               cardData);
+            ApiCard card = (ApiCard) DataCardFactory.createCard(mCmHomeContext,
+                    cardData);
             if (card != null) {
                 card.updateFromCardData(cardData);
             }

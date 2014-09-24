@@ -6,9 +6,9 @@ import org.cyanogenmod.launcher.home.api.cards.CardData;
 
 import android.content.Context;
 
-public class CardDataBuilderFactory {
+public class DataCardFactory {
 
-    public static Card getCardForCardData(Context context, CardData cardData) {
+    public static Card createCard(Context context, CardData cardData) {
         return null;
     }
 
