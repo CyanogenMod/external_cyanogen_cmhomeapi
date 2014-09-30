@@ -473,8 +473,10 @@ public class CMHomeApiManager {
     private void onCardImageInsertOrUpdate(Uri uri) {
         // Get CardDataImage from URI id
         CardDataImage newImage = retrieveCardDataImageFromProvider(uri);
-        mPendingImageUpdates.add(newImage);
-        mPendingImageRemovalIds.remove(newImage.getGlobalId());
+        if (newImage != null) {
+            mPendingImageUpdates.add(newImage);
+            mPendingImageRemovalIds.remove(newImage.getGlobalId());
+        }
     }
 
     private void cardImageInsertOrUpdate(CardDataImage newImage, boolean wasPending) {
