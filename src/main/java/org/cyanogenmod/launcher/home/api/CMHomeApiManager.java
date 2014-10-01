@@ -399,7 +399,7 @@ public class CMHomeApiManager {
      * @param authority The authority that the card belongs to.
      * @param cardData The cardData that will be updated.
      */
-    private void addCardUpdate(String authority, CardData cardData) {
+    private synchronized void addCardUpdate(String authority, CardData cardData) {
         LongSparseArray<CardData> cards = mCardUpdates.get(authority);
         if (cards == null) {
             cards = new LongSparseArray<CardData>();
@@ -413,7 +413,7 @@ public class CMHomeApiManager {
      * @param authority The authority that the card belongs to.
      * @param id The id of the cardData that will be removed.
      */
-    private void removeCardUpdate(String authority, long id) {
+    private synchronized void removeCardUpdate(String authority, long id) {
         LongSparseArray<CardData> cards = mCardUpdates.get(authority);
         if (cards != null) {
             cards.remove(id);
@@ -474,8 +474,10 @@ public class CMHomeApiManager {
         // Get CardDataImage from URI id
         CardDataImage newImage = retrieveCardDataImageFromProvider(uri);
         if (newImage != null) {
-            mPendingImageUpdates.add(newImage);
-            mPendingImageRemovalIds.remove(newImage.getGlobalId());
+            synchronized (this) {
+                mPendingImageUpdates.add(newImage);
+                mPendingImageRemovalIds.remove(newImage.getGlobalId());
+            }
         }
     }
 
@@ -499,16 +501,19 @@ public class CMHomeApiManager {
                 String authority = uri.getAuthority();
                 String cardDataImageGlobalId = authority + "/" + id;
 
-                // Remove any pending updates to this image
-                Iterator<CardDataImage> cardDataImageIterator = mPendingImageUpdates.iterator();
-                while(cardDataImageIterator.hasNext()) {
-                    if (cardDataImageGlobalId.equals(cardDataImageIterator.next().getGlobalId())) {
-                        cardDataImageIterator.remove();
+                synchronized (this) {
+                    // Remove any pending updates to this image
+                    Iterator<CardDataImage> cardDataImageIterator = mPendingImageUpdates.iterator();
+                    while (cardDataImageIterator.hasNext()) {
+                        if (cardDataImageGlobalId
+                                .equals(cardDataImageIterator.next().getGlobalId())) {
+                            cardDataImageIterator.remove();
+                        }
                     }
-                }
 
-                // Store the image for pending deletion
-                mPendingImageRemovalIds.add(cardDataImageGlobalId);
+                    // Store the image for pending deletion
+                    mPendingImageRemovalIds.add(cardDataImageGlobalId);
+                }
             } catch (NumberFormatException e) {
                 Log.e(TAG, "Unable to handle CardDataImage deletion for Uri: " + uri.toString());
             }
@@ -527,7 +532,7 @@ public class CMHomeApiManager {
         }
     }
 
-    public void processPendingUpdates() {
+    public synchronized void processPendingUpdates() {
         for (Map.Entry<String, LongSparseArray<CardData>> entry : mCardUpdates.entrySet()) {
             LongSparseArray<CardData> cards = entry.getValue();
             for (int i = 0; i < cards.size(); i++) {
@@ -535,13 +540,16 @@ public class CMHomeApiManager {
             }
         }
 
-        for(CardDataImage cardDataImage : mPendingImageUpdates) {
+        for (CardDataImage cardDataImage : mPendingImageUpdates) {
             cardImageInsertOrUpdate(cardDataImage, true);
         }
 
         for (String imageId : mPendingImageRemovalIds) {
             removeCardDataImage(imageId, true);
         }
+
+        mPendingImageUpdates.clear();
+        mPendingImageRemovalIds.clear();
     }
 
     private void updateCard(String authority, CardData theNewCard) {
