@@ -58,6 +58,7 @@ public class CmHomeContentProvider extends ContentProvider {
      * The internal storage directory where cached images will be stored.
      */
     public final static String IMAGE_FILE_CACHE_DIR = "CardDataImageCache";
+    public final static String NO_MEDIA_FILE_NAME = ".nomedia";
 
     private static final String TAG                  = "CmHomeContentProvider";
     private static final int    CARD_DATA_LIST       = 1;
@@ -392,7 +393,8 @@ public class CmHomeContentProvider extends ContentProvider {
             File[] imageFiles = imageCacheDir.listFiles();
             if (imageFiles != null) {
                 for (File file : imageFiles) {
-                    if (!filenames.contains(file.getName())) {
+                    if (!filenames.contains(file.getName()) &&
+                        !NO_MEDIA_FILE_NAME.equals(file.getName())) {
                         file.delete();
                     }
                 }
@@ -470,6 +472,14 @@ public class CmHomeContentProvider extends ContentProvider {
             // Create a file in the cache subdirectory
             File imageDir = new File(context.getFilesDir(), IMAGE_FILE_CACHE_DIR);
             imageDir.mkdirs();
+
+            // Create a .nomedia file if it does not exist, so that this directory will
+            // not be indexed by mediascanner.
+            File noMedia = new File(imageDir, NO_MEDIA_FILE_NAME);
+            if (!noMedia.exists()) {
+                noMedia.createNewFile();
+            }
+
             File imageFile = new File(imageDir, filename);
             outputStream = new FileOutputStream(imageFile);
             outputStream.write(bitmapBytes);
