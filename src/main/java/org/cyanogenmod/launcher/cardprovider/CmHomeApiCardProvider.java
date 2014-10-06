@@ -24,7 +24,7 @@ public class CmHomeApiCardProvider implements ICardProvider,
                                             new ArrayList<CardProviderUpdateListener>();
     private static final String CM_HOME_API_CARD_DELETED_BROADCAST_ACTION =
                                             "org.cyanogenmod.launcher.home.api.CARD_DELETED";
-    private static final String CM_HOME_API_REFRESH_REQUESTED_BROADCAST_ACTION =
+    public static final String CM_HOME_API_REFRESH_REQUESTED_BROADCAST_ACTION =
                                             "org.cyanogenmod.launcher.home.api.REFRESH_REQUESTED";
     public static final String CARD_AUTHORITY_APPEND_STRING = ".cmhomeapi";
 

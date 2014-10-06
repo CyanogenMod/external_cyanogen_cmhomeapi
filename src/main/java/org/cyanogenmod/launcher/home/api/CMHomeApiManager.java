@@ -20,6 +20,7 @@ import org.cyanogenmod.launcher.cardprovider.ApiCardPackageChangedReceiver;
 import org.cyanogenmod.launcher.cardprovider.CmHomeApiCardProvider;
 import org.cyanogenmod.launcher.home.api.cards.CardData;
 import org.cyanogenmod.launcher.home.api.cards.CardDataImage;
+import org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
 import java.util.ArrayList;
@@ -622,7 +623,18 @@ public class CMHomeApiManager {
         @Override
         protected Void doInBackground(Void... voids) {
             loadExtensionAndCardsForPackageIfSupported(mPackageName, mNotifyListeners);
+            sendRefreshBroadcast(mPackageName);
             return null;
+        }
+    }
+
+    private void sendRefreshBroadcast(String packageName) {
+        if (mContext != null) {
+            Intent broadcast = new Intent();
+            broadcast.setAction(CmHomeApiCardProvider
+                                        .CM_HOME_API_REFRESH_REQUESTED_BROADCAST_ACTION);
+            broadcast.setPackage(packageName);
+            mContext.sendBroadcast(broadcast);
         }
     }
 
