@@ -3,6 +3,7 @@ package org.cyanogenmod.launcher.cardprovider;
 import android.content.Context;
 import android.content.Intent;
 
+import android.os.Handler;
 import com.cyanogen.cardbuilder.DataCardFactory;
 
 import org.cyanogenmod.launcher.cards.ApiCard;
@@ -28,22 +29,23 @@ public class CmHomeApiCardProvider implements ICardProvider,
                                             "org.cyanogenmod.launcher.home.api.REFRESH_REQUESTED";
     public static final String CARD_AUTHORITY_APPEND_STRING = ".cmhomeapi";
 
-    public CmHomeApiCardProvider(Context cmHomeContext, Context hostActivityContext) {
+    public CmHomeApiCardProvider(Context cmHomeContext, Context hostActivityContext,
+                                 Handler backgroundThreadHandler) {
         mCmHomeContext = cmHomeContext;
         mHostActivityContext = hostActivityContext;
 
         if (mApiManager == null) {
-            mApiManager = new CMHomeApiManager(mHostActivityContext);
+            mApiManager = new CMHomeApiManager(mHostActivityContext, backgroundThreadHandler);
             mApiManager.setApiUpdateListener(this);
         }
     }
 
-    public CmHomeApiCardProvider(Context oneContext) {
+    public CmHomeApiCardProvider(Context oneContext, Handler backgroundThreadHandler) {
         mCmHomeContext = oneContext;
         mHostActivityContext = oneContext;
 
         if (mApiManager == null) {
-            mApiManager = new CMHomeApiManager(mHostActivityContext);
+            mApiManager = new CMHomeApiManager(mHostActivityContext, backgroundThreadHandler);
             mApiManager.setApiUpdateListener(this);
         }
     }

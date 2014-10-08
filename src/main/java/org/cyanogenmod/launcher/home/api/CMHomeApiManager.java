@@ -11,16 +11,13 @@ import android.content.pm.ProviderInfo;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
 import android.util.LongSparseArray;
 import org.cyanogenmod.launcher.cardprovider.ApiCardPackageChangedReceiver;
 import org.cyanogenmod.launcher.cardprovider.CmHomeApiCardProvider;
 import org.cyanogenmod.launcher.home.api.cards.CardData;
 import org.cyanogenmod.launcher.home.api.cards.CardDataImage;
-import org.cyanogenmod.launcher.home.api.provider.CmHomeContentProvider;
 import org.cyanogenmod.launcher.home.api.provider.CmHomeContract;
 
 import java.util.ArrayList;
@@ -32,22 +29,22 @@ import java.util.Map;
 
 public class CMHomeApiManager {
     private final static String TAG = "CMHomeApiManager";
-    private final static String FEED_HOST_PERM = "org.cyanogenmod.launcher.home.api.FEED_HOST";
-    private final static String FEED_PUBLISH_PERM =
-                                "org.cyanogenmod.launcher.home.api.FEED_PUBLISH";
+    private final static String FEED_HOST_PERM
+                                                            = "org.cyanogenmod.launcher.home.api.FEED_HOST";
+    private final static String FEED_PUBLISH_PERM           =
+            "org.cyanogenmod.launcher.home.api.FEED_PUBLISH";
     private static final int    CARD_DATA_LIST              = 1;
     private static final int    CARD_DATA_ITEM              = 2;
     private static final int    CARD_DATA_DELETE_ITEM       = 3;
     private static final int    CARD_DATA_IMAGE_LIST        = 4;
     private static final int    CARD_DATA_IMAGE_ITEM        = 5;
     private static final int    CARD_DATA_IMAGE_DELETE_ITEM = 6;
-    private static final String CARD_MESSAGE_BUNDLE_ID_KEY  = "CardId";
 
     // All provider authorities that contain Cards.
     private List<String> mProviders = new ArrayList<String>();
     // Provider authority string -> SparseArray from card ID -> CardData
     private HashMap<String, LongSparseArray<CardData>> mCards = new HashMap<String,
-                                                                    LongSparseArray<CardData>>();
+            LongSparseArray<CardData>>();
     // Provider authority string -> SparseArray from card ID -> CardData
     // Stores cards that must be updated when it is time to display them
     private HashMap<String, LongSparseArray<CardData>> mCardUpdates = new HashMap<String,
@@ -57,15 +54,24 @@ public class CMHomeApiManager {
     private HashSet<String> mPendingImageRemovalIds = new HashSet<String>();
 
     private CardContentObserver           mContentObserver;
-    private HandlerThread                 mContentObserverHandlerThread;
-    private Handler                       mContentObserverHandler;
+    private Handler                       mBackgroundThreadHandler;
     private ICMHomeApiUpdateListener      mApiUpdateListener;
     private ApiCardPackageChangedReceiver mPackageChangedReceiver;
 
     private Context mContext;
 
-    public CMHomeApiManager(Context context) {
+    private Runnable mLoadAllExtensionsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            loadAllExtensions();
+            trackAllExtensions();
+            loadAllCards();
+        }
+    };
+
+    public CMHomeApiManager(Context context, Handler backgroundThreadHandler) {
         mContext = context;
+        mBackgroundThreadHandler = backgroundThreadHandler;
         init();
     }
 
@@ -109,11 +115,6 @@ public class CMHomeApiManager {
     }
 
     public void init() {
-        // Start up a background thread to handle any incoming changes.
-        mContentObserverHandlerThread = new HandlerThread("CMHomeApiObserverThread");
-        mContentObserverHandlerThread.start();
-        mContentObserverHandler = new Handler(mContentObserverHandlerThread.getLooper());
-
         // Register the package changed broadcast receiver
         mPackageChangedReceiver = new ApiCardPackageChangedReceiver(this);
         IntentFilter intentFilter = new IntentFilter();
@@ -125,11 +126,10 @@ public class CMHomeApiManager {
         intentFilter.addDataScheme("package");
         mContext.registerReceiver(mPackageChangedReceiver, intentFilter);
 
-        new LoadExtensionsAndCardsAsync().execute();
+        mBackgroundThreadHandler.post(mLoadAllExtensionsRunnable);
     }
 
     public void destroy() {
-        mContentObserverHandlerThread.quitSafely();
         if (mContentObserver != null) {
             mContext.getContentResolver().unregisterContentObserver(mContentObserver);
         }
@@ -139,18 +139,6 @@ public class CMHomeApiManager {
         if (mPackageChangedReceiver != null) {
             mContext.unregisterReceiver(mPackageChangedReceiver);
             mPackageChangedReceiver = null;
-        }
-    }
-
-    private class LoadExtensionsAndCardsAsync extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected
-        Void doInBackground(Void... voids) {
-            loadAllExtensions();
-            trackAllExtensions();
-            loadAllCards();
-            return null;
         }
     }
 
@@ -222,7 +210,7 @@ public class CMHomeApiManager {
 
     private void trackExtension(String authority) {
         if (mContentObserver == null) {
-            mContentObserver = new CardContentObserver(mContentObserverHandler);
+            mContentObserver = new CardContentObserver(mBackgroundThreadHandler);
         }
 
         ContentResolver contentResolver = mContext.getContentResolver();
@@ -242,7 +230,7 @@ public class CMHomeApiManager {
     }
 
     private void trackAllExtensions() {
-        mContentObserver = new CardContentObserver(mContentObserverHandler);
+        mContentObserver = new CardContentObserver(mBackgroundThreadHandler);
 
         for (String authority : mProviders) {
             trackExtension(authority);
@@ -278,10 +266,8 @@ public class CMHomeApiManager {
     }
 
     private void storeCardDataImagesForCardData(CardData cardData) {
-        synchronized (cardData.getImages()) {
-            for (CardDataImage image : cardData.getImages()) {
-                mImageIdsToCards.put(image.getGlobalId(), cardData);
-            }
+        for (CardDataImage image : cardData.getImages()) {
+            mImageIdsToCards.put(image.getGlobalId(), cardData);
         }
     }
 
@@ -400,7 +386,7 @@ public class CMHomeApiManager {
      * @param authority The authority that the card belongs to.
      * @param cardData The cardData that will be updated.
      */
-    private synchronized void addCardUpdate(String authority, CardData cardData) {
+    private void addCardUpdate(String authority, CardData cardData) {
         LongSparseArray<CardData> cards = mCardUpdates.get(authority);
         if (cards == null) {
             cards = new LongSparseArray<CardData>();
@@ -414,7 +400,7 @@ public class CMHomeApiManager {
      * @param authority The authority that the card belongs to.
      * @param id The id of the cardData that will be removed.
      */
-    private synchronized void removeCardUpdate(String authority, long id) {
+    private void removeCardUpdate(String authority, long id) {
         LongSparseArray<CardData> cards = mCardUpdates.get(authority);
         if (cards != null) {
             cards.remove(id);
@@ -429,10 +415,8 @@ public class CMHomeApiManager {
             CardData cardData = cards.get(id);
 
             if (cardData != null) {
-                synchronized (cardData.getImages()) {
-                    for (CardDataImage image : cardData.getImages()) {
-                        mImageIdsToCards.remove(image.getGlobalId());
-                    }
+                for (CardDataImage image : cardData.getImages()) {
+                    mImageIdsToCards.remove(image.getGlobalId());
                 }
 
                 String globalId = cardData.getGlobalId();
@@ -475,10 +459,8 @@ public class CMHomeApiManager {
         // Get CardDataImage from URI id
         CardDataImage newImage = retrieveCardDataImageFromProvider(uri);
         if (newImage != null) {
-            synchronized (this) {
-                mPendingImageUpdates.add(newImage);
-                mPendingImageRemovalIds.remove(newImage.getGlobalId());
-            }
+            mPendingImageUpdates.add(newImage);
+            mPendingImageRemovalIds.remove(newImage.getGlobalId());
         }
     }
 
@@ -502,19 +484,17 @@ public class CMHomeApiManager {
                 String authority = uri.getAuthority();
                 String cardDataImageGlobalId = authority + "/" + id;
 
-                synchronized (this) {
-                    // Remove any pending updates to this image
-                    Iterator<CardDataImage> cardDataImageIterator = mPendingImageUpdates.iterator();
-                    while (cardDataImageIterator.hasNext()) {
-                        if (cardDataImageGlobalId
-                                .equals(cardDataImageIterator.next().getGlobalId())) {
-                            cardDataImageIterator.remove();
-                        }
+                // Remove any pending updates to this image
+                Iterator<CardDataImage> cardDataImageIterator = mPendingImageUpdates.iterator();
+                while (cardDataImageIterator.hasNext()) {
+                    if (cardDataImageGlobalId
+                            .equals(cardDataImageIterator.next().getGlobalId())) {
+                        cardDataImageIterator.remove();
                     }
-
-                    // Store the image for pending deletion
-                    mPendingImageRemovalIds.add(cardDataImageGlobalId);
                 }
+
+                // Store the image for pending deletion
+                mPendingImageRemovalIds.add(cardDataImageGlobalId);
             } catch (NumberFormatException e) {
                 Log.e(TAG, "Unable to handle CardDataImage deletion for Uri: " + uri.toString());
             }
@@ -533,11 +513,11 @@ public class CMHomeApiManager {
         }
     }
 
-    public synchronized void processPendingUpdates() {
+    public void processPendingUpdates() {
         for (Map.Entry<String, LongSparseArray<CardData>> entry : mCardUpdates.entrySet()) {
             LongSparseArray<CardData> cards = entry.getValue();
             for (int i = 0; i < cards.size(); i++) {
-                updateCard(entry.getKey(), cards.valueAt(i));
+                updateCard(entry.getKey(), cards.valueAt(i), true);
             }
         }
 
@@ -553,7 +533,7 @@ public class CMHomeApiManager {
         mPendingImageRemovalIds.clear();
     }
 
-    private void updateCard(String authority, CardData theNewCard) {
+    private void updateCard(String authority, CardData theNewCard, boolean wasPending) {
         LongSparseArray<CardData> cards = mCards.get(authority);
         if (theNewCard != null) {
             if (cards == null) {
@@ -561,10 +541,11 @@ public class CMHomeApiManager {
                 cards = new LongSparseArray<CardData>();
                 cards.put(theNewCard.getId(), theNewCard);
                 mCards.put(authority, cards);
+                mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId(), wasPending);
             } else {
                 cards.put(theNewCard.getId(), theNewCard);
                 storeCardDataImagesForCardData(theNewCard);
-                mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId(), false);
+                mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId(), wasPending);
             }
         }
     }
@@ -608,23 +589,21 @@ public class CMHomeApiManager {
     }
 
     /**
-     * Loads and Adds all cards from the given package and registers to track for changes,
-     * asynchronously. Then, notifies listeners of their removal on the UI thread.
+     * Loads and Adds all cards from the given package and registers to track for changes.
      */
-    private class LoadExtensionAndAddCardsForPackageTask extends AsyncTask<Void, Void, Void> {
-        String mPackageName;
-        boolean mNotifyListeners = false;
+    private class LoadPackageRunnable implements Runnable {
+        private String mPackageName;
+        private boolean mNotifyListeners = false;
 
-        public LoadExtensionAndAddCardsForPackageTask(String packageName, boolean notifyListeners) {
+        public LoadPackageRunnable(String packageName, boolean notifyListeners) {
             mPackageName = packageName;
             mNotifyListeners = notifyListeners;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void run() {
             loadExtensionAndCardsForPackageIfSupported(mPackageName, mNotifyListeners);
             sendRefreshBroadcast(mPackageName);
-            return null;
         }
     }
 
@@ -639,20 +618,19 @@ public class CMHomeApiManager {
     }
 
     /**
-     * Removes all cards from the given package asynchronously and then notifies listeners of their
-     * removal on the UI thread.
+     * Removes all cards from the given package and notifies listeners of their
+     * removal.
      */
-    private class RemoveAllCardsForPackageTask extends AsyncTask<Void, Void, Void> {
-        String mPackageName;
+    private class RemoveAllCardsForPackageRunnable implements Runnable {
+        private String mPackageName;
 
-        public RemoveAllCardsForPackageTask(String packageName) {
+        public RemoveAllCardsForPackageRunnable(String packageName) {
             mPackageName = packageName;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void run() {
             removeAllCardsForPackage(mPackageName);
-            return null;
         }
     }
 
@@ -671,11 +649,11 @@ public class CMHomeApiManager {
     public void onPackageChanged(String action, String packageName) {
         if (Intent.ACTION_PACKAGE_ADDED.equals(action) ||
             ApiCardPackageChangedReceiver.PACKAGE_CHANGED_ENABLE_PROVIDER.equals(action)) {
-            new LoadExtensionAndAddCardsForPackageTask(packageName, true).execute();
+            mBackgroundThreadHandler.post(new LoadPackageRunnable(packageName, true));
         } else if (ApiCardPackageChangedReceiver.PACKAGE_CHANGED_DISABLE_PROVIDER.equals(action) ||
                    Intent.ACTION_PACKAGE_REMOVED.equals(action) ||
                    Intent.ACTION_PACKAGE_DATA_CLEARED.equals(action)) {
-            new RemoveAllCardsForPackageTask(packageName).execute();
+            mBackgroundThreadHandler.post(new RemoveAllCardsForPackageRunnable(packageName));
         }
     }
 }
