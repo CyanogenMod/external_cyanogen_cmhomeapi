@@ -364,8 +364,10 @@ public class CMHomeApiManager {
             if (cards == null) {
                 // First card of the provider, insertion occurred
                 cards = new LongSparseArray<CardData>();
+                storeCardDataImagesForCardData(theNewCard);
                 cards.put(theNewCard.getId(), theNewCard);
                 mCards.put(authority, cards);
+                mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId(), false);
             } else {
                 // Do we have an update or insertion?
                 if (cards.get(theNewCard.getId()) != null) {
