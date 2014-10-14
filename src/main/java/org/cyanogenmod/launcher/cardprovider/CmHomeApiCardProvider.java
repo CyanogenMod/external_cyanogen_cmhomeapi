@@ -98,6 +98,7 @@ public class CmHomeApiCardProvider implements ICardProvider,
                 CmCard card = getCardFromCardData(cardData);
                 if (card != null) {
                     cardsToAdd.add(card);
+                    mApiManager.cardInsertedToUI(cardData.getGlobalId());
                 }
             }
         }
@@ -163,6 +164,7 @@ public class CmHomeApiCardProvider implements ICardProvider,
             CmCard cmCard = getCardFromCardData(cardData);
             if (cmCard != null) {
                 listOfCards.add(cmCard);
+                mApiManager.cardInsertedToUI(cmCard.getId());
             }
         }
         return listOfCards;
@@ -186,10 +188,15 @@ public class CmHomeApiCardProvider implements ICardProvider,
     }
 
     @Override
-    public void onCardInsertOrUpdate(String globalId, boolean wasPending) {
+    public boolean onCardInsertOrUpdate(String globalId, boolean wasPending) {
+        boolean updateHandled = false;
         for (CardProviderUpdateListener listener : mUpdateListeners) {
-            listener.onCardProviderUpdate(globalId, wasPending);
+            boolean wasHandled = listener.onCardProviderUpdate(globalId, wasPending);
+            if (wasHandled) {
+                updateHandled = true;
+            }
         }
+        return updateHandled;
     }
 
     @Override

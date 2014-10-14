@@ -52,6 +52,7 @@ public class CMHomeApiManager {
     private HashMap<String, CardData> mImageIdsToCards = new HashMap<String, CardData>();
     private ArrayList<CardDataImage> mPendingImageUpdates = new ArrayList<CardDataImage>();
     private HashSet<String> mPendingImageRemovalIds = new HashSet<String>();
+    private HashSet<String> mCardInsertsHandled = new HashSet<String>();
 
     private CardContentObserver           mContentObserver;
     private Handler                       mBackgroundThreadHandler;
@@ -200,6 +201,7 @@ public class CMHomeApiManager {
                 CardData cardData = cards.valueAt(i);
 
                 mApiUpdateListener.onCardDelete(cardData.getGlobalId());
+                mCardInsertsHandled.remove(cardData.getGlobalId());
             }
 
             // Clear storage of all cards for this provider
@@ -260,7 +262,7 @@ public class CMHomeApiManager {
             storeCardDataImagesForCardData(card);
 
             if (notifyListener) {
-                mApiUpdateListener.onCardInsertOrUpdate(card.getGlobalId(), false);
+                notifyCardInsertOrUpdate(card.getGlobalId(), false);
             }
         }
     }
@@ -367,17 +369,18 @@ public class CMHomeApiManager {
                 storeCardDataImagesForCardData(theNewCard);
                 cards.put(theNewCard.getId(), theNewCard);
                 mCards.put(authority, cards);
-                mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId(), false);
+                notifyCardInsertOrUpdate(theNewCard.getGlobalId(), false);
             } else {
                 // Do we have an update or insertion?
-                if (cards.get(theNewCard.getId()) != null) {
+                if (cards.get(theNewCard.getId()) != null &&
+                    mCardInsertsHandled.contains(theNewCard.getGlobalId())) {
                     // update, queue it up
                     addCardUpdate(authority, theNewCard);
                 } else {
                     // insertion, let it fly
                     cards.put(theNewCard.getId(), theNewCard);
                     storeCardDataImagesForCardData(theNewCard);
-                    mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId(), false);
+                    notifyCardInsertOrUpdate(theNewCard.getGlobalId(), false);
                 }
             }
         }
@@ -425,6 +428,7 @@ public class CMHomeApiManager {
                 cards.delete(id);
 
                 mApiUpdateListener.onCardDelete(globalId);
+                mCardInsertsHandled.remove(globalId);
             }
         }
         removeCardUpdate(authority, id);
@@ -461,8 +465,13 @@ public class CMHomeApiManager {
         // Get CardDataImage from URI id
         CardDataImage newImage = retrieveCardDataImageFromProvider(uri);
         if (newImage != null) {
-            mPendingImageUpdates.add(newImage);
-            mPendingImageRemovalIds.remove(newImage.getGlobalId());
+            CardData associatedCard = getCard(newImage.getAuthority(), newImage.getCardDataId());
+            if (mCardInsertsHandled.contains(associatedCard.getGlobalId())) {
+                mPendingImageUpdates.add(newImage);
+                mPendingImageRemovalIds.remove(newImage.getGlobalId());
+            } else {
+                cardImageInsertOrUpdate(newImage, false);
+            }
         }
     }
 
@@ -473,8 +482,7 @@ public class CMHomeApiManager {
             if (associatedCard != null) {
                 associatedCard.addOrUpdateCardDataImage(newImage);
                 mImageIdsToCards.put(newImage.getGlobalId(), associatedCard);
-
-                mApiUpdateListener.onCardInsertOrUpdate(associatedCard.getGlobalId(), wasPending);
+                notifyCardInsertOrUpdate(associatedCard.getGlobalId(), wasPending);
             }
         }
     }
@@ -510,8 +518,7 @@ public class CMHomeApiManager {
         if (associatedCard != null) {
             associatedCard.removeCardDataImage(cardDataImageGlobalId);
             mImageIdsToCards.remove(cardDataImageGlobalId);
-
-            mApiUpdateListener.onCardInsertOrUpdate(associatedCard.getGlobalId(), wasPending);
+            notifyCardInsertOrUpdate(associatedCard.getGlobalId(), wasPending);
         }
     }
 
@@ -543,12 +550,20 @@ public class CMHomeApiManager {
                 cards = new LongSparseArray<CardData>();
                 cards.put(theNewCard.getId(), theNewCard);
                 mCards.put(authority, cards);
-                mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId(), wasPending);
+
             } else {
                 cards.put(theNewCard.getId(), theNewCard);
                 storeCardDataImagesForCardData(theNewCard);
-                mApiUpdateListener.onCardInsertOrUpdate(theNewCard.getGlobalId(), wasPending);
             }
+            notifyCardInsertOrUpdate(theNewCard.getGlobalId(), wasPending);
+        }
+    }
+
+    private void notifyCardInsertOrUpdate(String globalId, boolean wasPending) {
+        boolean inserted = mApiUpdateListener.onCardInsertOrUpdate(globalId,
+                                                                   wasPending);
+        if (inserted) {
+            mCardInsertsHandled.add(globalId);
         }
     }
 
@@ -585,8 +600,12 @@ public class CMHomeApiManager {
         return theCards;
     }
 
+    public void cardInsertedToUI(String globalId) {
+        mCardInsertsHandled.add(globalId);
+    }
+
     public interface ICMHomeApiUpdateListener {
-        public void onCardInsertOrUpdate(String globalId, boolean wasPending);
+        public boolean onCardInsertOrUpdate(String globalId, boolean wasPending);
         public void onCardDelete(String globalId);
     }
 

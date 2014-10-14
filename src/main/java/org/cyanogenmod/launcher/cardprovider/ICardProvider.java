@@ -42,7 +42,13 @@ public interface ICardProvider {
     public void addOnUpdateListener(CardProviderUpdateListener listener);
 
     public interface CardProviderUpdateListener {
-        public void onCardProviderUpdate(String cardId, boolean wasPending);
+        /**
+         * Called when a card has been added or updated.
+         * @param cardId The ID of the card that was updated.
+         * @param wasPending Was this card pending or is this an immediate update?
+         * @return True if this update produced a new card that will be displayed in the UI.
+         */
+        public boolean onCardProviderUpdate(String cardId, boolean wasPending);
         public void onCardDelete(String cardId);
     }
 
