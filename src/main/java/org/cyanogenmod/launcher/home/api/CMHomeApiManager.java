@@ -33,6 +33,7 @@ public class CMHomeApiManager {
                                                             = "org.cyanogenmod.launcher.home.api.FEED_HOST";
     private final static String FEED_PUBLISH_PERM           =
             "org.cyanogenmod.launcher.home.api.FEED_PUBLISH";
+    private final static String PROVIDER_AUTHORITY_SUFFIX   = ".cmhomeapi";
     private static final int    CARD_DATA_LIST              = 1;
     private static final int    CARD_DATA_ITEM              = 2;
     private static final int    CARD_DATA_DELETE_ITEM       = 3;
@@ -67,6 +68,8 @@ public class CMHomeApiManager {
             loadAllExtensions();
             trackAllExtensions();
             loadAllCards();
+            // Send a refresh broadcast for all packages after beginning to track them.
+            sendRefreshBroadcastToAllTrackedPackages();
         }
     };
 
@@ -625,6 +628,19 @@ public class CMHomeApiManager {
         public void run() {
             loadExtensionAndCardsForPackageIfSupported(mPackageName, mNotifyListeners);
             sendRefreshBroadcast(mPackageName);
+        }
+    }
+
+    private void sendRefreshBroadcastToAllTrackedPackages() {
+        for (String provider : mProviders) {
+            if (provider.contains(PROVIDER_AUTHORITY_SUFFIX)) {
+                // All provider authorities must contain the package name
+                // in the same format. Extract that here.
+                String packageName =
+                        provider.substring(0,
+                                           provider.indexOf(PROVIDER_AUTHORITY_SUFFIX));
+                sendRefreshBroadcast(packageName);
+            }
         }
     }
 
