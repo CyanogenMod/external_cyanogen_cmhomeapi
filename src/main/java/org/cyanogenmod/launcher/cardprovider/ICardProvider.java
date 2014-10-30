@@ -1,11 +1,9 @@
 package org.cyanogenmod.launcher.cardprovider;
 
 import android.content.Context;
+import org.cyanogenmod.launcher.cards.CmCard;
 
 import java.util.List;
-
-import it.gmariotti.cardslib.library.internal.Card;
-import org.cyanogenmod.launcher.cards.CmCard;
 
 /**
  * An interface for classes that can manage data for and provide Cards to be displayed.
@@ -15,6 +13,13 @@ public interface ICardProvider {
     public void onShow();
     public void onDestroy(Context context);
     public void requestRefresh();
+
+    /**
+     * Dispatch a request to refresh data
+     * @param immediate {@link java.lang.Boolean} <code>true</code> to refresh immediately,
+     *                                           <code>false</code> to use delta
+     */
+    public void requestRefresh(boolean immediate);
 
     /**
      * Given a list of cards, update any card for which
