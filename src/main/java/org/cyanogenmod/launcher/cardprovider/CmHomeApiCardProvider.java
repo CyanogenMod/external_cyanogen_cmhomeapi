@@ -2,10 +2,8 @@ package org.cyanogenmod.launcher.cardprovider;
 
 import android.content.Context;
 import android.content.Intent;
-
 import android.os.Handler;
 import com.cyanogen.cardbuilder.DataCardFactory;
-
 import org.cyanogenmod.launcher.cards.ApiCard;
 import org.cyanogenmod.launcher.cards.CmCard;
 import org.cyanogenmod.launcher.home.api.CMHomeApiManager;
@@ -65,13 +63,26 @@ public class CmHomeApiCardProvider implements ICardProvider,
 
     @Override
     public void requestRefresh() {
-        sendRefreshBroadcast();
+        requestRefresh(false);
     }
 
-    private void sendRefreshBroadcast() {
+    @Override
+    public void requestRefresh(boolean manualRefreshRequested) {
+        sendRefreshBroadcast(manualRefreshRequested);
+    }
+
+    /**
+     * Send a refresh {@link android.content.Intent} broadcast
+     *
+     * @param manualRefreshRequested {@link java.lang.Boolean}
+     *                                           <code>true</code> to refresh immediately,
+     *                                           <code>false</code> to use delta
+     */
+    private void sendRefreshBroadcast(boolean manualRefreshRequested) {
         if (mHostActivityContext != null) {
             Intent broadcast = new Intent();
             broadcast.setAction(CM_HOME_API_REFRESH_REQUESTED_BROADCAST_ACTION);
+            broadcast.putExtra("manualRefreshRequested", manualRefreshRequested);
             mHostActivityContext.sendBroadcast(broadcast);
         }
     }
