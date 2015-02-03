@@ -48,8 +48,6 @@
 
 
 
-
-
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -59,7 +57,7 @@
 <link rel="shortcut icon" type="image/x-icon" href="../../../../../../favicon.ico" />
 <title>
 
-  CmHomeContract.CardDataContract
+  CmHomeContract.DataCard
 
 
 | CM Home SDK
@@ -91,38 +89,48 @@
 
 <body class="">
 
-  <div id="header">
-      <div id="headerLeft">
-          <a href="../../../../../../index.html" tabindex="-1"><img
-              src="../../../../../../../assets/cid_smart.png" alt="CID" width="30" height="30"/>
-          <span id="masthead-title">CM Home SDK</span></a>
-      </div>
-      <div id="headerRight">
-          <div id="search">
-              <div id="searchForm">
-                  <form accept-charset="utf-8" class="gsc-search-box" onsubmit="return submit_search()">
-                    <table class="gsc-search-box" cellpadding="0" cellspacing="0"><tbody>
-                        <tr>
-                          <td class="gsc-input">
-                            <input id="search_autocomplete" class="gsc-input" type="text" size="33" autocomplete="off" title="search developer docs" name="q" value="search developer docs" onfocus="search_focus_changed(this, true)" onblur="search_focus_changed(this, false)" onkeydown="return search_changed(event, true, '../../../../../../')" onkeyup="return search_changed(event, false, '../../../../../../')" style="color: rgb(170, 170, 170);">
-                          <div id="search_filtered_div" class="no-display">
-                              <table id="search_filtered" cellspacing="0">
-                              </table>
-                          </div>
-                          </td>
-                          <td class="gsc-search-button">
-                            <input type="submit" value="Search" title="search" id="search-button" class="gsc-search-button">
-                          </td>
-                          <td class="gsc-clear-button">
-                            <div title="clear results" class="gsc-clear-button">&nbsp;</div>
-                          </td>
-                        </tr></tbody>
+<div id="header">
+    <div id="headerLeft">
+    
+      <span id="masthead-title">CM Home SDK</span>
+    
+    </div>
+    <div id="headerRight">
+      
+  <div id="search" >
+      <div id="searchForm">
+          <form accept-charset="utf-8" class="gsc-search-box" 
+                onsubmit="return submit_search()">
+            <table class="gsc-search-box" cellpadding="0" cellspacing="0"><tbody>
+                <tr>
+                  <td class="gsc-input">
+                    <input id="search_autocomplete" class="gsc-input" type="text" size="33" autocomplete="off"
+                      title="search developer docs" name="q"
+                      value="search developer docs"
+                      onFocus="search_focus_changed(this, true)"
+                      onBlur="search_focus_changed(this, false)"
+                      onkeydown="return search_changed(event, true, '../../../../../../')"
+                      onkeyup="return search_changed(event, false, '../../../../../../')" />
+                  <div id="search_filtered_div" class="no-display">
+                      <table id="search_filtered" cellspacing=0>
                       </table>
-                  </form>
-              </div><!-- searchForm -->
-          </div><!-- search -->
-      </div><!-- headerRight -->
-  </div><!-- header -->
+                  </div>
+                  </td>
+                  <td class="gsc-search-button">
+                    <input type="submit" value="Search" title="search" id="search-button" class="gsc-search-button" />
+                  </td>
+                  <td class="gsc-clear-button">
+                    <div title="clear results" class="gsc-clear-button">&nbsp;</div>
+                  </td>
+                </tr></tbody>
+              </table>
+          </form>
+      </div><!-- searchForm -->
+  </div><!-- search -->
+      
+    </div>
+</div><!-- header -->
+
 
   <div class="g-section g-tpl-240" id="body-content">
     <div class="g-unit g-first side-nav-resizable" id="side-nav">
@@ -142,8 +150,6 @@
   <a href="../../../../../../org/cyanogenmod/launcher/home/api/db/package-summary.html">org.cyanogenmod.launcher.home.api.db</a></li>
     <li class="selected api apilevel-">
   <a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/package-summary.html">org.cyanogenmod.launcher.home.api.provider</a></li>
-    <li class="api apilevel-">
-  <a href="../../../../../../org/cyanogenmod/launcher/home/api/receiver/package-summary.html">org.cyanogenmod.launcher.home.api.receiver</a></li>
               </ul><br/>
             </div> <!-- end packages -->
           </div> <!-- end resize-packages -->
@@ -160,9 +166,8 @@
       <ul>
           <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContentProvider.html">CmHomeContentProvider</a></li>
           <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.html">CmHomeContract</a></li>
-          <li class="selected api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html">CmHomeContract.CardDataContract</a></li>
-          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataImageContract.html">CmHomeContract.CardDataImageContract</a></li>
-          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.ImageFile.html">CmHomeContract.ImageFile</a></li>
+          <li class="selected api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html">CmHomeContract.DataCard</a></li>
+          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCardImage.html">CmHomeContract.DataCardImage</a></li>
       </ul>
     </li>
               
@@ -284,7 +289,7 @@ Summary:
     final 
     
     class
-<h1>CmHomeContract.CardDataContract</h1>
+<h1>CmHomeContract.DataCard</h1>
 
 
 
@@ -324,7 +329,7 @@ Summary:
         
             <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
          	
-        <td colspan="1" class="jd-inheritance-class-cell">org.cyanogenmod.launcher.home.api.provider.CmHomeContract.CardDataContract</td>
+        <td colspan="1" class="jd-inheritance-class-cell">org.cyanogenmod.launcher.home.api.provider.CmHomeContract.DataCard</td>
     </tr>
     
 
@@ -338,14 +343,6 @@ Summary:
 
 <div class="jd-descr">
 
-
-<h2>Class Overview</h2>
-<p>The database contract for persisting
- <code><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a></code> objects.
-
- <p><b>This class is intended to be internal, and does not need to be referenced by
- applications using the SDK.</b></p>
-</p>
 
 
 
@@ -392,147 +389,119 @@ Summary:
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#ACTION_1_TEXT_COL">ACTION_1_TEXT_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#ACTION_1_TEXT_COL">ACTION_1_TEXT_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#ACTION_1_URI_COL">ACTION_1_URI_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#ACTION_1_URI_COL">ACTION_1_URI_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#ACTION_2_TEXT_COL">ACTION_2_TEXT_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#ACTION_2_TEXT_COL">ACTION_2_TEXT_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#ACTION_2_URI_COL">ACTION_2_URI_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#ACTION_2_URI_COL">ACTION_2_URI_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#AVATAR_IMAGE_URI_COL">AVATAR_IMAGE_URI_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#AVATAR_IMAGE_URI_COL">AVATAR_IMAGE_URI_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#BODY_TEXT_COL">BODY_TEXT_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#BODY_TEXT_COL">BODY_TEXT_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#CARD_CLICK_URI_COL">CARD_CLICK_URI_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#CONTENT_ITEM_TYPE">CONTENT_ITEM_TYPE</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#CATEGORY_COL">CATEGORY_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#CONTENT_SOURCE_IMAGE_URI_COL">CONTENT_SOURCE_IMAGE_URI_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#CONTENT_ITEM_TYPE">CONTENT_ITEM_TYPE</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#CONTENT_TYPE">CONTENT_TYPE</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#CONTENT_SOURCE_IMAGE_URI_COL">CONTENT_SOURCE_IMAGE_URI_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#DATE_CONTENT_CREATED_COL">DATE_CONTENT_CREATED_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#CONTENT_TYPE">CONTENT_TYPE</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#DATE_CREATED_COL">DATE_CREATED_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#DATE_CONTENT_CREATED_COL">DATE_CONTENT_CREATED_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#LAST_MODIFIED_COL">LAST_MODIFIED_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#DATE_CREATED_COL">DATE_CREATED_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#PRIORITY_COL">PRIORITY_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#INTERNAL_ID_COL">INTERNAL_ID_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#SMALL_TEXT_COL">SMALL_TEXT_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#IS_BROADCAST_INTENT_EXTRA">IS_BROADCAST_INTENT_EXTRA</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#SORT_ORDER_DEFAULT">SORT_ORDER_DEFAULT</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#LAST_MODIFIED_COL">LAST_MODIFIED_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#SUBJECT_COL">SUBJECT_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#PRIORITY_COL">PRIORITY_COL</a></td>
-        <td class="jd-descrcol" width="100%"></td>
-    </tr>
-    
-    
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#REASON_COL">REASON_COL</a></td>
-        <td class="jd-descrcol" width="100%"></td>
-    </tr>
-    
-    
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#SMALL_TEXT_COL">SMALL_TEXT_COL</a></td>
-        <td class="jd-descrcol" width="100%"></td>
-    </tr>
-    
-    
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#SORT_ORDER_DEFAULT">SORT_ORDER_DEFAULT</a></td>
-        <td class="jd-descrcol" width="100%"></td>
-    </tr>
-    
-    
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol"><a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#TITLE_TEXT_COL">TITLE_TEXT_COL</a></td>
+        <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#TITLE_TEXT_COL">TITLE_TEXT_COL</a></td>
         <td class="jd-descrcol" width="100%"></td>
     </tr>
     
@@ -607,62 +576,18 @@ android.provider.BaseColumns
           static
           
           <a href="http://d.android.com/reference/android/net/Uri.html">Uri</a></td>
-          <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#CONTENT_URI">CONTENT_URI</a></td>
+          <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#CONTENT_URI">CONTENT_URI</a></td>
           <td class="jd-descrcol" width="100%"></td>
       </tr>
       
     
       <tr class=" api apilevel-" >
-          <td class="jd-typecol">
-          public
-          static
-          
-          <a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-          <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#LIST_INSERT_UPDATE_URI_PATH">LIST_INSERT_UPDATE_URI_PATH</a></td>
-          <td class="jd-descrcol" width="100%"></td>
-      </tr>
-      
-    
-      <tr class="alt-color api apilevel-" >
           <td class="jd-typecol">
           public
           static
           final
           <a href="http://d.android.com/reference/java/lang/String.html">String[]</a></td>
-          <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#PROJECTION_ALL">PROJECTION_ALL</a></td>
-          <td class="jd-descrcol" width="100%"></td>
-      </tr>
-      
-    
-      <tr class=" api apilevel-" >
-          <td class="jd-typecol">
-          public
-          static
-          
-          <a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-          <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#SINGLE_ROW_DELETE_URI_PATH">SINGLE_ROW_DELETE_URI_PATH</a></td>
-          <td class="jd-descrcol" width="100%"></td>
-      </tr>
-      
-    
-      <tr class="alt-color api apilevel-" >
-          <td class="jd-typecol">
-          public
-          static
-          
-          <a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-          <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#SINGLE_ROW_DELETE_URI_PATH_MATCH">SINGLE_ROW_DELETE_URI_PATH_MATCH</a></td>
-          <td class="jd-descrcol" width="100%"></td>
-      </tr>
-      
-    
-      <tr class=" api apilevel-" >
-          <td class="jd-typecol">
-          public
-          static
-          
-          <a href="http://d.android.com/reference/java/lang/String.html">String</a></td>
-          <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#SINGLE_ROW_INSERT_UPDATE_URI_PATH">SINGLE_ROW_INSERT_UPDATE_URI_PATH</a></td>
+          <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#PROJECTION_ALL">PROJECTION_ALL</a></td>
           <td class="jd-descrcol" width="100%"></td>
       </tr>
       
@@ -692,7 +617,7 @@ android.provider.BaseColumns
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#CmHomeContract.CardDataContract()">CmHomeContract.CardDataContract</a></span>()
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#CmHomeContract.DataCard()">CmHomeContract.DataCard</a></span>()
         
   </td></tr>
 
@@ -721,7 +646,7 @@ android.provider.BaseColumns
             <a href="http://d.android.com/reference/android/net/Uri.html">Uri</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#getContentUri()">getContentUri</a></span>()
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#getContentUri()">getContentUri</a></span>()
         
   </td></tr>
 
@@ -737,7 +662,7 @@ android.provider.BaseColumns
             <a href="http://d.android.com/reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.CardDataContract.html#getIdColumnName()">getIdColumnName</a></span>()
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.DataCard.html#getIdColumnName()">getIdColumnName</a></span>()
         
   </td></tr>
 
@@ -1281,84 +1206,6 @@ From interface
 
 
 
-<a id="CARD_CLICK_URI_COL"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-        final 
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
-      </span>
-        CARD_CLICK_URI_COL
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    
-        <div class="jd-tagdata">
-        <span class="jd-tagtitle">Constant Value: </span>
-        <span>
-            
-                "card_click_uri"
-            
-        </span>
-        </div>
-    
-    </div>
-</div>
-
-
-
-<a id="CATEGORY_COL"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-        final 
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
-      </span>
-        CATEGORY_COL
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    
-        <div class="jd-tagdata">
-        <span class="jd-tagtitle">Constant Value: </span>
-        <span>
-            
-                "category"
-            
-        </span>
-        </div>
-    
-    </div>
-</div>
-
-
-
 <a id="CONTENT_ITEM_TYPE"></a>
 
 <div class="jd-details api apilevel-"> 
@@ -1388,7 +1235,7 @@ From interface
         <span class="jd-tagtitle">Constant Value: </span>
         <span>
             
-                "vnd.android.cursor.item/org.cyanogenmod.home.api.carddata"
+                "vnd.android.cursor.item/org.cyanogenmod.home.api.datacard"
             
         </span>
         </div>
@@ -1466,7 +1313,7 @@ From interface
         <span class="jd-tagtitle">Constant Value: </span>
         <span>
             
-                "vnd.android.cursor.dir/org.cyanogenmod.home.api.carddata"
+                "vnd.android.cursor.dir/org.cyanogenmod.home.api.datacard"
             
         </span>
         </div>
@@ -1554,84 +1401,6 @@ From interface
 
 
 
-<a id="INTERNAL_ID_COL"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-        final 
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
-      </span>
-        INTERNAL_ID_COL
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    
-        <div class="jd-tagdata">
-        <span class="jd-tagtitle">Constant Value: </span>
-        <span>
-            
-                "internal_id"
-            
-        </span>
-        </div>
-    
-    </div>
-</div>
-
-
-
-<a id="IS_BROADCAST_INTENT_EXTRA"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-        final 
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
-      </span>
-        IS_BROADCAST_INTENT_EXTRA
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    
-        <div class="jd-tagdata">
-        <span class="jd-tagtitle">Constant Value: </span>
-        <span>
-            
-                "cmHomeIntentIsBroadcast"
-            
-        </span>
-        </div>
-    
-    </div>
-</div>
-
-
-
 <a id="LAST_MODIFIED_COL"></a>
 
 <div class="jd-details api apilevel-"> 
@@ -1710,45 +1479,6 @@ From interface
 
 
 
-<a id="REASON_COL"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-        final 
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
-      </span>
-        REASON_COL
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    
-        <div class="jd-tagdata">
-        <span class="jd-tagtitle">Constant Value: </span>
-        <span>
-            
-                "reason_text"
-            
-        </span>
-        </div>
-    
-    </div>
-</div>
-
-
-
 <a id="SMALL_TEXT_COL"></a>
 
 <div class="jd-details api apilevel-"> 
@@ -1818,6 +1548,45 @@ From interface
         <span>
             
                 "priority ASC"
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="SUBJECT_COL"></a>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+        static 
+        final 
+        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
+      </span>
+        SUBJECT_COL
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                "subject"
             
         </span>
         </div>
@@ -1906,36 +1675,6 @@ From interface
 
 
 
-<a id="LIST_INSERT_UPDATE_URI_PATH"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-         
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
-      </span>
-        LIST_INSERT_UPDATE_URI_PATH
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    
-    </div>
-</div>
-
-
-
 <a id="PROJECTION_ALL"></a>
 
 <div class="jd-details api apilevel-"> 
@@ -1966,96 +1705,6 @@ From interface
 
 
 
-<a id="SINGLE_ROW_DELETE_URI_PATH"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-         
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
-      </span>
-        SINGLE_ROW_DELETE_URI_PATH
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    
-    </div>
-</div>
-
-
-
-<a id="SINGLE_ROW_DELETE_URI_PATH_MATCH"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-         
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
-      </span>
-        SINGLE_ROW_DELETE_URI_PATH_MATCH
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    
-    </div>
-</div>
-
-
-
-<a id="SINGLE_ROW_INSERT_UPDATE_URI_PATH"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-        static 
-         
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
-      </span>
-        SINGLE_ROW_INSERT_UPDATE_URI_PATH
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    
-    </div>
-</div>
-
-
-
 
 <!-- Public ctors -->
 
@@ -2065,7 +1714,7 @@ From interface
 
 
 
-<a id="CmHomeContract.CardDataContract()"></a>
+<a id="CmHomeContract.DataCard()"></a>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -2077,7 +1726,7 @@ From interface
          
         
       </span>
-      <span class="sympad">CmHomeContract.CardDataContract</span>
+      <span class="sympad">CmHomeContract.DataCard</span>
       <span class="normal">()</span>
     </h4>
       <div class="api-level">

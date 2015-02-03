@@ -48,8 +48,6 @@
 
 
 
-
-
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -59,7 +57,7 @@
 <link rel="shortcut icon" type="image/x-icon" href="../../../../../../favicon.ico" />
 <title>
 
-  PublishableCard
+  DataCardImage
 
 
 | CM Home SDK
@@ -91,38 +89,48 @@
 
 <body class="">
 
-  <div id="header">
-      <div id="headerLeft">
-          <a href="../../../../../../index.html" tabindex="-1"><img
-              src="../../../../../../../assets/cid_smart.png" alt="CID" width="30" height="30"/>
-          <span id="masthead-title">CM Home SDK</span></a>
-      </div>
-      <div id="headerRight">
-          <div id="search">
-              <div id="searchForm">
-                  <form accept-charset="utf-8" class="gsc-search-box" onsubmit="return submit_search()">
-                    <table class="gsc-search-box" cellpadding="0" cellspacing="0"><tbody>
-                        <tr>
-                          <td class="gsc-input">
-                            <input id="search_autocomplete" class="gsc-input" type="text" size="33" autocomplete="off" title="search developer docs" name="q" value="search developer docs" onfocus="search_focus_changed(this, true)" onblur="search_focus_changed(this, false)" onkeydown="return search_changed(event, true, '../../../../../../')" onkeyup="return search_changed(event, false, '../../../../../../')" style="color: rgb(170, 170, 170);">
-                          <div id="search_filtered_div" class="no-display">
-                              <table id="search_filtered" cellspacing="0">
-                              </table>
-                          </div>
-                          </td>
-                          <td class="gsc-search-button">
-                            <input type="submit" value="Search" title="search" id="search-button" class="gsc-search-button">
-                          </td>
-                          <td class="gsc-clear-button">
-                            <div title="clear results" class="gsc-clear-button">&nbsp;</div>
-                          </td>
-                        </tr></tbody>
+<div id="header">
+    <div id="headerLeft">
+    
+      <span id="masthead-title">CM Home SDK</span>
+    
+    </div>
+    <div id="headerRight">
+      
+  <div id="search" >
+      <div id="searchForm">
+          <form accept-charset="utf-8" class="gsc-search-box" 
+                onsubmit="return submit_search()">
+            <table class="gsc-search-box" cellpadding="0" cellspacing="0"><tbody>
+                <tr>
+                  <td class="gsc-input">
+                    <input id="search_autocomplete" class="gsc-input" type="text" size="33" autocomplete="off"
+                      title="search developer docs" name="q"
+                      value="search developer docs"
+                      onFocus="search_focus_changed(this, true)"
+                      onBlur="search_focus_changed(this, false)"
+                      onkeydown="return search_changed(event, true, '../../../../../../')"
+                      onkeyup="return search_changed(event, false, '../../../../../../')" />
+                  <div id="search_filtered_div" class="no-display">
+                      <table id="search_filtered" cellspacing=0>
                       </table>
-                  </form>
-              </div><!-- searchForm -->
-          </div><!-- search -->
-      </div><!-- headerRight -->
-  </div><!-- header -->
+                  </div>
+                  </td>
+                  <td class="gsc-search-button">
+                    <input type="submit" value="Search" title="search" id="search-button" class="gsc-search-button" />
+                  </td>
+                  <td class="gsc-clear-button">
+                    <div title="clear results" class="gsc-clear-button">&nbsp;</div>
+                  </td>
+                </tr></tbody>
+              </table>
+          </form>
+      </div><!-- searchForm -->
+  </div><!-- search -->
+      
+    </div>
+</div><!-- header -->
+
 
   <div class="g-section g-tpl-240" id="body-content">
     <div class="g-unit g-first side-nav-resizable" id="side-nav">
@@ -142,8 +150,6 @@
   <a href="../../../../../../org/cyanogenmod/launcher/home/api/db/package-summary.html">org.cyanogenmod.launcher.home.api.db</a></li>
     <li class="api apilevel-">
   <a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/package-summary.html">org.cyanogenmod.launcher.home.api.provider</a></li>
-    <li class="api apilevel-">
-  <a href="../../../../../../org/cyanogenmod/launcher/home/api/receiver/package-summary.html">org.cyanogenmod.launcher.home.api.receiver</a></li>
               </ul><br/>
             </div> <!-- end packages -->
           </div> <!-- end resize-packages -->
@@ -153,20 +159,13 @@
               
     <li><h2>Classes</h2>
       <ul>
-          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a></li>
-          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.CardDataIntentInfo.html">CardData.CardDataIntentInfo</a></li>
-          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.CardDeletedInfo.html">CardData.CardDeletedInfo</a></li>
-          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html">CardDataImage</a></li>
-          <li class="selected api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html">PublishableCard</a></li>
+          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCard.html">DataCard</a></li>
+          <li class="selected api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html">DataCardImage</a></li>
+          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html">PublishableCard</a></li>
       </ul>
     </li>
               
               
-    <li><h2>Enums</h2>
-      <ul>
-          <li class="api apilevel-"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.Priority.html">CardData.Priority</a></li>
-      </ul>
-    </li>
               
               
             </ul><br/>
@@ -211,6 +210,15 @@
   
   
   
+   
+  
+  
+
+  
+   
+  
+  
+  
   
 
 
@@ -225,9 +233,9 @@ Summary:
 
 
 
-  <a href="#lfields">Fields</a>
-  
 
+  <a href="#inhfields">Inherited Fields</a>
+  
 
 
   &#124; <a href="#pubctors">Ctors</a>
@@ -265,14 +273,18 @@ Summary:
     public
      
      
-    abstract
+    
     class
-<h1>PublishableCard</h1>
+<h1>DataCardImage</h1>
 
 
 
   
-    extends <a href="http://d.android.com/reference/java/lang/Object.html">Object</a><br/>
+  
+  
+
+  
+    extends <a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html">PublishableCard</a><br/>
   
   
   
@@ -292,7 +304,7 @@ Summary:
 
     <tr>
          	
-        <td colspan="2" class="jd-inheritance-class-cell"><a href="http://d.android.com/reference/java/lang/Object.html">java.lang.Object</a></td>
+        <td colspan="3" class="jd-inheritance-class-cell"><a href="http://d.android.com/reference/java/lang/Object.html">java.lang.Object</a></td>
     </tr>
     
 
@@ -300,7 +312,17 @@ Summary:
         
             <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
          	
-        <td colspan="1" class="jd-inheritance-class-cell">org.cyanogenmod.launcher.home.api.cards.PublishableCard</td>
+        <td colspan="2" class="jd-inheritance-class-cell"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html">org.cyanogenmod.launcher.home.api.cards.PublishableCard</a></td>
+    </tr>
+    
+
+    <tr>
+        
+            <td class="jd-inheritance-space">&nbsp;</td>
+        
+            <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
+         	
+        <td colspan="1" class="jd-inheritance-class-cell">org.cyanogenmod.launcher.home.api.cards.DataCardImage</td>
     </tr>
     
 
@@ -309,54 +331,11 @@ Summary:
 
 
 
-<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
-
-  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-direct" class="jd-expando-trigger closed"
-          ><img id="subclasses-direct-trigger"
-          src="../../../../../../../assets/images/triangle-closed.png"
-          class="jd-expando-trigger-img" /></a>Known Direct Subclasses
-
-  <div id="subclasses-direct">
-      <div id="subclasses-direct-list"
-              class="jd-inheritedlinks"
-              
-              >
-          
-            
-              <a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a>,
-            
-              <a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html">CardDataImage</a>
-            
-          
-      </div>
-      <div id="subclasses-direct-summary"
-              style="display: none;"
-              >
-  <table class="jd-sumtable-expando">
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a></td>
-              <td class="jd-descrcol" width="100%"><p>CardData contains data representing a single card that will appear in CM Home.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardDataImage.html">CardDataImage</a></td>
-              <td class="jd-descrcol" width="100%">Class representing an image that should be displayed along with a parent
- <code><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/CardData.html">CardData</a></code>.&nbsp;</td>
-          </tr>
-  </table>
-      </div>
-  </div>
-</td></tr></table>
-
 
 
 
 <div class="jd-descr">
 
-
-<h2>Class Overview</h2>
-<p>Represents any card that can be published to the host application,
- to be displayed to the user.
-</p>
 
 
 
@@ -401,9 +380,30 @@ Summary:
 
 
 
-<!-- =========== FIELD SUMMARY =========== -->
-<table id="lfields" class="jd-sumtable"><tr><th colspan="12">Fields</th></tr>
 
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<table id="inhfields" class="jd-sumtable"><tr><th>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  <div style="clear:left;">Inherited Fields</div></th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-fields-org.cyanogenmod.launcher.home.api.cards.PublishableCard" class="jd-expando-trigger closed"
+          ><img id="inherited-fields-org.cyanogenmod.launcher.home.api.cards.PublishableCard-trigger"
+          src="../../../../../../../assets/images/triangle-closed.png"
+          class="jd-expando-trigger-img" /></a>From class
+<a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html">org.cyanogenmod.launcher.home.api.cards.PublishableCard</a>
+<div id="inherited-fields-org.cyanogenmod.launcher.home.api.cards.PublishableCard">
+  <div id="inherited-fields-org.cyanogenmod.launcher.home.api.cards.PublishableCard-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-fields-org.cyanogenmod.launcher.home.api.cards.PublishableCard-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
 
     
       <tr class="alt-color api apilevel-" >
@@ -413,15 +413,19 @@ Summary:
           
           <a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.ICmHomeContract.html">CmHomeContract.ICmHomeContract</a></td>
           <td class="jd-linkcol"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#mICmHomeContract">mICmHomeContract</a></td>
-          <td class="jd-descrcol" width="100%">An instance of the database contract class to be used when publishing.</td>
+          <td class="jd-descrcol" width="100%"></td>
       </tr>
       
     
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
 
 </table>
-
-
-
 
 
 
@@ -442,7 +446,7 @@ Summary:
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#PublishableCard(org.cyanogenmod.launcher.home.api.provider.CmHomeContract.ICmHomeContract)">PublishableCard</a></span>(<a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.ICmHomeContract.html">CmHomeContract.ICmHomeContract</a> contract)
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html#DataCardImage(int, android.net.Uri)">DataCardImage</a></span>(int dataCardId, <a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri)
         
   </td></tr>
 
@@ -466,12 +470,12 @@ Summary:
             
             
             
+            static
             
-            
-            <a href="http://d.android.com/reference/java/lang/String.html">String</a>
+            <a href="http://d.android.com/reference/java/util/List.html">List</a>&lt;<a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html">DataCardImage</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#getAuthority()">getAuthority</a></span>()
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html#getAllPublishedDataCardImages(android.content.Context)">getAllPublishedDataCardImages</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)
         
   </td></tr>
 
@@ -484,13 +488,11 @@ Summary:
             
             
             
-            <a href="http://d.android.com/reference/java/lang/String.html">String</a>
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#getGlobalId()">getGlobalId</a></span>()
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html#getDataCardId()">getDataCardId</a></span>()
         
-        <div class="jd-descrdiv">Retrieve a global identifier that is unique among all CardData objects on the device.</div>
-  
   </td></tr>
 
 
@@ -502,10 +504,10 @@ Summary:
             
             
             
-            long
+            <a href="http://d.android.com/reference/android/net/Uri.html">Uri</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#getId()">getId</a></span>()
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html#getImageUri()">getImageUri</a></span>()
         
   </td></tr>
 
@@ -516,48 +518,12 @@ Summary:
             
             
             
+            static
             
-            
-            boolean
+            <a href="http://d.android.com/reference/java/util/List.html">List</a>&lt;<a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html">DataCardImage</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#isPublished(android.content.Context)">isPublished</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)
-        
-        <div class="jd-descrdiv">Has this card been published to the host application?</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            void
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#publish(android.content.Context)">publish</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)
-        
-        <div class="jd-descrdiv">Publish this PublishableCard to CM Home, to be immediately be displayed to the user.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            void
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#publishSynchronous(android.content.Context)">publishSynchronous</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html#getPublishedDataCardImagesForDataCardId(android.content.Context, int)">getPublishedDataCardImagesForDataCardId</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context, int dataCardId)
         
   </td></tr>
 
@@ -573,7 +539,7 @@ Summary:
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#setAuthority(java.lang.String)">setAuthority</a></span>(<a href="http://d.android.com/reference/java/lang/String.html">String</a> authority)
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html#setDataCardId(int)">setDataCardId</a></span>(int dataCardId)
         
   </td></tr>
 
@@ -586,13 +552,11 @@ Summary:
             
             
             
-            boolean
+            void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#unpublish(android.content.Context)">unpublish</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html#setImageUri(android.net.Uri)">setImageUri</a></span>(<a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri)
         
-        <div class="jd-descrdiv">Unpublishes a PublishableCard, removing it from CM Home immediately.</div>
-  
   </td></tr>
 
 
@@ -605,6 +569,54 @@ Summary:
 <!-- ========== METHOD SUMMARY =========== -->
 <table id="promethods" class="jd-sumtable"><tr><th colspan="12">Protected Methods</th></tr>
 
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="http://d.android.com/reference/android/content/ContentValues.html">ContentValues</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html#getContentValues()">getContentValues</a></span>()
+        
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="inhmethods" class="jd-sumtable"><tr><th>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  <div style="clear:left;">Inherited Methods</div></th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-org.cyanogenmod.launcher.home.api.cards.PublishableCard" class="jd-expando-trigger closed"
+          ><img id="inherited-methods-org.cyanogenmod.launcher.home.api.cards.PublishableCard-trigger"
+          src="../../../../../../../assets/images/triangle-closed.png"
+          class="jd-expando-trigger-img" /></a>
+From class
+
+  <a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html">org.cyanogenmod.launcher.home.api.cards.PublishableCard</a>
+
+<div id="inherited-methods-org.cyanogenmod.launcher.home.api.cards.PublishableCard">
+  <div id="inherited-methods-org.cyanogenmod.launcher.home.api.cards.PublishableCard-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-org.cyanogenmod.launcher.home.api.cards.PublishableCard-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
 
 
 	 
@@ -631,10 +643,76 @@ Summary:
             
             
             
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#getId()">getId</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#isPublished(android.content.Context)">isPublished</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)
+        
+        <div class="jd-descrdiv">Has this card been published to the host application?</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#publish(android.content.Context)">publish</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#setId(long)">setId</a></span>(long id)
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#setId(int)">setId</a></span>(int id)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/PublishableCard.html#unpublish(android.content.Context)">unpublish</a></span>(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)
         
   </td></tr>
 
@@ -655,17 +733,11 @@ Summary:
   </td></tr>
 
 
-
 </table>
+  </div>
+</div>
+</td></tr>
 
-
-
-
-
-<!-- ========== METHOD SUMMARY =========== -->
-<table id="inhmethods" class="jd-sumtable"><tr><th>
-  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
-  <div style="clear:left;">Inherited Methods</div></th></tr>
 
 
 <tr class="api apilevel-" >
@@ -895,45 +967,6 @@ From class
 <!-- Fields -->
 
 
-<!-- ========= FIELD DETAIL ======== -->
-<h2>Fields</h2>
-
-
-
-
-<a id="mICmHomeContract"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        protected 
-         
-         
-        <a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.ICmHomeContract.html">CmHomeContract.ICmHomeContract</a>
-      </span>
-        mICmHomeContract
-    </h4>
-      <div class="api-level">
-        
-
-
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>An instance of the database contract class to be used when publishing. To be set by
- subclasses.
-</p></div>
-
-    
-    </div>
-</div>
-
-
-
-
 <!-- Public ctors -->
 
 
@@ -942,7 +975,7 @@ From class
 
 
 
-<a id="PublishableCard(org.cyanogenmod.launcher.home.api.provider.CmHomeContract.ICmHomeContract)"></a>
+<a id="DataCardImage(int, android.net.Uri)"></a>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -954,8 +987,8 @@ From class
          
         
       </span>
-      <span class="sympad">PublishableCard</span>
-      <span class="normal">(<a href="../../../../../../org/cyanogenmod/launcher/home/api/provider/CmHomeContract.ICmHomeContract.html">CmHomeContract.ICmHomeContract</a> contract)</span>
+      <span class="sympad">DataCardImage</span>
+      <span class="normal">(int dataCardId, <a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -988,7 +1021,38 @@ From class
 
 
 
-<a id="getAuthority()"></a>
+<a id="getAllPublishedDataCardImages(android.content.Context)"></a>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+        static 
+         
+         
+         
+        <a href="http://d.android.com/reference/java/util/List.html">List</a>&lt;<a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html">DataCardImage</a>&gt;
+      </span>
+      <span class="sympad">getAllPublishedDataCardImages</span>
+      <span class="normal">(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<a id="getDataCardId()"></a>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -998,9 +1062,9 @@ From class
          
          
          
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
+        int
       </span>
-      <span class="sympad">getAuthority</span>
+      <span class="sympad">getDataCardId</span>
       <span class="normal">()</span>
     </h4>
       <div class="api-level">
@@ -1019,7 +1083,7 @@ From class
 </div>
 
 
-<a id="getGlobalId()"></a>
+<a id="getImageUri()"></a>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1029,45 +1093,9 @@ From class
          
          
          
-        <a href="http://d.android.com/reference/java/lang/String.html">String</a>
+        <a href="http://d.android.com/reference/android/net/Uri.html">Uri</a>
       </span>
-      <span class="sympad">getGlobalId</span>
-      <span class="normal">()</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieve a global identifier that is unique among all CardData objects on the device.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>A global ID String for this PublishableCard.
-</li></ul>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="getId()"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-         
-         
-         
-         
-        long
-      </span>
-      <span class="sympad">getId</span>
+      <span class="sympad">getImageUri</span>
       <span class="normal">()</span>
     </h4>
       <div class="api-level">
@@ -1086,108 +1114,20 @@ From class
 </div>
 
 
-<a id="isPublished(android.content.Context)"></a>
+<a id="getPublishedDataCardImagesForDataCardId(android.content.Context, int)"></a>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
       <span class="normal">
         public 
+        static 
          
          
          
-         
-        boolean
+        <a href="http://d.android.com/reference/java/util/List.html">List</a>&lt;<a href="../../../../../../org/cyanogenmod/launcher/home/api/cards/DataCardImage.html">DataCardImage</a>&gt;
       </span>
-      <span class="sympad">isPublished</span>
-      <span class="normal">(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Has this card been published to the host application?</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>context</th>
-          <td>The context of the publishing application</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>True if this card has been published.
-</li></ul>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="publish(android.content.Context)"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-         
-         
-         
-         
-        void
-      </span>
-      <span class="sympad">publish</span>
-      <span class="normal">(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Publish this PublishableCard to CM Home, to be immediately be displayed to the user.
- This operation is completed asynchronously. If this card has been previously published,
- it will be updated in place.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>context</th>
-          <td>The context of the publishing application.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="publishSynchronous(android.content.Context)"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-         
-         
-         
-         
-        void
-      </span>
-      <span class="sympad">publishSynchronous</span>
-      <span class="normal">(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)</span>
+      <span class="sympad">getPublishedDataCardImagesForDataCardId</span>
+      <span class="normal">(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context, int dataCardId)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1205,7 +1145,7 @@ From class
 </div>
 
 
-<a id="setAuthority(java.lang.String)"></a>
+<a id="setDataCardId(int)"></a>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1217,8 +1157,8 @@ From class
          
         void
       </span>
-      <span class="sympad">setAuthority</span>
-      <span class="normal">(<a href="http://d.android.com/reference/java/lang/String.html">String</a> authority)</span>
+      <span class="sympad">setDataCardId</span>
+      <span class="normal">(int dataCardId)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1236,7 +1176,7 @@ From class
 </div>
 
 
-<a id="unpublish(android.content.Context)"></a>
+<a id="setImageUri(android.net.Uri)"></a>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1246,10 +1186,10 @@ From class
          
          
          
-        boolean
+        void
       </span>
-      <span class="sympad">unpublish</span>
-      <span class="normal">(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)</span>
+      <span class="sympad">setImageUri</span>
+      <span class="normal">(<a href="http://d.android.com/reference/android/net/Uri.html">Uri</a> imageUri)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1261,23 +1201,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Unpublishes a PublishableCard, removing it from CM Home immediately. The card can be
- republished at a later time, but will obtain a new ID and potentially a new position in CM
- Home.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>context</th>
-          <td>A Context of the publishing application.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>true if the unpublish was successful, false otherwise.
-</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -1300,74 +1224,12 @@ From class
         protected 
          
          
-        abstract 
+         
          
         <a href="http://d.android.com/reference/android/content/ContentValues.html">ContentValues</a>
       </span>
       <span class="sympad">getContentValues</span>
       <span class="normal">()</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    </div>
-</div>
-
-
-<a id="setId(long)"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        protected 
-         
-         
-         
-         
-        void
-      </span>
-      <span class="sympad">setId</span>
-      <span class="normal">(long id)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    </div>
-</div>
-
-
-<a id="update(android.content.Context)"></a>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        protected 
-         
-         
-         
-         
-        boolean
-      </span>
-      <span class="sympad">update</span>
-      <span class="normal">(<a href="http://d.android.com/reference/android/content/Context.html">Context</a> context)</span>
     </h4>
       <div class="api-level">
         <div>

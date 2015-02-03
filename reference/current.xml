@@ -161,6 +161,17 @@
  visibility="public"
 >
 </method>
+<method name="getCategory"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
 <method name="getContentCreatedDate"
  return="java.util.Date"
  abstract="false"
@@ -429,6 +440,19 @@
 <parameter name="cardClickIntent" type="android.content.Intent">
 </parameter>
 <parameter name="isBroadcast" type="boolean">
+</parameter>
+</method>
+<method name="setCategory"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="category" type="java.lang.String">
 </parameter>
 </method>
 <method name="setContentCreatedDate"
@@ -1094,7 +1118,7 @@
  static="false"
  final="false"
  deprecated="not deprecated"
- visibility="protected"
+ visibility="public"
 >
 <parameter name="context" type="android.content.Context">
 </parameter>
@@ -1539,6 +1563,17 @@
  transient="false"
  volatile="false"
  value="&quot;card_click_uri&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CATEGORY_COL"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;category&quot;"
  static="true"
  final="true"
  deprecated="not deprecated"
