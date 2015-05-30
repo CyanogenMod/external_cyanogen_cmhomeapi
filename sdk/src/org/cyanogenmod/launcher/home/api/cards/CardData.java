@@ -144,7 +144,7 @@ public class CardData extends PublishableCard {
      */
     private Set<CardDataImage> mRemovedImages = new HashSet<CardDataImage>();
 
-    private CardData() {
+    protected CardData() {
         super(sContract);
     }
 
@@ -153,7 +153,7 @@ public class CardData extends PublishableCard {
      * @param title The title string to display on the card.
      * @param contentCreatedDate The date that the content this card represents was created.
      */
-    public CardData(String title, Date contentCreatedDate) {
+    protected CardData(String title, Date contentCreatedDate) {
         super(sContract);
 
         setTitle(title);
@@ -165,7 +165,7 @@ public class CardData extends PublishableCard {
      * for display in CM Home as part of this card.
      * @param uri A URI to this image (all types, including internet resources, are allowed).
      */
-    public void addCardDataImage(Uri uri) {
+    protected void addCardDataImageInternal(Uri uri) {
         CardDataImage image = new CardDataImage(this);
         image.setImage(uri);
         synchronized (mImages) {
@@ -179,7 +179,7 @@ public class CardData extends PublishableCard {
      * that instance is removed and replaced with this one.
      * @param newImage The CardDataImage instance to add or update.
      */
-    public void addOrUpdateCardDataImage(CardDataImage newImage) {
+    protected void addOrUpdateCardDataImageInternal(CardDataImage newImage) {
         CardDataImage matchingImage = null;
         synchronized (mImages) {
             for (CardDataImage image : mImages) {
@@ -225,7 +225,7 @@ public class CardData extends PublishableCard {
      * should be enforced here.
      * @param date The actual date that this CardData was created.
      */
-    private void setCreatedDate(Date date) {
+    public void setCreatedDate(Date date) {
         mCreatedDate = date;
     }
 
@@ -235,7 +235,7 @@ public class CardData extends PublishableCard {
      * modified rows, and this value will be passed here.
      * @param date The actual date that this CardData was created.
      */
-    private void setLastModifiedDate(Date date) {
+    protected void setLastModifiedDateInternal(Date date) {
         mLastModifiedDate = date;
     }
 
@@ -248,7 +248,7 @@ public class CardData extends PublishableCard {
      * <p>When this card is published, all added images will be published as well.</p>
      * @param image A CardDataImage to add to this CardData.
      */
-    public void addCardDataImage(CardDataImage image) {
+    protected void addCardDataImageInternal(CardDataImage image) {
         mImages.add(image);
     }
 
@@ -257,7 +257,7 @@ public class CardData extends PublishableCard {
      *
      * When publish is called on this DataCard, the removed images will be unpublished.
      */
-    public void clearImages() {
+    protected void clearImagesInternal() {
         synchronized (mImages) {
             for (CardDataImage image : mImages) {
                 mRemovedImages.add(image);
@@ -272,7 +272,7 @@ public class CardData extends PublishableCard {
      * When publish is called on this DataCard, the removed image will be unpublished.
      * @param image The CardDataImage to remove from this CardData.
      */
-    public void removeCardDataImage(CardDataImage image) {
+    protected void removeCardDataImageInternal(CardDataImage image) {
         mRemovedImages.add(image);
 
         synchronized (mImages) {
@@ -285,7 +285,7 @@ public class CardData extends PublishableCard {
      * When publish is called on this DataCard, the removed image will be unpublished.
      * @param imageGlobalId The global ID of the CardDataImage to remove.
      */
-    public void removeCardDataImage(String imageGlobalId) {
+    protected void removeCardDataImageInternal(String imageGlobalId) {
         CardDataImage theImage = null;
 
         synchronized (mImages) {
@@ -305,7 +305,7 @@ public class CardData extends PublishableCard {
      * Retrieve a List of all CardDataImages that are linked to this CardData.
      * @return A list of CardDataImages that are linked to this CardData.
      */
-    public List<CardDataImage> getImages() {
+    protected List<CardDataImage> getImagesInternal() {
         return mImages;
     }
 
@@ -325,7 +325,7 @@ public class CardData extends PublishableCard {
      * @see org.cyanogenmod.launcher.home.api.cards.CardData#setReasonText(String)
      * @return The currently set text describing the reason this content was displayed.
      */
-    public String getReasonText() {
+    protected String getReasonTextInternal() {
         return mReasonText;
     }
 
@@ -339,7 +339,7 @@ public class CardData extends PublishableCard {
      *
      * @param reason A String describing the reason this card is displayed.
      */
-    public void setReasonText(String reason) {
+    protected void setReasonTextInternal(String reason) {
         this.mReasonText = reason;
     }
 
@@ -348,7 +348,7 @@ public class CardData extends PublishableCard {
      * @see org.cyanogenmod.launcher.home.api.cards.CardData#setContentCreatedDate
      * @return A {@link java.util.Date} representing when this content was created.
      */
-    public Date getContentCreatedDate() {
+    protected Date getContentCreatedDateInternal() {
         return mContentCreatedDate;
     }
 
@@ -381,7 +381,7 @@ public class CardData extends PublishableCard {
      * @return A {@link android.net.Uri} object that will resolve to the image file for the
      * Content Source image.
      */
-    public Uri getContentSourceImageUri() {
+    protected Uri getContentSourceImageUriInternal() {
         return mContentSourceImageUri;
     }
 
@@ -397,7 +397,7 @@ public class CardData extends PublishableCard {
      * @param contentSourceImageUri A URI that resolves to the content source image (all types,
      *                              including internet resources, are allowed).
      */
-    public void setContentSourceImage(Uri contentSourceImageUri) {
+    protected void setContentSourceImageInternal(Uri contentSourceImageUri) {
         this.mContentSourceImageUri = contentSourceImageUri;
 
         mContentSourceImageResourceId = 0;
@@ -415,7 +415,7 @@ public class CardData extends PublishableCard {
      * @see org.cyanogenmod.launcher.home.api.cards.CardData#setContentSourceImage(Uri)
      * @param bitmap A Bitmap to be used as the content source image.
      */
-    public void setContentSourceImage(Bitmap bitmap) {
+    protected void setContentSourceImageInternal(Bitmap bitmap) {
         mContentSourceImageBitmap = bitmap;
 
         mContentSourceImageResourceId = 0;
@@ -434,7 +434,7 @@ public class CardData extends PublishableCard {
      * @see org.cyanogenmod.launcher.home.api.cards.CardData#setContentSourceImage(Uri)
      * @param resourceId A resourceId that resolves to the content source image.
      */
-    public void setContentSourceImage(int resourceId) {
+    protected void setContentSourceImageInternal(int resourceId) {
         mContentSourceImageResourceId = resourceId;
 
         mContentSourceImageBitmap = null;
@@ -448,7 +448,7 @@ public class CardData extends PublishableCard {
      *
      * @return A {@link android.net.Uri} that resolves to the avatar image.
      */
-    public Uri getAvatarImageUri() {
+    protected Uri getAvatarImageUriInternal() {
         return mAvatarImageUri;
     }
 
@@ -462,7 +462,7 @@ public class CardData extends PublishableCard {
      * @param avatarImageUri A URI that resolves to the avatar image (all types,
      *                              including internet resources, are allowed).
      */
-    public void setAvatarImage(Uri avatarImageUri) {
+    protected void setAvatarImageInternal(Uri avatarImageUri) {
         this.mAvatarImageUri = avatarImageUri;
 
         mAvatarImageResourceId = 0;
@@ -484,7 +484,7 @@ public class CardData extends PublishableCard {
      * @see org.cyanogenmod.launcher.home.api.cards.CardData#setAvatarImage(android.net.Uri)
      * @param bitmap A {@link android.graphics.Bitmap} to use as the avatar image.
      */
-    public void setAvatarImage(Bitmap bitmap) {
+    protected void setAvatarImageInternal(Bitmap bitmap) {
         mAvatarImageBitmap = bitmap;
 
         mAvatarImageResourceId = 0;
@@ -506,7 +506,7 @@ public class CardData extends PublishableCard {
      * @see org.cyanogenmod.launcher.home.api.cards.CardData#setAvatarImage(android.net.Uri)
      * @param resourceId A resourceId that resolves to the image to use as the avatar image.
      */
-    public void setAvatarImage(int resourceId) {
+    protected void setAvatarImageInternal(int resourceId) {
         mAvatarImageResourceId = resourceId;
 
         mAvatarImageBitmap = null;
@@ -534,7 +534,7 @@ public class CardData extends PublishableCard {
      * @see org.cyanogenmod.launcher.home.api.cards.CardData#setSmallText(String)
      * @return The currently set String to be used as the small text value.
      */
-    public String getSmallText() {
+    protected String getSmallTextInternal() {
         return mSmallText;
     }
 
@@ -547,7 +547,7 @@ public class CardData extends PublishableCard {
      *
      * @param smallText A String that will be displayed in smaller text near the title of the card.
      */
-    public void setSmallText(String smallText) {
+    protected void setSmallTextInternal(String smallText) {
         this.mSmallText = smallText;
     }
 
@@ -556,7 +556,7 @@ public class CardData extends PublishableCard {
      * @see org.cyanogenmod.launcher.home.api.cards.CardData#setBodyText(java.lang.String)
      * @return A String that is currently set as the body text for this Card.
      */
-    public String getBodyText() {
+    protected String getBodyTextInternal() {
         return mBodyText;
     }
 
@@ -567,7 +567,7 @@ public class CardData extends PublishableCard {
      * for a Card representing a message, this would contain the actual text of the message.</p>
      * @param bodyText A String containing the main content text of this CardData.
      */
-    public void setBodyText(String bodyText) {
+    protected void setBodyTextInternal(String bodyText) {
         this.mBodyText = bodyText;
     }
 
@@ -620,7 +620,7 @@ public class CardData extends PublishableCard {
      * Retrieves the currently set text for the first action.
      * @return The currently set String for the first action text.
      */
-    public String getAction1Text() {
+    protected String getAction1TextInternal() {
         return mAction1Text;
     }
 
@@ -632,7 +632,7 @@ public class CardData extends PublishableCard {
      * field could be set to "Share" for this button.
      * @param action1Text A String to display on the first action button.
      */
-    public void setAction1Text(String action1Text) {
+    protected void setAction1TextInternal(String action1Text) {
         this.mAction1Text = action1Text;
     }
 
@@ -643,7 +643,7 @@ public class CardData extends PublishableCard {
      * @return A {@link org.cyanogenmod.launcher.home.api.cards.CardData.CardDataIntentInfo}
      *         containing the Intent for the first action button.
      */
-    public CardDataIntentInfo getAction1IntentInfo() {
+    protected CardDataIntentInfo getAction1IntentInfoInternal() {
         return getCardDataIntentInfoForIntent(mAction1Intent);
     }
 
@@ -655,7 +655,7 @@ public class CardData extends PublishableCard {
      * @param action1Intent The Intent to be launched.
      * @param isBroadcast true if action1Intent is a Broadcast Intent, false otherwise.
      */
-    public void setAction1Intent(Intent action1Intent, boolean isBroadcast) {
+    protected void setAction1IntentInternal(Intent action1Intent, boolean isBroadcast) {
         this.mAction1Intent = action1Intent;
         mAction1Intent.putExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA,
                                 isBroadcast);
@@ -666,7 +666,7 @@ public class CardData extends PublishableCard {
      * Retrieves the currently set text for the first action.
      * @return The currently set String for the first action text.
      */
-    public String getAction2Text() {
+    protected String getAction2TextInternal() {
         return mAction2Text;
     }
 
@@ -678,7 +678,7 @@ public class CardData extends PublishableCard {
      * field could be set to "Share" for this button.
      * @param action2Text A String to display on the second action button.
     */
-    public void setAction2Text(String action2Text) {
+    protected void setAction2TextInternal(String action2Text) {
         this.mAction2Text = action2Text;
     }
 
@@ -689,7 +689,7 @@ public class CardData extends PublishableCard {
      * @return A {@link org.cyanogenmod.launcher.home.api.cards.CardData.CardDataIntentInfo}
      *         containing the Intent for the second action button.
      */
-    public CardDataIntentInfo getAction2IntentInfo() {
+    protected CardDataIntentInfo getAction2IntentInfoInternal() {
         return getCardDataIntentInfoForIntent(mAction2Intent);
     }
 
@@ -701,7 +701,7 @@ public class CardData extends PublishableCard {
      * @param action2Intent The Intent to be launched.
      * @param isBroadcast true if action2Intent is a Broadcast Intent, false otherwise.
     */
-    public void setAction2Intent(Intent action2Intent, boolean isBroadcast) {
+    protected void setAction2IntentInternal(Intent action2Intent, boolean isBroadcast) {
         this.mAction2Intent = action2Intent;
         mAction1Intent.putExtra(CmHomeContract.CardDataContract.IS_BROADCAST_INTENT_EXTRA, isBroadcast);
     }
@@ -780,7 +780,7 @@ public class CardData extends PublishableCard {
         if (mContentSourceImageResourceId != 0) {
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
                                                          mContentSourceImageResourceId);
-            setContentSourceImage(bitmap);
+            setContentSourceImageInternal(bitmap);
         }
 
         if (mContentSourceImageBitmap != null) {
@@ -789,14 +789,14 @@ public class CardData extends PublishableCard {
             if (uri != null) {
                 mContentSourceImageBitmap.recycle();
                 mContentSourceImageBitmap = null;
-                setContentSourceImage(uri);
+                setContentSourceImageInternal(uri);
             }
         }
 
         if (mAvatarImageResourceId != 0) {
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
                                                          mAvatarImageResourceId);
-            setAvatarImage(bitmap);
+            setAvatarImageInternal(bitmap);
         }
 
         if (mAvatarImageBitmap != null) {
@@ -805,7 +805,7 @@ public class CardData extends PublishableCard {
             if (uri != null) {
                 mAvatarImageBitmap.recycle();
                 mAvatarImageBitmap = null;
-                setAvatarImage(uri);
+                setAvatarImageInternal(uri);
             }
         }
 
@@ -876,46 +876,46 @@ public class CardData extends PublishableCard {
         ContentValues values = new ContentValues();
 
         values.put(CmHomeContract.CardDataContract.INTERNAL_ID_COL, getInternalId());
-        values.put(CmHomeContract.CardDataContract.REASON_COL, getReasonText());
+        values.put(CmHomeContract.CardDataContract.REASON_COL, getReasonTextInternal());
 
-        if (getContentCreatedDate() != null) {
+        if (getContentCreatedDateInternal() != null) {
             values.put(CmHomeContract.CardDataContract.DATE_CONTENT_CREATED_COL,
-                       getContentCreatedDate().getTime());
+                       getContentCreatedDateInternal().getTime());
         }
 
-        if (getContentSourceImageUri() != null) {
+        if (getContentSourceImageUriInternal() != null) {
             values.put(CmHomeContract.CardDataContract.CONTENT_SOURCE_IMAGE_URI_COL,
-                       getContentSourceImageUri().toString());
+                       getContentSourceImageUriInternal().toString());
         }
 
-        if (getAvatarImageUri() != null) {
+        if (getAvatarImageUriInternal() != null) {
             values.put(CmHomeContract.CardDataContract.AVATAR_IMAGE_URI_COL,
-                       getAvatarImageUri().toString());
+                       getAvatarImageUriInternal().toString());
         }
 
         values.put(CmHomeContract.CardDataContract.TITLE_TEXT_COL,
                    getTitle());
         values.put(CmHomeContract.CardDataContract.SMALL_TEXT_COL,
-                   getSmallText());
+                   getSmallTextInternal());
         values.put(CmHomeContract.CardDataContract.BODY_TEXT_COL,
-                   getBodyText());
+                   getBodyTextInternal());
         values.put(CmHomeContract.CardDataContract.CATEGORY_COL,
                    getCategory());
         values.put(CmHomeContract.CardDataContract.ACTION_1_TEXT_COL,
-                   getAction1Text());
+                   getAction1TextInternal());
 
-        if (getAction1IntentInfo() != null) {
+        if (getAction1IntentInfoInternal() != null) {
             values.put(CmHomeContract.CardDataContract.ACTION_1_URI_COL,
-                       getAction1IntentInfo().getIntent().toUri(Intent.URI_INTENT_SCHEME)
+                       getAction1IntentInfoInternal().getIntent().toUri(Intent.URI_INTENT_SCHEME)
                                              .toString());
         }
 
         values.put(CmHomeContract.CardDataContract.ACTION_2_TEXT_COL,
-                   getAction2Text());
+                   getAction2TextInternal());
 
-        if (getAction2IntentInfo() != null) {
+        if (getAction2IntentInfoInternal() != null) {
             values.put(CmHomeContract.CardDataContract.ACTION_2_URI_COL,
-                       getAction2IntentInfo().getIntent().
+                       getAction2IntentInfoInternal().getIntent().
                                toUri(Intent.URI_INTENT_SCHEME).toString());
         }
 
@@ -984,38 +984,38 @@ public class CardData extends PublishableCard {
         cardData.setCreatedDate(new Date(createdTime));
         long modifiedTime = cursor.getLong(cursor.getColumnIndex(CmHomeContract.CardDataContract
                                                                  .LAST_MODIFIED_COL));
-        cardData.setLastModifiedDate(new Date(modifiedTime));
+        cardData.setLastModifiedDateInternal(new Date(modifiedTime));
         long contentCreatedTime = cursor.getLong(
                 cursor.getColumnIndex(CmHomeContract.CardDataContract.DATE_CONTENT_CREATED_COL));
         cardData.setContentCreatedDate(new Date(contentCreatedTime));
-        cardData.setReasonText(cursor.getString(cursor.getColumnIndex(
+        cardData.setReasonTextInternal(cursor.getString(cursor.getColumnIndex(
                 CmHomeContract.CardDataContract
-                                                                           .REASON_COL)));
+                        .REASON_COL)));
         String contentSourceUriString =
                 cursor.getString(cursor.getColumnIndex(
                         CmHomeContract.CardDataContract.CONTENT_SOURCE_IMAGE_URI_COL));
 
         if (!TextUtils.isEmpty(contentSourceUriString)) {
-            cardData.setContentSourceImage(Uri.parse(contentSourceUriString));
+            cardData.setContentSourceImageInternal(Uri.parse(contentSourceUriString));
         }
 
         String avatarImageUriString =
                 cursor.getString(cursor.getColumnIndex(
                         CmHomeContract.CardDataContract.AVATAR_IMAGE_URI_COL));
         if (!TextUtils.isEmpty(avatarImageUriString)) {
-            cardData.setAvatarImage(Uri.parse(avatarImageUriString));
+            cardData.setAvatarImageInternal(Uri.parse(avatarImageUriString));
         }
 
         cardData.setTitle(cursor.getString(
                 cursor.getColumnIndex(CmHomeContract.CardDataContract.TITLE_TEXT_COL)));
-        cardData.setSmallText(
+        cardData.setSmallTextInternal(
                 cursor.getString(cursor.getColumnIndex(
                         CmHomeContract.CardDataContract.SMALL_TEXT_COL)));
-        cardData.setBodyText(cursor.getString(
+        cardData.setBodyTextInternal(cursor.getString(
                 cursor.getColumnIndex(CmHomeContract.CardDataContract.BODY_TEXT_COL)));
         cardData.setCategory(cursor.getString(
                 cursor.getColumnIndex(CmHomeContract.CardDataContract.CATEGORY_COL)));
-        cardData.setAction1Text(
+        cardData.setAction1TextInternal(
                 cursor.getString(cursor.getColumnIndex(
                         CmHomeContract.CardDataContract.ACTION_1_TEXT_COL)));
 
@@ -1037,14 +1037,14 @@ public class CardData extends PublishableCard {
             try {
                 Intent action1Intent = Intent.parseUri(action1UriString,
                                                           Intent.URI_INTENT_SCHEME);
-                cardData.setAction1Intent(action1Intent,
-                                          isIntentBroadcast(action1Intent));
+                cardData.setAction1IntentInternal(action1Intent,
+                                                  isIntentBroadcast(action1Intent));
             } catch (URISyntaxException e) {
                 Log.e(TAG, "Unable to parse uri to Intent: " + action1UriString);
             }
         }
 
-        cardData.setAction2Text(cursor.getString(
+        cardData.setAction2TextInternal(cursor.getString(
                 cursor.getColumnIndex(CmHomeContract.CardDataContract.ACTION_2_TEXT_COL)));
 
         String action2UriString = cursor.getString(
@@ -1053,8 +1053,8 @@ public class CardData extends PublishableCard {
             try {
                 Intent action2Intent = Intent.parseUri(action2UriString,
                                                           Intent.URI_INTENT_SCHEME);
-                cardData.setAction2Intent(action2Intent,
-                                          isIntentBroadcast(action2Intent));
+                cardData.setAction2IntentInternal(action2Intent,
+                                                  isIntentBroadcast(action2Intent));
             } catch (URISyntaxException e) {
                 Log.e(TAG, "Unable to parse uri to Intent: " + action2UriString);
             }
@@ -1132,7 +1132,7 @@ public class CardData extends PublishableCard {
                                                              cardDataImageContentUri,
                                                              card.getId());
             for (CardDataImage image : images) {
-                card.addCardDataImage(image);
+                card.addCardDataImageInternal(image);
             }
         }
 
