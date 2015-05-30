@@ -59,11 +59,11 @@ public abstract class PublishableCard {
      * it will be updated in place.
      * @param context The context of the publishing application.
      */
-    public void publish(Context context) {
+    public void publishAsync(Context context) {
         new PublishCardTask(this, context).execute();
     }
 
-    public void publishSynchronous(Context context) {
+    public void publishSynchronous(Context context) throws MissingFieldPublishException {
         boolean updated = false;
         // If we have an ID, try to update that row first.
         if (getId() != -1) {
@@ -198,6 +198,7 @@ public abstract class PublishableCard {
     }
 
     private static class PublishCardTask extends AsyncTask<Void, Void, Void> {
+        private static final String TAG = "PublishCardTask";
         PublishableCard mPublishableCard;
         Context mContext;
 
@@ -208,7 +209,11 @@ public abstract class PublishableCard {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mPublishableCard.publishSynchronous(mContext);
+            try {
+                mPublishableCard.publishSynchronous(mContext);
+            } catch (MissingFieldPublishException e) {
+                Log.e(TAG, "Unable to publish card.");
+            }
             return null;
         }
     }

@@ -356,8 +356,13 @@ public class CardDataImage extends PublishableCard {
                 (mImageBitmap != null && mImageBitmap.get() != null);
     }
 
+    /**
+     * Publish this CardDataImage immediately to CM Home.
+     * @param context The context to be used for Resource retrieval.
+     * @throws MissingFieldPublishException If the required fields for this type of CardDataImage are not present.
+     */
     @Override
-    public void publishSynchronous(Context context){
+    public void publishSynchronous(Context context) throws MissingFieldPublishException {
         // Store the current id of the linked CardData, in case it has
         // changed before publish.
         if (mLinkedCardData != null) {
