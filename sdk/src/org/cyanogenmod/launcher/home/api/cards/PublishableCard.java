@@ -59,7 +59,7 @@ public abstract class PublishableCard {
      * it will be updated in place.
      * @param context The context of the publishing application.
      */
-    public void publish(Context context) {
+    public void publishAsync(Context context) {
         new PublishCardTask(this, context).execute();
     }
 
